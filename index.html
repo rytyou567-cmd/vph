@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="css/style.css?v={{ time() }}">
+    <link rel="stylesheet" href="css/style.css">
 
     <title>ViewPorts</title>
     <link rel="stylesheet" href="css/btn-css.css">
@@ -17,6 +17,7 @@
     <link rel="stylesheet" href="css/loomis.css">
     <link rel="stylesheet" href="css/quad-expansion.css">
     <link rel="stylesheet" href="css/artemis.css">
+    <link rel="stylesheet" href="css/gif-maker.css">
     <style>
         html {
             scroll-behavior: smooth;
@@ -387,6 +388,20 @@
                     <button class="artemis-tool-btn" onclick="openModal('artemisModal')">Initialize Scan</button>
                 </div>
 
+                <!-- Tool 15: GIF Maker (Neon Amber) -->
+                <div class="gif-maker-tool-card">
+                    <div class="card-icon" style="background: linear-gradient(135deg, #ffaa00 0%, #ff5500 100%);">
+                        <svg viewBox="0 0 24 24">
+                            <path fill="#000"
+                                d="M7,2V4H5V18H7V20H17V18H19V4H17V2H7M7,6H17V16H7V6M9,8V10H11V8H9M13,8V10H15V8H13M9,12V14H11V12H9M13,12V14H15V12H13Z" />
+                        </svg>
+                    </div>
+                    <div class="card-tag" style="color:#ffaa00; background:rgba(255,170,0,0.1);">Animation</div>
+                    <h3 class="card-title">GIF Maker</h3>
+                    <p class="card-desc">Create animated GIFs from multiple images with custom timing.</p>
+                    <button class="gif-maker-btn" onclick="openModal('gifMakerModal')">Open Studio</button>
+                </div>
+
             </div>
 
             <!-- FEATURES SECTION -->
@@ -473,7 +488,7 @@
                                     class="browse-btn-corner browse-btn-corner-tr"></span>
                                 <span class="browse-btn-corner browse-btn-corner-br"></span><span
                                     class="browse-btn-corner browse-btn-corner-bl"></span>
-                                <button class="browse-btn" onclick="document.getElementById('fileInput').click()">Browse
+                                <button class="browse-btn">Browse
                                     Files</button>
                             </div>
                         </div>
@@ -532,8 +547,7 @@
                                 class="browse-btn-corner-jpg-t-pdf btn-corner-tr"></span>
                             <span class="browse-btn-corner-jpg-t-pdf btn-corner-br"></span><span
                                 class="browse-btn-corner-jpg-t-pdf btn-corner-bl"></span>
-                            <button class="browse-btn-jpg-t-pdf"
-                                onclick="document.getElementById('fileInputJpg').click()">Browse Files</button>
+                            <button class="browse-btn-jpg-t-pdf">Browse Files</button>
                         </div>
                     </div>
                     <div id="uploadProgressJpg" style="display: none;">
@@ -589,8 +603,7 @@
                     <div class="pdf-to-jpg-browse-container">
                         <span class="btn-corner btn-corner-tl"></span><span class="btn-corner btn-corner-tr"></span>
                         <span class="btn-corner btn-corner-br"></span><span class="btn-corner btn-corner-bl"></span>
-                        <button class="pdf-to-jpg-browse-btn"
-                            onclick="document.getElementById('fileInputPdfJpg').click()">Browse Files</button>
+                        <button class="pdf-to-jpg-browse-btn">Browse Files</button>
                     </div>
                 </div>
                 <div id="uploadProgressPdfJpg" style="display: none;">
@@ -644,8 +657,7 @@
                     <div class="pdf-to-word-browse-container">
                         <span class="btn-corner btn-corner-tl"></span><span class="btn-corner btn-corner-tr"></span>
                         <span class="btn-corner btn-corner-br"></span><span class="btn-corner btn-corner-bl"></span>
-                        <button class="pdf-to-word-browse-btn"
-                            onclick="document.getElementById('fileInputPdfWord').click()">Browse Files</button>
+                        <button class="pdf-to-word-browse-btn">Browse Files</button>
                     </div>
                 </div>
 
@@ -763,7 +775,7 @@
                         <span class="ic-br-corner br-tr"></span>
                         <span class="ic-br-corner br-br"></span>
                         <span class="ic-br-corner br-bl"></span>
-                        <button class="ic-br-btn" onclick="document.getElementById('fileInputImgComp').click()">Browse
+                        <button class="ic-br-btn">Browse
                             Files</button>
                     </div>
                 </div>
@@ -946,6 +958,13 @@
                         <h3 style="color: #ff00cc;">Drop Image for Extraction</h3>
                         <p style="color: #888;">Supports JPG, PNG, SVG</p>
                         <input type="file" id="loomisFileInput" hidden accept="image/*">
+                        <div class="ic-br-container" style="margin-top: 15px;">
+                            <span class="ic-br-corner br-tl"></span>
+                            <span class="ic-br-corner br-tr"></span>
+                            <span class="ic-br-corner br-br"></span>
+                            <span class="ic-br-corner br-bl"></span>
+                            <button class="ic-br-btn">Browse Files</button>
+                        </div>
                     </div>
                     <div id="loomisCanvasContainer" style="position: relative; display: none; line-height: 0;">
                         <canvas id="loomisCanvas"
@@ -1008,7 +1027,15 @@
                         </svg>
                         <h3 style="color: #b400ff;">Drop SVG Resource</h3>
                         <p style="color: #888;">Live Motion & Glitch Analysis</p>
-                        <input type="file" id="nyxFileInput" hidden accept=".svg"></div>
+                        <input type="file" id="nyxFileInput" hidden accept=".svg">
+                        <div class="ic-br-container" style="margin-top: 15px; --ic-accent: #b400ff;">
+                            <span class="ic-br-corner br-tl" style="border-color: var(--ic-accent)"></span>
+                            <span class="ic-br-corner br-tr" style="border-color: var(--ic-accent)"></span>
+                            <span class="ic-br-corner br-br" style="border-color: var(--ic-accent)"></span>
+                            <span class="ic-br-corner br-bl" style="border-color: var(--ic-accent)"></span>
+                            <button class="ic-br-btn"
+                                style="color: var(--ic-accent); border-color: var(--ic-accent)">Browse Files</button>
+                        </div>
                     </div>
                     <div id="nyxPreviewContainer" style="display: none; position: relative;">
                         <!-- SVG preview results here -->
@@ -1097,6 +1124,14 @@
                     <h3 style="color: #00ff80;">Secure File Cascade</h3>
                     <p style="color: #888;">Local AES-256 Multi-Phase Encryption</p>
                     <input type="file" id="kryptFileInput" hidden>
+                    <div class="ic-br-container" style="margin-top: 15px; --ic-accent: #00ff80;">
+                        <span class="ic-br-corner br-tl" style="border-color: var(--ic-accent)"></span>
+                        <span class="ic-br-corner br-tr" style="border-color: var(--ic-accent)"></span>
+                        <span class="ic-br-corner br-br" style="border-color: var(--ic-accent)"></span>
+                        <span class="ic-br-corner br-bl" style="border-color: var(--ic-accent)"></span>
+                        <button class="ic-br-btn" style="color: var(--ic-accent); border-color: var(--ic-accent)">Browse
+                            Files</button>
+                    </div>
                 </div>
                 <div id="kryptControls" class="krypt-controls" style="display: none;">
                     <input type="password" id="kryptKey" placeholder="CIPHER KEY">
@@ -1168,6 +1203,14 @@
                         <div class="artemis-drop-zone-text">Upload Image for Analysis</div>
                         <div class="artemis-drop-zone-subtext">Drop image here or click to browse</div>
                         <input type="file" id="artemis-file-input" accept="image/*" multiple hidden>
+                        <div class="ic-br-container" style="margin-top: 15px; --ic-accent: #c800ff;">
+                            <span class="ic-br-corner br-tl" style="border-color: var(--ic-accent)"></span>
+                            <span class="ic-br-corner br-tr" style="border-color: var(--ic-accent)"></span>
+                            <span class="ic-br-corner br-br" style="border-color: var(--ic-accent)"></span>
+                            <span class="ic-br-corner br-bl" style="border-color: var(--ic-accent)"></span>
+                            <button class="ic-br-btn"
+                                style="color: var(--ic-accent); border-color: var(--ic-accent)">Browse Files</button>
+                        </div>
                     </div>
                 </div>
 
@@ -1430,5 +1473,3 @@
         }
     });
 </script>
-
-

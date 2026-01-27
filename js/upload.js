@@ -79,6 +79,8 @@ if (dropZone) {
             handleFileUpload(files[0]);
         }
     });
+
+    dropZone.onclick = () => fileInput.click();
 }
 
 if (fileInput) {
@@ -211,7 +213,7 @@ if (cancelBtn) {
 
 if (doneBtn) {
     doneBtn.addEventListener('click', () => {
-        window.location.href = '/vph/pdfeditor.html';
+        window.location.href = 'pdfeditor.html';
     });
 }
 
@@ -245,5 +247,3 @@ function resetUpload() {
 
 // Expose reset globally
 window.resetMainEditor = resetUpload;
-
-

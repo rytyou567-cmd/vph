@@ -1,0 +1,404 @@
+/* GIF MAKER: NEON AMBER THEME */
+
+/* GIF Maker Tool Card */
+.gif-maker-tool-card {
+    background: rgba(50, 30, 0, 0.4);
+    border: 1px solid rgba(255, 170, 0, 0.3);
+    border-radius: 20px;
+    padding: 30px;
+    transition: 0.3s;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+.gif-maker-tool-card:hover {
+    transform: translateY(-5px);
+    border-color: rgba(255, 170, 0, 0.8);
+    box-shadow: 0 10px 30px rgba(255, 170, 0, 0.25);
+}
+
+.gif-maker-tool-card .card-icon {
+    box-shadow: 0 4px 15px rgba(255, 170, 0, 0.3);
+}
+
+/* Modal Styles */
+
+.gif-maker-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.85);
+    backdrop-filter: blur(10px);
+    z-index: 2000;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+}
+
+.gif-maker-modal-overlay.active {
+    display: flex;
+}
+
+.gif-maker-card {
+    background: rgba(15, 10, 0, 0.95);
+    border: 1px solid rgba(255, 170, 0, 0.3);
+    width: 90%;
+    max-width: 1100px;
+    height: 85vh;
+    border-radius: 10px;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    box-shadow: 0 0 40px rgba(255, 170, 0, 0.1);
+}
+
+.gif-maker-header {
+    padding: 20px;
+    border-bottom: 1px solid rgba(255, 170, 0, 0.2);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: rgba(255, 170, 0, 0.05);
+}
+
+.gif-maker-layout {
+    display: grid;
+    grid-template-columns: 1.2fr 0.8fr;
+    gap: 20px;
+    padding: 20px;
+    flex: 1;
+    overflow-y: auto;
+}
+
+/* WORKSPACE: LEFT SIDE */
+.gif-maker-workspace {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    min-width: 0;
+    /* Allow flex item to shrink below content size */
+}
+
+.gif-preview-container {
+    background: #000;
+    border: 1px dashed rgba(255, 170, 0, 0.4);
+    border-radius: 8px;
+    aspect-ratio: 4/3;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+}
+
+#gifPreviewCanvas {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+}
+
+.gif-dropzone {
+    text-align: center;
+    padding: 40px;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.gif-dropzone:hover {
+    background: rgba(255, 170, 0, 0.05);
+}
+
+/* FRAME LIST: BOTTOM LEFT */
+.frame-list-container {
+    background: rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(255, 170, 0, 0.1);
+    border-radius: 8px;
+    padding: 15px;
+    width: 100%;
+    max-width: 100%;
+    overflow: hidden;
+}
+
+.frame-list-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+    color: rgba(255, 170, 0, 0.8);
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: bold;
+}
+
+.frame-grid {
+    display: flex;
+    gap: 10px;
+    overflow-x: auto;
+    overflow-y: hidden;
+    padding-bottom: 10px;
+    min-height: 100px;
+    max-width: 100%;
+    scroll-behavior: smooth;
+}
+
+/* Enhanced scrollbar for better visibility */
+.frame-grid::-webkit-scrollbar {
+    height: 8px;
+}
+
+.frame-grid::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 4px;
+}
+
+.frame-grid::-webkit-scrollbar-thumb {
+    background: rgba(255, 170, 0, 0.5);
+    border-radius: 4px;
+    transition: background 0.3s;
+}
+
+.frame-grid::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 170, 0, 0.8);
+}
+
+.frame-item {
+    width: 80px;
+    height: 80px;
+    border: 1px solid rgba(255, 170, 0, 0.3);
+    border-radius: 4px;
+    position: relative;
+    flex-shrink: 0;
+    background: #000;
+}
+
+.frame-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.frame-item .remove-frame {
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    background: #ff4400;
+    color: white;
+    border-radius: 50%;
+    width: 18px;
+    height: 18px;
+    font-size: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    border: none;
+}
+
+/* SIDEBAR: RIGHT SIDE */
+.gif-maker-sidebar {
+    background: rgba(0, 0, 0, 0.2);
+    border-left: 1px solid rgba(255, 170, 0, 0.1);
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.control-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.control-group label {
+    font-family: 'Rajdhani', sans-serif;
+    color: rgba(255, 170, 0, 0.9);
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.input-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.input-row input[type="number"],
+.input-row input[type="text"],
+.input-row select {
+    background: rgba(0, 0, 0, 0.5);
+    border: 1px solid rgba(255, 170, 0, 0.3);
+    color: #fff;
+    padding: 8px;
+    border-radius: 4px;
+    font-family: 'Orbitron', sans-serif;
+}
+
+.input-row input[type="range"] {
+    flex: 1;
+    accent-color: #ffaa00;
+}
+
+.input-row span {
+    color: #888;
+    font-size: 0.8rem;
+}
+
+/* TOGGLES */
+.toggle-group {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.toggle-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: #ccc;
+    font-size: 0.9rem;
+    cursor: pointer;
+}
+
+.toggle-item input {
+    accent-color: #ffaa00;
+}
+
+/* ACTIONS */
+.gif-actions {
+    margin-top: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.generate-btn {
+    background: linear-gradient(135deg, #ffaa00 0%, #ff5500 100%);
+    color: #000;
+    border: none;
+    padding: 15px;
+    border-radius: 4px;
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: 800;
+    font-size: 1.2rem;
+    cursor: pointer;
+    text-transform: uppercase;
+    box-shadow: 0 0 15px rgba(255, 170, 0, 0.3);
+    transition: all 0.3s;
+}
+
+.generate-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 0 25px rgba(255, 170, 0, 0.5);
+}
+
+.reset-btn {
+    background: transparent;
+    color: #ffaa00;
+    border: 1px solid #ffaa00;
+    padding: 10px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-family: 'Rajdhani', sans-serif;
+}
+
+.reset-btn:hover {
+    background: rgba(255, 170, 0, 0.1);
+}
+
+/* GIF Maker Tool Button (Amber theme) */
+.gif-maker-btn {
+    width: 100%;
+    position: relative;
+    height: 3.5em;
+    background-color: transparent;
+    color: #ffaa00;
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 16px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    border: none;
+    cursor: pointer;
+    clip-path: polygon(12px 0px, 100% 0px, 100% calc(100% - 12px), calc(100% - 12px) 100%, 0px 100%, 0px 12px);
+    transition: all 0.3s ease;
+}
+
+.gif-maker-btn::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: #ffaa00;
+    z-index: -1;
+    opacity: 0.2;
+    transition: opacity 0.3s ease;
+}
+
+.gif-maker-btn::after {
+    content: "";
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    width: calc(100% - 4px);
+    height: calc(100% - 4px);
+    background: rgba(15, 10, 0, 0.9);
+    z-index: -1;
+    clip-path: polygon(11px 0px, 100% 0px, 100% calc(100% - 11px), calc(100% - 11px) 100%, 0px 100%, 0px 11px);
+}
+
+.gif-maker-btn:hover {
+    color: #fff !important;
+    text-shadow: 0 0 10px #ffaa00;
+}
+
+.gif-advanced-options {
+    margin-top: 10px;
+    animation: slideDown 0.3s ease-out;
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.close-modal-btn-gif {
+    background: none;
+    border: none;
+    color: #ffaa00;
+    cursor: pointer;
+    padding: 5px;
+}
+
+.close-modal-btn-gif:hover {
+    color: #fff;
+}
+
+/* SCROLLBAR */
+.frame-grid::-webkit-scrollbar {
+    height: 4px;
+}
+
+.frame-grid::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.1);
+}
+
+.frame-grid::-webkit-scrollbar-thumb {
+    background: rgba(255, 170, 0, 0.3);
+    border-radius: 2px;
+}

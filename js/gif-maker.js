@@ -293,7 +293,7 @@ export const GIF_MAKER = (() => {
                 quality: elements.disableDithering && elements.disableDithering.checked ? 1 : 10,
                 width: parseInt(elements.widthInput.value) || 500,
                 height: parseInt(elements.heightInput.value) || 500,
-                workerScript: '/js/gif.worker.js',
+                workerScript: 'https://cdn.jsdelivr.net/npm/gif.js@0.2.0/dist/gif.worker.js',
                 transparent: elements.bgColor && elements.bgColor.value ? null : 'rgba(0,0,0,0)',
                 background: elements.bgColor && elements.bgColor.value ? '#' + elements.bgColor.value : null,
                 repeat: (elements.playCount ? parseInt(elements.playCount.value) : 0) || 0,
@@ -402,10 +402,32 @@ export const GIF_MAKER = (() => {
 
     function loadGifLibrary() {
         return new Promise((resolve, reject) => {
+            // Check if GIF is already loaded
+            if (typeof GIF !== 'undefined') {
+                resolve();
+                return;
+            }
+
             const script = document.createElement('script');
-            script.src = window.location.origin + './js/gif.js';
-            script.onload = resolve;
-            script.onerror = reject;
+            // Use CDN for better online compatibility
+            script.src = 'https://cdn.jsdelivr.net/npm/gif.js@0.2.0/dist/gif.js';
+            script.crossOrigin = 'anonymous';
+
+            script.onload = () => {
+                console.log('GIF.js loaded successfully from CDN');
+                resolve();
+            };
+
+            script.onerror = (error) => {
+                console.error('Failed to load GIF.js from CDN:', error);
+                // Try local fallback
+                const localScript = document.createElement('script');
+                localScript.src = window.location.origin + '/js/gif.js';
+                localScript.onload = resolve;
+                localScript.onerror = reject;
+                document.head.appendChild(localScript);
+            };
+
             document.head.appendChild(script);
         });
     }
@@ -425,5 +447,3 @@ export const GIF_MAKER = (() => {
 })();
 
 window.GIF_MAKER = GIF_MAKER;
-
-

@@ -460,7 +460,7 @@
                                 d="M19,6.41L17.59,5L12,10.59L6.41,5L5,6.41L10.59,12L5,17.59L6.41,19L12,13.41L17.59,19L19,17.59L13.41,12L19,6.41Z" />
                         </svg>
                     </button>
-                    <div class="drop-zone" id="dropZone">
+                    <div class="drop-zone" id="dropZone" onclick="document.getElementById('fileInput').click()">
                         <input type="file" id="fileInput" hidden>
                         <div id="uploadInitial">
                             <svg class="upload-icon" viewBox="0 0 24 24">
@@ -518,7 +518,8 @@
                             d="M19,6.41L17.59,5L12,10.59L6.41,5L5,6.41L10.59,12L5,17.59L6.41,19L12,13.41L17.59,19L19,17.59L13.41,12L19,6.41Z" />
                     </svg>
                 </button>
-                <div class="drop-zone-jpg-t-pdf" id="dropZoneJpg">
+                <div class="drop-zone-jpg-t-pdf" id="dropZoneJpg"
+                    onclick="document.getElementById('fileInputJpg').click()">
                     <input type="file" id="fileInputJpg" hidden accept="image/jpeg, image/jpg, image/png">
                     <div id="uploadInitialJpg">
                         <svg class="upload-icon-jpg-t-pdf" viewBox="0 0 24 24">
@@ -576,7 +577,8 @@
                         d="M19,6.41L17.59,5L12,10.59L6.41,5L5,6.41L10.59,12L5,17.59L6.41,19L12,13.41L17.59,19L19,17.59L13.41,12L19,6.41Z" />
                 </svg>
             </button>
-            <div class="pdf-to-jpg-drop-zone" id="dropZonePdfJpg">
+            <div class="pdf-to-jpg-drop-zone" id="dropZonePdfJpg"
+                onclick="document.getElementById('fileInputPdfJpg').click()">
                 <input type="file" id="fileInputPdfJpg" hidden accept="application/pdf">
                 <div id="uploadInitialPdfJpg">
                     <svg class="pdf-to-jpg-upload-icon" viewBox="0 0 24 24">
@@ -630,7 +632,8 @@
                         d="M19,6.41L17.59,5L12,10.59L6.41,5L5,6.41L10.59,12L5,17.59L6.41,19L12,13.41L17.59,19L19,17.59L13.41,12L19,6.41Z" />
                 </svg>
             </button>
-            <div class="drop-zone pdf-to-word-drop-zone" id="dropZonePdfWord">
+            <div class="drop-zone pdf-to-word-drop-zone" id="dropZonePdfWord"
+                onclick="document.getElementById('fileInputPdfWord').click()">
                 <input type="file" id="fileInputPdfWord" hidden accept="application/pdf">
                 <div id="uploadInitialPdfWord">
                     <svg class="upload-icon" viewBox="0 0 24 24">
@@ -746,7 +749,8 @@
 
             <!-- Initial Upload View -->
             <div id="initialViewImgComp">
-                <div class="image-compressor-drop-zone" id="dropZoneImgComp">
+                <div class="image-compressor-drop-zone" id="dropZoneImgComp"
+                    onclick="document.getElementById('fileInputImgComp').click()">
                     <input type="file" id="fileInputImgComp" hidden accept="image/jpeg, image/png">
                     <svg viewBox="0 0 24 24" width="48" height="48" style="margin-bottom: 15px;">
                         <path fill="#ff00cc"
@@ -852,7 +856,8 @@
             <div id="initialViewShield">
                 <h2 class="shield-header">Shield Redactor: Privacy Vault</h2>
                 <div class="shield-choice-container">
-                    <div id="newProjectBtnShield" class="shield-choice-card">
+                    <div id="newProjectBtnShield" class="shield-choice-card"
+                        onclick="document.getElementById('fileInputShield').click()">
                         <svg viewBox="0 0 24 24" width="64" height="64" style="margin-bottom: 15px;">
                             <path fill="#00ff80" d="M19,13H13V19H11V13H5V11H11V5H13V11H19V13Z" />
                         </svg>
@@ -896,7 +901,8 @@
                     <button id="saveVaultBtnShield" class="card-btn">SAVE TO VAULT</button>
                     <div style="display:flex; gap:10px;">
                         <button id="exportFileBtnShield" class="card-btn">EXPORT CLEAN FILE</button>
-                        <button id="exportRedactedBtnShield" class="card-btn" disabled title="Requires active redactions">EXPORT REDACTED FILE</button>
+                        <button id="exportRedactedBtnShield" class="card-btn" disabled
+                            title="Requires active redactions">EXPORT REDACTED FILE</button>
                     </div>
                 </div>
             </div>
@@ -931,7 +937,8 @@
 
             <div class="loomis-layout">
                 <div class="loomis-workspace">
-                    <div id="loomisDropZone" class="loomis-dropzone pulse-primary">
+                    <div id="loomisDropZone" class="loomis-dropzone pulse-primary"
+                        onclick="document.getElementById('loomisFileInput').click()">
                         <svg viewBox="0 0 24 24" width="60" height="60" fill="rgba(255, 0, 204, 0.4)">
                             <path
                                 d="M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M13.5,16V13H16L12,9L8,13H10.5V16H13.5M13,9V3.5L18.5,9H13Z" />
@@ -939,6 +946,13 @@
                         <h3 style="color: #ff00cc;">Drop Image for Extraction</h3>
                         <p style="color: #888;">Supports JPG, PNG, SVG</p>
                         <input type="file" id="loomisFileInput" hidden accept="image/*">
+                        <div class="ic-br-container" style="margin-top: 15px;">
+                            <span class="ic-br-corner br-tl"></span>
+                            <span class="ic-br-corner br-tr"></span>
+                            <span class="ic-br-corner br-br"></span>
+                            <span class="ic-br-corner br-bl"></span>
+                            <button class="ic-br-btn">Browse Files</button>
+                        </div>
                     </div>
                     <div id="loomisCanvasContainer" style="position: relative; display: none; line-height: 0;">
                         <canvas id="loomisCanvas"
@@ -993,7 +1007,8 @@
             </div>
             <div class="nyx-layout">
                 <div class="nyx-workspace">
-                    <div id="nyxDropZone" class="nyx-dropzone">
+                    <div id="nyxDropZone" class="nyx-dropzone"
+                        onclick="document.getElementById('nyxFileInput').click()">
                         <svg viewBox="0 0 24 24" width="60" height="60" fill="rgba(180, 0, 255, 0.4)">
                             <path
                                 d="M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M13.5,16V13H16L12,9L8,13H10.5V16H13.5M13,9V3.5L18.5,9H13Z" />
@@ -1001,6 +1016,14 @@
                         <h3 style="color: #b400ff;">Drop SVG Resource</h3>
                         <p style="color: #888;">Live Motion & Glitch Analysis</p>
                         <input type="file" id="nyxFileInput" hidden accept=".svg">
+                        <div class="ic-br-container" style="margin-top: 15px; --ic-accent: #b400ff;">
+                            <span class="ic-br-corner br-tl" style="border-color: var(--ic-accent)"></span>
+                            <span class="ic-br-corner br-tr" style="border-color: var(--ic-accent)"></span>
+                            <span class="ic-br-corner br-br" style="border-color: var(--ic-accent)"></span>
+                            <span class="ic-br-corner br-bl" style="border-color: var(--ic-accent)"></span>
+                            <button class="ic-br-btn"
+                                style="color: var(--ic-accent); border-color: var(--ic-accent)">Browse Files</button>
+                        </div>
                     </div>
                     <div id="nyxPreviewContainer" style="display: none; position: relative;">
                         <!-- SVG preview results here -->
@@ -1078,7 +1101,8 @@
                 </button>
             </div>
             <div class="krypt-layout">
-                <div id="kryptDropZone" class="krypt-dropzone">
+                <div id="kryptDropZone" class="krypt-dropzone"
+                    onclick="document.getElementById('kryptFileInput').click()">
                     <div class="krypt-lock-icon">
                         <svg viewBox="0 0 24 24" width="80" height="80" fill="rgba(0, 255, 128, 0.4)">
                             <path
@@ -1088,6 +1112,14 @@
                     <h3 style="color: #00ff80;">Secure File Cascade</h3>
                     <p style="color: #888;">Local AES-256 Multi-Phase Encryption</p>
                     <input type="file" id="kryptFileInput" hidden>
+                    <div class="ic-br-container" style="margin-top: 15px; --ic-accent: #00ff80;">
+                        <span class="ic-br-corner br-tl" style="border-color: var(--ic-accent)"></span>
+                        <span class="ic-br-corner br-tr" style="border-color: var(--ic-accent)"></span>
+                        <span class="ic-br-corner br-br" style="border-color: var(--ic-accent)"></span>
+                        <span class="ic-br-corner br-bl" style="border-color: var(--ic-accent)"></span>
+                        <button class="ic-br-btn" style="color: var(--ic-accent); border-color: var(--ic-accent)">Browse
+                            Files</button>
+                    </div>
                 </div>
                 <div id="kryptControls" class="krypt-controls" style="display: none;">
                     <input type="password" id="kryptKey" placeholder="CIPHER KEY">
@@ -1153,11 +1185,20 @@
             <div class="artemis-container">
                 <!-- Left: Preview Section -->
                 <div class="artemis-preview-section">
-                    <div id="artemis-drop-zone" class="artemis-drop-zone">
+                    <div id="artemis-drop-zone" class="artemis-drop-zone"
+                        onclick="document.getElementById('artemis-file-input').click()">
                         <div class="artemis-drop-zone-icon">📸</div>
                         <div class="artemis-drop-zone-text">Upload Image for Analysis</div>
                         <div class="artemis-drop-zone-subtext">Drop image here or click to browse</div>
-                        <input type="file" id="artemis-file-input" accept="image/*" multiple>
+                        <input type="file" id="artemis-file-input" accept="image/*" multiple hidden>
+                        <div class="ic-br-container" style="margin-top: 15px; --ic-accent: #c800ff;">
+                            <span class="ic-br-corner br-tl" style="border-color: var(--ic-accent)"></span>
+                            <span class="ic-br-corner br-tr" style="border-color: var(--ic-accent)"></span>
+                            <span class="ic-br-corner br-br" style="border-color: var(--ic-accent)"></span>
+                            <span class="ic-br-corner br-bl" style="border-color: var(--ic-accent)"></span>
+                            <button class="ic-br-btn"
+                                style="color: var(--ic-accent); border-color: var(--ic-accent)">Browse Files</button>
+                        </div>
                     </div>
                 </div>
 
@@ -1227,10 +1268,10 @@
     <script type="module" src="js/upload.js"></script>
 
     <script type="module">
-        import { init as initJpgToPdf } from '{{ asset("js/jpg-to-pdf.js") }}';
-        import { init as initPdfToJpg } from '{{ asset("js/pdf-to-jpg.js") }}';
-        import { init as initPdfToWord } from '{{ asset("js/pdf-to-word.js") }}';
-        import { init as initImageCompressor } from '{{ asset("js/image-compressor.js") }}';
+        import { init as initJpgToPdf } from './js/jpg-to-pdf.js';
+        import { init as initPdfToJpg } from './js/pdf-to-jpg.js';
+        import { init as initPdfToWord } from './js/pdf-to-word.js';
+        import { init as initImageCompressor } from './js/image-compressor.js';
 
         // JPG to PDF
         initJpgToPdf({
@@ -1302,11 +1343,11 @@
             cancelBtnId: 'cancelBtnImgComp',
             loadingIndicatorId: 'loadingIndicatorImgComp',
             maxWidthId: 'maxWidthImgComp',
-            workerUrl: '{{ asset("js/image-compressor-worker.js") }}'
+            workerUrl: 'js/image-compressor-worker.js'
         });
 
         // Shield Redactor
-        import('{{ asset("js/shield-redactor.js") }}').then(module => {
+        import('./js/shield-redactor.js').then(module => {
             module.init({
                 modalId: 'shieldRedactorModal',
                 fileInputId: 'fileInputShield',
@@ -1329,7 +1370,7 @@
         });
     </script>
     <script type="module">
-        import { init as initLoomis } from 'js/loomis.js';
+        import { init as initLoomis } from './js/loomis.js';
         initLoomis({
             dropZoneId: 'loomisDropZone',
             fileInputId: 'loomisFileInput',
@@ -1349,7 +1390,7 @@
         };
 
         // NYX Lab
-        import('{{ asset("js/nyx.js") }}').then(() => {
+        import('./js/nyx.js').then(() => {
             if (window.NYX) {
                 window.NYX.init({
                     dropZoneId: 'nyxDropZone',
@@ -1364,7 +1405,7 @@
         });
 
         // VAPOR Engine
-        import('{{ asset("js/vapor.js") }}').then(() => {
+        import('./js/vapor.js').then(() => {
             if (window.VAPOR) {
                 window.VAPOR.init({
                     editorId: 'vaporEditor',
@@ -1375,7 +1416,7 @@
         });
 
         // KRYPT Vault
-        import('{{ asset("js/krypt.js") }}').then(() => {
+        import('./js/krypt.js').then(() => {
             if (window.KRYPT) {
                 window.KRYPT.init({
                     dropZoneId: 'kryptDropZone',
@@ -1389,7 +1430,7 @@
         });
 
         // ORION Viz
-        import('{{ asset("js/orion.js") }}').then(() => {
+        import('./js/orion.js').then(() => {
             if (window.ORION) {
                 window.ORION.init({
                     dataAreaId: 'orionData',
@@ -1401,7 +1442,7 @@
         });
 
         // ARTEMIS AI Detector
-        import('{{ asset("js/artemis.js") }}').then(() => {
+        import('./js/artemis.js').then(() => {
             if (window.ARTEMIS) {
                 window.ARTEMIS.init();
             }

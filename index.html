@@ -1,0 +1,1422 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="css/style.css?v={{ time() }}">
+
+    <title>ViewPorts</title>
+    <link rel="stylesheet" href="css/btn-css.css">
+    <link rel="stylesheet" href="css/jpg-to-pdf.css">
+    <link rel="stylesheet" href="css/pdf-to-jpg.css">
+    <link rel="stylesheet" href="css/pdf-to-word.css">
+    <link rel="stylesheet" href="css/image-compressor.css">
+    <link rel="stylesheet" href="css/upcoming-tools.css">
+    <link rel="stylesheet" href="css/shield-redactor.css">
+    <link rel="stylesheet" href="css/loomis.css">
+    <link rel="stylesheet" href="css/quad-expansion.css">
+    <link rel="stylesheet" href="css/artemis.css">
+    <style>
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Nunito', sans-serif;
+        }
+    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&display=swap"
+        rel="stylesheet">
+    <script src="https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    <script src="vendor/libs/docx.min.js"></script>
+    <script src="https://unpkg.com/tesseract.js@5.0.0/dist/tesseract.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/exif-js"></script>
+
+</head>
+
+<body class="antialiased">
+
+    <!-- BACKGROUND ANIMATION (Circuit UI) -->
+    <div class="animated-background">
+        <div class="circuit-bg"></div>
+        <div class="circuit-flow"></div>
+        <div class="pointer-glow" id="pointerGlow"></div>
+    </div>
+
+    <!-- 1. NAVIGATION BAR -->
+    <div
+        style="position: sticky; top: 0; z-index: 1000; backdrop-filter: blur(5px); border-bottom: 1px solid rgba(0, 213, 255, 0.1);">
+        <nav class="main-nav">
+            <div class="logo">ViewPorts</div>
+
+            <!-- Center Links -->
+            <div class="nav-links">
+                <a href="#" class="nav-item">Home</a>
+                <a href="#stat3" class="nav-item">Our Tools</a>
+                <a href="#features" class="nav-item">Features</a>
+                <a href="#" class="nav-item">Blogs</a>
+                <a href="#" class="nav-item">About Us</a>
+            </div>
+
+            <!-- Right Buttons (Sci-Fi Theme) -->
+            <div style="display: flex; gap: 15px;">
+                <button class="ed-link-key-an-fo-nav" style="height: 40px; line-height: 20px; font-size: 14px;">
+                    Get Started
+                </button>
+            </div>
+        </nav>
+    </div>
+
+    <!-- 2. MAIN CONTAINER -->
+    <div class="main-container">
+        <!-- Changed to block to allow vertical stacking of Hero -> Dropzone -> Stats -->
+
+        <!-- HERO SECTION (Sci-Fi / Cyberpunk) -->
+        <div class="hero-section">
+
+
+
+
+
+            <h1 class="hero-title">
+                <span class="neon-text-primary" data-text="Professional PDF Suite">Professional PDF Suite</span>
+                <br>
+                <span class="neon-text-secondary">
+                    All-in-One Toolkit </span>
+            </h1>
+
+
+            <p class="hero-subtitle">
+                <span id="typewriter-text"></span>
+            </p>
+
+            <script>
+                document.addEventListener('DOMContentLoaded', function () {
+                    const text = "> Initializing modules...\n> Secure processing active.\n> Unlimited access granted.";
+                    const element = document.getElementById('typewriter-text');
+                    let i = 0;
+
+                    function typeWriter() {
+                        if (i < text.length) {
+                            const char = text.charAt(i);
+                            element.innerHTML += char === '\n' ? '<br>' : char;
+                            i++;
+                            setTimeout(typeWriter, 20);
+                        }
+                    }
+
+                    setTimeout(typeWriter, 1000);
+                });
+            </script>
+        </div>
+
+        <!-- HUD STATS ROW -->
+        <div class="stats-row"
+            style="display:flex; justify-content:center; gap:30px; margin-top:50px; margin-bottom:80px;">
+            <!-- Stat 1 -->
+            <div class="hud-stat"
+                style="background:rgba(0,15,30,0.8); border:1px solid rgba(0,213,255,0.3); padding:20px; width:180px; position:relative; clip-path: polygon(10% 0, 100% 0, 100% 90%, 90% 100%, 0 100%, 0 10%);">
+                <div style="font-size:2.5rem; color:#fff; font-family:'Rajdhani', sans-serif; font-weight:bold;">25+
+                </div>
+                <div
+                    style="color:#00d5ff; font-size:0.9rem; text-transform:uppercase; letter-spacing:1px; margin-bottom:10px;">
+                    Modules Active</div>
+                <div style="height:2px; background:#333; width:100%;">
+                    <div style="width:80%; height:100%; background:#00d5ff; box-shadow:0 0 5px #00d5ff;"></div>
+                </div>
+                <div style="position:absolute; top:0; left:0; width:5px; height:5px; background:#00d5ff;"></div>
+                <div style="position:absolute; bottom:0; right:0; width:5px; height:5px; background:#00d5ff;"></div>
+            </div>
+
+            <!-- Stat 2 -->
+            <div class="hud-stat"
+                style="background:rgba(0,15,30,0.8); border:1px solid rgba(0,255,170,0.3); padding:20px; width:180px; position:relative; clip-path: polygon(10% 0, 100% 0, 100% 90%, 90% 100%, 0 100%, 0 10%);">
+                <div style="font-size:2.5rem; color:#fff; font-family:'Rajdhani', sans-serif; font-weight:bold;">100%
+                </div>
+                <div
+                    style="color:#00ffaa; font-size:0.9rem; text-transform:uppercase; letter-spacing:1px; margin-bottom:10px;">
+                    Secure Encryption</div>
+                <div style="height:2px; background:#333; width:100%;">
+                    <div style="width:100%; height:100%; background:#00ffaa; box-shadow:0 0 5px #00ffaa;"></div>
+                </div>
+                <div style="position:absolute; top:0; left:0; width:5px; height:5px; background:#00ffaa;"></div>
+                <div style="position:absolute; bottom:0; right:0; width:5px; height:5px; background:#00ffaa;"></div>
+            </div>
+
+            <!-- Stat 3 -->
+            <div class="hud-stat" id="stat3"
+                style="background:rgba(0,15,30,0.8); border:1px solid rgba(255,0,85,0.3); padding:20px; width:180px; position:relative; clip-path: polygon(10% 0, 100% 0, 100% 90%, 90% 100%, 0 100%, 0 10%);">
+                <div style="font-size:2.5rem; color:#fff; font-family:'Rajdhani', sans-serif; font-weight:bold;">∞</div>
+                <div
+                    style="color:#ff0055; font-size:0.9rem; text-transform:uppercase; letter-spacing:1px; margin-bottom:10px;">
+                    Unrestricted</div>
+                <div style="height:2px; background:#333; width:100%;">
+                    <div style="width:100%; height:100%; background:#ff0055; box-shadow:0 0 5px #ff0055;"></div>
+                </div>
+                <div style="position:absolute; top:0; left:0; width:5px; height:5px; background:#ff0055;"></div>
+                <div style="position:absolute; bottom:0; right:0; width:5px; height:5px; background:#ff0055;"></div>
+            </div>
+        </div>
+
+        <!-- TOOLS GRID SECTION -->
+        <div class="tools-section" id="tools">
+            <div style="text-align: center; margin-bottom: 50px;">
+                <h2
+                    style="font-family: 'Rajdhani', sans-serif; font-size: 3.5rem; color: white; margin-bottom: 10px; font-weight: 700;">
+                    Powerful <span style="color: #00d5ff;">PDF Tools</span>
+                </h2>
+                <p style="color: #a0e9ff; font-size: 1.2rem; max-width: 600px; margin: 0 auto; line-height: 1.6;">
+                    Choose from our collection of professional-grade tools designed for speed, efficiency, and security.
+                </p>
+            </div>
+            <div class="tools-grid">
+                <!-- Tool Card 1: Edit -->
+                <div class="tool-card">
+                    <div class="card-icon">
+                        <!-- Edit Icon -->
+                        <svg viewBox="0 0 24 24">
+                            <path
+                                d="M14.06,9.02L14.98,9.94L5.92,19H5V18.08L14.06,9.02M17.66,3C17.41,3 17.15,3.1 16.96,3.29L15.13,5.12L18.88,8.87L20.71,7.04C21.1,6.65 21.1,6 20.71,5.63L18.37,3.29C18.17,3.09 17.92,3 17.66,3M14.06,6.19L3,17.25V21H6.75L17.81,9.94L14.06,6.19Z" />
+                        </svg>
+                    </div>
+                    <div class="card-tag">Editor</div>
+                    <h3 class="card-title">Edit PDF</h3>
+                    <p class="card-desc">Add text, images, shapes, and signatures to your PDF document instantly.</p>
+                    <button class="card-btn" onclick="openModal('uploadModal', 'PDF Editor')">Use Tool</button>
+                </div>
+
+                <!-- Tool Card 2: Compress -->
+                <div class="tool-card">
+                    <div class="card-icon">
+                        <!-- Compress Icon -->
+                        <svg viewBox="0 0 24 24">
+                            <path
+                                d="M4,2H20A2,2 0 0,1 22,4V20A2,2 0 0,1 20,22H4C2.92,22 2,21.1 2,20V4A2,2 0 0,1 4,2M4,4V11H11V4H4M4,20H11V13H4V20M20,20V13H13V20H20M20,4V11H13V4H20Z" />
+                        </svg>
+                    </div>
+                    <div class="card-tag">Utility</div>
+                    <h3 class="card-title">Compress PDF</h3>
+                    <p class="card-desc">Reduce file size while optimizing for maximal PDF quality.</p>
+                    <button class="card-btn" onclick="openModal('uploadModal', 'PDF Compressor')">Use Tool</button>
+                </div>
+
+                <!-- Tool Card 3: Merge -->
+                <div class="tool-card">
+                    <div class="card-icon">
+                        <!-- Merge Icon -->
+                        <svg viewBox="0 0 24 24">
+                            <path
+                                d="M19 8H14V5H19V8M19 13H14V10H19V13M19 18H14V15H19V18M11 18H6V15H11V18M11 13H6V10H11V13M11 8H6V5H11V8M21 3C21.55 3 22 3.45 22 4V19C22 19.55 21.55 20 21 20H3C2.45 20 2 19.55 2 19V4C2 3.45 2.45 3 3 3H21M9 2H5V22H9V2M19 22H11V2H19V22Z" />
+                        </svg>
+                    </div>
+                    <div class="card-tag">Organize</div>
+                    <h3 class="card-title">Merge PDF</h3>
+                    <p class="card-desc">Combine multiple PDFs into one unified document.</p>
+                    <button class="card-btn" onclick="openModal('uploadModal', 'PDF Merger')">Use Tool</button>
+                </div>
+            </div>
+
+            <!-- ROW 2: New Tools -->
+            <div class="tools-grid" style="margin-top: 30px;">
+                <!-- Tool Card 4: JPG to PDF -->
+                <div class="tool-card-jpg-t-pdf">
+                    <div class="card-icon" style="background: linear-gradient(135deg, #ff9900 0%, #ff5500 100%);">
+                        <svg viewBox="0 0 24 24">
+                            <path
+                                d="M8.5,13.5L11,16.5L14.5,12L19,18H5M21,19V5C21,3.89 20.1,3 19,3H5A2,2 0 0,0 3,5V19A2,2 0 0,0 5,21H19A2,2 0 0,0 21,19Z" />
+                        </svg>
+                    </div>
+                    <div class="card-tag" style="color:#ff9900; background:rgba(255,153,0,0.1);">Converter</div>
+                    <h3 class="card-title">JPG to PDF</h3>
+                    <p class="card-desc">Convert your images to PDF format in seconds.</p>
+                    <button class="card-btn-jpg-t-pdf" onclick="openModal('jpgToPdfModal')" style="color:#ff9900;">Use
+                        Tool</button>
+                </div>
+
+                <!-- Tool Card 5: PDF to JPG -->
+                <div class="pdf-to-jpg-tool-card">
+                    <div class="card-icon" style="background: linear-gradient(135deg, #a600ff 0%, #6200ff 100%);">
+                        <svg viewBox="0 0 24 24">
+                            <path
+                                d="M20,2H8A2,2 0 0,0 6,4V16A2,2 0 0,0 8,18H20A2,2 0 0,0 22,16V4A2,2 0 0,0 20,2M20,16H8V4H20M12.5,15L15.39,10.66L19,15H9M4,6H2V20A2,2 0 0,0 4,22H18V20H4V6Z" />
+                        </svg>
+                    </div>
+                    <div class="card-tag" style="color:#a600ff; background:rgba(166,0,255,0.1);">Converter</div>
+                    <h3 class="card-title">PDF to JPG</h3>
+                    <p class="card-desc">Extract high-quality images from your PDF files.</p>
+                    <button class="pdf-to-jpg-card-btn" onclick="openModal('pdfToJpgModal')" style="color:#a600ff;">Use
+                        Tool</button>
+                </div>
+
+                <!-- Tool Card 6: PDF to Word -->
+                <div class="pdf-to-word-tool-card">
+                    <div class="card-icon" style="background: linear-gradient(135deg, #0044ff 0%, #002288 100%);">
+                        <svg viewBox="0 0 24 24">
+                            <path
+                                d="M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M6,20V4H13V9H18V20H6M9.95,12.45L8.55,17.45H10.15L11.45,12.45H9.95M13.45,17.45H15.05L16.45,12.45H14.95L13.45,17.45Z" />
+                        </svg>
+                    </div>
+                    <div class="card-tag" style="color:#0044ff; background:rgba(0,68,255,0.1);">Document</div>
+                    <h3 class="card-title">PDF to Word</h3>
+                    <p class="card-desc">Convert PDFs to editable Word documents easily.</p>
+                    <button class="pdf-to-word-card-btn" onclick="openModal('pdfToWordModal')"
+                        style="color:#0044ff;">Use
+                        Tool</button>
+                </div>
+
+            </div>
+
+            <!-- ROW 3: Upcoming Tools -->
+            <div class="tools-grid" style="margin-top: 30px;">
+                <!-- Tool 7: Image Compressor -->
+                <div class="image-compressor-card">
+                    <div class="card-icon" style="background: linear-gradient(135deg, #ff00cc 0%, #b3008f 100%);">
+                        <svg viewBox="0 0 24 24">
+                            <path
+                                d="M18,20H6V4H18M18,2H6C4.9,2 4,2.9 4,4V20C4,21.1 4.9,22 6,22H18C19.1,22 20,21.1 20,20V4C20,2.9 19.1,2 18,2M11.5,14.67L13.5,12.67L15,15.67L16,13.67L11.5,8L7,15.67H11.5M16,18H8V16.67H16V18Z" />
+                        </svg>
+                    </div>
+                    <div class="card-tag" style="color:#ff00cc; background:rgba(255, 0, 204, 0.1);">Image Tools</div>
+                    <h3 class="card-title">Image Compressor</h3>
+                    <p class="card-desc">Reduce file size of your images while maintaining quality.</p>
+                    <button class="image-compressor-btn" onclick="openModal('imageCompressorModal')">Use Tool</button>
+                </div>
+
+                <!-- Tool 8: Shield Redactor (Emerald) -->
+                <div class="upcoming-tool-2-card">
+                    <div class="card-icon" style="background: linear-gradient(135deg, #00ff80 0%, #008f48 100%);">
+                        <svg viewBox="0 0 24 24">
+                            <path
+                                d="M12,1L3,5V11C3,16.55 6.84,21.74 12,23C17.16,21.74 21,16.55 21,11V5L12,1M12,11.99H7V10.33C7,8.14 8.72,6.5 10.72,6.5H13.28C15.28,6.5 17,8.14 17,10.33V11.99H12Z" />
+                        </svg>
+                    </div>
+                    <div class="card-tag" style="color:#00ff80; background:rgba(0,255,128,0.1);">Security</div>
+                    <h3 class="card-title">Shield Redactor</h3>
+                    <p class="card-desc">Scan and redact sensitive PII (SSN, Emails) locally in your browser.</p>
+                    <button class="upcoming-tool-2-btn" onclick="openModal('shieldRedactorModal')">Unlock Vault</button>
+                </div>
+
+                <!-- Tool 9: Loomis (Electric Pink) -->
+                <div class="tool-card loomis-tool-card">
+                    <div class="card-icon">
+                        <svg viewBox="0 0 24 24">
+                            <path fill="currentColor"
+                                d="M17.5,12A1.5,1.5 0 0,1 16,10.5A1.5,1.5 0 0,1 17.5,9A1.5,1.5 0 0,1 19,10.5A1.5,1.5 0 0,1 17.5,12M14.5,8A1.5,1.5 0 0,1 13,6.5A1.5,1.5 0 0,1 14.5,5A1.5,1.5 0 0,1 16,6.5A1.5,1.5 0 0,1 14.5,8M9.5,8A1.5,1.5 0 0,1 8,6.5A1.5,1.5 0 0,1 9.5,5A1.5,1.5 0 0,1 11,6.5A1.5,1.5 0 0,1 9.5,8M6.5,12A1.5,1.5 0 0,1 5,10.5A1.5,1.5 0 0,1 6.5,9A1.5,1.5 0 0,1 8,10.5A1.5,1.5 0 0,1 6.5,12M12,3A9,9 0 0,0 3,12A9,9 0 0,0 12,21A1.5,1.5 0 0,0 13.5,19.5C13.5,19.11 13.35,18.76 13.11,18.5C12.88,18.23 12.73,17.88 12.73,17.5A1.5,1.5 0 0,1 14.23,16H16A5,5 0 0,0 21,11C21,6.58 16.97,3 12,3Z" />
+                        </svg>
+                    </div>
+                    <div class="card-tag">Creative</div>
+                    <h3 class="card-title">Loomis Converter</h3>
+                    <p class="card-desc">Extract color palettes and generate CSS code from any image instantly.</p>
+                    <button class="loomis-tool-btn" onclick="openModal('loomisModal')">Initialize Loomis</button>
+                </div>
+
+            </div>
+
+            <!-- ROW 4: Quad Expansion (NYX, VAPOR, KRYPT, ORION) -->
+            <div class="tools-grid" style="margin-top: 30px;">
+                <!-- Tool 10: NYX (Electric Violet) -->
+                <div class="tool-card nyx-tool-card">
+                    <div class="card-icon">
+                        <svg viewBox="0 0 24 24">
+                            <path fill="currentColor" d="M13,2.05V9H21L11,22.95V16H2L13,2.05Z" />
+                        </svg>
+                    </div>
+                    <div class="card-tag">Motion</div>
+                    <h3 class="card-title">NYX Lab</h3>
+                    <p class="card-desc">Apply high-end glitch and motion effects to SVGs for production.</p>
+                    <button class="nyx-tool-btn" onclick="openModal('nyxModal')">Open Lab</button>
+                </div>
+
+                <!-- Tool 11: VAPOR (Cyan) -->
+                <div class="tool-card vapor-tool-card">
+                    <div class="card-icon">
+                        <svg viewBox="0 0 24 24">
+                            <path fill="currentColor"
+                                d="M2,3H22C23.05,3 24,3.95 24,5V19C24,20.05 23.05,21 22,21H2C0.95,21 0,20.05 0,19V5C0,3.95 0.95,3 2,3M14,6V7H15V6H14M11,14V15H12V14H11M14,14V15H15V14H14M17,14V15H18V14H17M20,14V15H21V14H20M5,10V11H6V10H5M8,10V11H9V10H8M11,10V11H12V10H11M14,10V11H15V10H14M17,10V11H18V10H17M20,10V11H21V10H20M5,14V15H6V14H5M8,14V15H9V14H8Z" />
+                        </svg>
+                    </div>
+                    <div class="card-tag">DevOps</div>
+                    <h3 class="card-title">VAPOR Engine</h3>
+                    <p class="card-desc">Transform Markdown into sleek, themed landing pages instantly.</p>
+                    <button class="vapor-tool-btn" onclick="openModal('vaporModal')">Ignite Vapor</button>
+                </div>
+
+                <!-- Tool 12: KRYPT (Matrix Green) -->
+                <div class="tool-card krypt-tool-card">
+                    <div class="card-icon">
+                        <svg viewBox="0 0 24 24">
+                            <path fill="currentColor"
+                                d="M12,1L3,5V11C3,16.55 6.84,21.74 12,23C17.16,21.74 21,16.55 21,11V5L12,1M12,11.99H7V10.33C7,8.14 8.72,6.5 10.72,6.5H13.28C15.28,6.5 17,8.14 17,10.33V11.99H12Z" />
+                        </svg>
+                    </div>
+                    <div class="card-tag">Security</div>
+                    <h3 class="card-title">KRYPT Vault</h3>
+                    <p class="card-desc">Local-only AES-256 encryption for secure file transfers.</p>
+                    <button class="krypt-tool-btn" onclick="openModal('kryptModal')">Secure File</button>
+                </div>
+
+                <!-- Tool 13: ORION (Holographic Blue) -->
+                <div class="tool-card orion-tool-card">
+                    <div class="card-icon">
+                        <svg viewBox="0 0 24 24">
+                            <path fill="currentColor"
+                                d="M21,16.5C21,16.88 20.79,17.21 20.47,17.38L12.57,21.82C12.41,21.94 12.21,22 12,22C11.79,22 11.59,21.94 11.43,21.82L3.53,17.38C3.21,17.21 3,16.88 3,16.5V7.5C3,7.12 3.21,6.79 3.53,6.62L11.43,2.18C11.59,2.06 11.79,2 12,2C12.21,2 12.41,2.06 12.57,2.18L20.47,6.62C20.79,6.79 21,7.12 21,7.5V16.5Z" />
+                        </svg>
+                    </div>
+                    <div class="card-tag">Data</div>
+                    <h3 class="card-title">ORION Viz</h3>
+                    <p class="card-desc">Transform JSON data into tactical HUD data visualizations.</p>
+                    <button class="orion-tool-btn" onclick="openModal('orionModal')">Scan Data</button>
+                </div>
+
+                <!-- Tool 14: ARTEMIS (Violet Forensic) -->
+                <div class="tool-card artemis-tool-card">
+                    <div class="card-icon">
+                        <svg viewBox="0 0 24 24">
+                            <path fill="currentColor"
+                                d="M21,9H15V22.5L12,20.8L9,22.5V9H3V6L12,1L21,6V9M12,4.2L6.5,7H17.5L12,4.2Z" />
+                        </svg>
+                    </div>
+                    <div class="card-tag">AI Detection</div>
+                    <h3 class="card-title">ARTEMIS Scanner</h3>
+                    <p class="card-desc">Multi-method AI image detection using forensic analysis algorithms.</p>
+                    <button class="artemis-tool-btn" onclick="openModal('artemisModal')">Initialize Scan</button>
+                </div>
+
+            </div>
+
+            <!-- FEATURES SECTION -->
+            <div class="features-section" id="features"
+                style="padding: 50px 20px; text-align: center; margin-bottom: 50px;">
+                <h2 style="font-family: 'Rajdhani', sans-serif; font-size: 2.5rem; color: white; margin-bottom: 30px;">
+                    Why Choose <span style="color: #00d5ff;">ViewPorts?</span>
+                </h2>
+                <p style="color: #a0e9ff; font-size: 1.1rem; max-width: 600px; margin: 0 auto 40px; opacity: 0.8;">
+                    Professional tools built with your productivity and security in mind
+                </p>
+
+                <div class="features-grid">
+                    <!-- Feature 1 -->
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <svg viewBox="0 0 24 24">
+                                <path d="M13,2.05V9H21L11,22.95V16H2L13,2.05Z" />
+                            </svg>
+                        </div>
+                        <h3>Lightning Fast</h3>
+                        <p>All tools are optimized for speed. Get your work done in seconds, not minutes.</p>
+                    </div>
+
+                    <!-- Feature 2 -->
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <svg viewBox="0 0 24 24">
+                                <path
+                                    d="M12,1L3,5V11C3,16.55 6.84,21.74 12,23C17.16,21.74 21,16.55 21,11V5L12,1M12,11.99H7V10.33C7,8.14 8.72,6.5 10.72,6.5H13.28C15.28,6.5 17,8.14 17,10.33V11.99H12Z" />
+                            </svg>
+                        </div>
+                        <h3>100% Secure</h3>
+                        <p>Your files are processed securely and automatically deleted after conversion.</p>
+                    </div>
+
+                    <!-- Feature 3 -->
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <svg viewBox="0 0 24 24">
+                                <path
+                                    d="M12 17C10.89 17 10 16.1 10 15C10 13.89 10.89 13 12 13C13.1 13 14 13.89 14 15C14 16.1 13.1 17 12 17M18 12C19.1 12 20 12.9 20 14V20C20 21.1 19.1 22 18 22H6C4.9 22 4 21.1 4 20V14C4 12.9 4.9 12 6 12H7V8C7 5.24 9.24 3 12 3C14.76 3 17 5.24 17 8V12H18M9 8V12H15V8C15 6.34 13.66 5 12 5C10.34 5 9 6.34 9 8Z" />
+                            </svg>
+                        </div>
+                        <h3>No Signup Needed</h3>
+                        <p>Start using tools immediately. No registration or account creation required.</p>
+                    </div>
+
+                    <!-- Feature 4 -->
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <svg viewBox="0 0 24 24">
+                                <path
+                                    d="M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M12,20A8,8 0 0,1 4,12A8,8 0 0,1 12,4A8,8 0 0,1 20,12A8,8 0 0,1 12,20M11,17H13V11H11V17M11,9H13V7H11V9Z" />
+                            </svg>
+                        </div>
+                        <h3>Always Free</h3>
+                        <p>All tools are completely free to use with no hidden costs or limitations.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 3. MODAL OVERLAY (Contains the Dropzone) -->
+            <!-- 3. MODAL OVERLAY (Generic/Edit PDF) -->
+            <div id="uploadModal" class="modal-overlay" onclick="closeModal(event, 'uploadModal')"
+                style="display: none;">
+                <div class="upload-card">
+                    <button class="close-modal-btn" onclick="closeSpecificModal('uploadModal')">
+                        <svg viewBox="0 0 24 24" width="32" height="32">
+                            <path fill="currentColor"
+                                d="M19,6.41L17.59,5L12,10.59L6.41,5L5,6.41L10.59,12L5,17.59L6.41,19L12,13.41L17.59,19L19,17.59L13.41,12L19,6.41Z" />
+                        </svg>
+                    </button>
+                    <div class="drop-zone" id="dropZone">
+                        <input type="file" id="fileInput" hidden>
+                        <div id="uploadInitial">
+                            <svg class="upload-icon" viewBox="0 0 24 24">
+                                <path fill="rgba(77, 228, 255, 1)"
+                                    d="M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M13.5,16V13H16L12,9L8,13H10.5V16H13.5M13,9V3.5L18.5,9H13Z" />
+                            </svg>
+                            <h3 style="color: rgba(77, 228, 255, 1);">Drop your PDF file here</h3>
+                            <div class="browse-container">
+                                <span class="browse-btn-corner browse-btn-corner-tl"></span><span
+                                    class="browse-btn-corner browse-btn-corner-tr"></span>
+                                <span class="browse-btn-corner browse-btn-corner-br"></span><span
+                                    class="browse-btn-corner browse-btn-corner-bl"></span>
+                                <button class="browse-btn" onclick="document.getElementById('fileInput').click()">Browse
+                                    Files</button>
+                            </div>
+                        </div>
+                        <div id="uploadProgress" style="display: none;">
+                            <h3 id="uploadStatusText" style="color: rgba(77, 228, 255, 1);">Uploading...</h3>
+                            <div id="thumbnailContainer" class="thumbnail-container" style="display: none;"><img
+                                    id="fileThumbnail" src="" alt="File Preview"></div>
+                            <div class="progress-bar-container">
+                                <div class="progress-bar" id="progressBar"></div>
+                            </div>
+                            <p id="progressText" style="color: rgba(77, 228, 255, 1);">0%</p>
+                            <div style="display: flex; gap: 20px; justify-content: center; margin-top: 20px;">
+
+                                <div class="cancel-container">
+                                    <span class="cancel-btn-corner cancel-btn-corner-tl"></span><span
+                                        class="cancel-btn-corner cancel-btn-corner-tr"></span>
+                                    <span class="cancel-btn-corner cancel-btn-corner-br"></span><span
+                                        class="cancel-btn-corner cancel-btn-corner-bl"></span>
+                                    <button id="cancelBtn" class="cancel-btn">CANCEL</button>
+                                </div>
+                                <div id="doneContainer" class="done-container" style="display: none;">
+                                    <span class="done-btn-corner done-btn-corner-tl"></span><span
+                                        class="done-btn-corner done-btn-corner-tr"></span>
+                                    <span class="done-btn-corner done-btn-corner-br"></span><span
+                                        class="done-btn-corner done-btn-corner-bl"></span>
+                                    <button id="doneBtn" class="done-btn">DONE</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- JPG to PDF Modal -->
+        <div id="jpgToPdfModal" class="jpg-to-pdf-modal-overlay" onclick="closeModal(event, 'jpgToPdfModal')"
+            style="display: none;">
+            <div class="upload-card-jpg-t-pdf">
+                <button class="close-modal-btn-jpg-t-pdf" onclick="closeSpecificModal('jpgToPdfModal')">
+                    <svg viewBox="0 0 24 24" width="32" height="32">
+                        <path fill="currentColor"
+                            d="M19,6.41L17.59,5L12,10.59L6.41,5L5,6.41L10.59,12L5,17.59L6.41,19L12,13.41L17.59,19L19,17.59L13.41,12L19,6.41Z" />
+                    </svg>
+                </button>
+                <div class="drop-zone-jpg-t-pdf" id="dropZoneJpg">
+                    <input type="file" id="fileInputJpg" hidden accept="image/jpeg, image/jpg, image/png">
+                    <div id="uploadInitialJpg">
+                        <svg class="upload-icon-jpg-t-pdf" viewBox="0 0 24 24">
+                            <path fill="#ff9900"
+                                d="M8.5,13.5L11,16.5L14.5,12L19,18H5M21,19V5C21,3.89 20.1,3 19,3H5A2,2 0 0,0 3,5V19A2,2 0 0,0 5,21H19A2,2 0 0,0 21,19Z" />
+                        </svg>
+                        <h3>Drop, browse or paste image files here...</h3>
+                        <div class="browse-container-jpg-t-pdf">
+                            <span class="browse-btn-corner-jpg-t-pdf btn-corner-tl"></span><span
+                                class="browse-btn-corner-jpg-t-pdf btn-corner-tr"></span>
+                            <span class="browse-btn-corner-jpg-t-pdf btn-corner-br"></span><span
+                                class="browse-btn-corner-jpg-t-pdf btn-corner-bl"></span>
+                            <button class="browse-btn-jpg-t-pdf"
+                                onclick="document.getElementById('fileInputJpg').click()">Browse Files</button>
+                        </div>
+                    </div>
+                    <div id="uploadProgressJpg" style="display: none;">
+                        <h3 id="uploadStatusTextJpg">Converting...</h3>
+                        <div class="progress-bar-container-jpg-t-pdf">
+                            <div class="progress-bar-jpg-t-pdf" id="progressBarJpg"></div>
+                        </div>
+                        <p id="progressTextJpg">0%</p>
+                        <div style="display: flex; gap: 20px; justify-content: center; margin-top: 20px;">
+                            <button id="saveVaultBtnJpg" class="card-btn"
+                                style="color: #ccc; border-color: #444; width: auto; padding: 0 20px; height: 45px; display: none; margin-right: 10px;">SAVE
+                                TO VAULT</button>
+                            <div id="cancelContainerJpg" class="cancel-container-jpg-t-pdf">
+                                <span class="cancel-btn-corner-jpg-t-pdf btn-corner-tl"></span><span
+                                    class="cancel-btn-corner-jpg-t-pdf btn-corner-tr"></span>
+                                <span class="cancel-btn-corner-jpg-t-pdf btn-corner-br"></span><span
+                                    class="cancel-btn-corner-jpg-t-pdf btn-corner-bl"></span>
+                                <button id="cancelBtnJpg" class="cancel-btn-jpg-t-pdf">CANCEL</button>
+                            </div>
+                            <div id="downloadContainerJpg" class="download-container-orange" style="display: none;">
+                                <span class="btn-corner-orange btn-corner-tl"></span><span
+                                    class="btn-corner-orange btn-corner-tr"></span>
+                                <span class="btn-corner-orange btn-corner-br"></span><span
+                                    class="btn-corner-orange btn-corner-bl"></span>
+                                <button id="downloadBtnJpg" class="download-btn-orange">DOWNLOAD PDF</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- PDF to JPG Modal -->
+    <div id="pdfToJpgModal" class="pdf-to-jpg-modal-overlay" onclick="closeModal(event, 'pdfToJpgModal')"
+        style="display: none;">
+        <div class="pdf-to-jpg-upload-card">
+            <button class="pdf-to-jpg-close-modal-btn" onclick="closeSpecificModal('pdfToJpgModal')">
+                <svg viewBox="0 0 24 24" width="32" height="32">
+                    <path fill="currentColor"
+                        d="M19,6.41L17.59,5L12,10.59L6.41,5L5,6.41L10.59,12L5,17.59L6.41,19L12,13.41L17.59,19L19,17.59L13.41,12L19,6.41Z" />
+                </svg>
+            </button>
+            <div class="pdf-to-jpg-drop-zone" id="dropZonePdfJpg">
+                <input type="file" id="fileInputPdfJpg" hidden accept="application/pdf">
+                <div id="uploadInitialPdfJpg">
+                    <svg class="pdf-to-jpg-upload-icon" viewBox="0 0 24 24">
+                        <path fill="#a600ff"
+                            d="M20,2H8A2,2 0 0,0 6,4V16A2,2 0 0,0 8,18H20A2,2 0 0,0 22,16V4A2,2 0 0,0 20,2M20,16H8V4H20M12.5,15L15.39,10.66L19,15H9M4,6H2V20A2,2 0 0,0 4,22H18V20H4V6Z" />
+                    </svg>
+                    <h3 style="color: #a600ff;">Drop PDF file here</h3>
+                    <div class="pdf-to-jpg-browse-container">
+                        <span class="btn-corner btn-corner-tl"></span><span class="btn-corner btn-corner-tr"></span>
+                        <span class="btn-corner btn-corner-br"></span><span class="btn-corner btn-corner-bl"></span>
+                        <button class="pdf-to-jpg-browse-btn"
+                            onclick="document.getElementById('fileInputPdfJpg').click()">Browse Files</button>
+                    </div>
+                </div>
+                <div id="uploadProgressPdfJpg" style="display: none;">
+                    <h3 id="uploadStatusTextPdfJpg" style="color: #a600ff;">Extracting...</h3>
+                    <div class="progress-bar-container">
+                        <div class="progress-bar pdf-to-jpg-progress-bar" id="progressBarPdfJpg"></div>
+                    </div>
+                    <p id="progressTextPdfJpg" style="color: #a600ff;">0%</p>
+                    <div style="display: flex; gap: 20px; justify-content: center; margin-top: 20px;">
+                        <button id="saveVaultBtnPdfJpg" class="card-btn"
+                            style="color: #ccc; border-color: #444; width: auto; padding: 0 20px; height: 45px; display: none; margin-right: 10px;">SAVE
+                            TO VAULT</button>
+                        <div id="cancelContainerPdfJpg" class="cancel-container">
+                            <span class="cancel-btn-corner cancel-btn-corner-tl"></span><span
+                                class="cancel-btn-corner cancel-btn-corner-tr"></span>
+                            <span class="cancel-btn-corner cancel-btn-corner-br"></span><span
+                                class="cancel-btn-corner cancel-btn-corner-bl"></span>
+                            <button id="cancelBtnPdfJpg" class="cancel-btn">CANCEL</button>
+                        </div>
+                        <div id="downloadContainerPdfJpg" class="pdf-to-jpg-download-container" style="display: none;">
+                            <span class="btn-corner btn-corner-tl"></span><span class="btn-corner btn-corner-tr"></span>
+                            <span class="btn-corner btn-corner-br"></span><span class="btn-corner btn-corner-bl"></span>
+                            <button id="downloadBtnPdfJpg" class="pdf-to-jpg-download-btn">DOWNLOAD IMAGES</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+
+    <!-- PDF to Word Modal -->
+    <div id="pdfToWordModal" class="pdf-to-word-modal-overlay" onclick="closeModal(event, 'pdfToWordModal')"
+        style="display: none;">
+        <div class="upload-card">
+            <button class="pdf-to-word-close-modal-btn" onclick="closeSpecificModal('pdfToWordModal')">
+                <svg viewBox="0 0 24 24" width="32" height="32">
+                    <path fill="currentColor"
+                        d="M19,6.41L17.59,5L12,10.59L6.41,5L5,6.41L10.59,12L5,17.59L6.41,19L12,13.41L17.59,19L19,17.59L13.41,12L19,6.41Z" />
+                </svg>
+            </button>
+            <div class="drop-zone pdf-to-word-drop-zone" id="dropZonePdfWord">
+                <input type="file" id="fileInputPdfWord" hidden accept="application/pdf">
+                <div id="uploadInitialPdfWord">
+                    <svg class="upload-icon" viewBox="0 0 24 24">
+                        <path fill="#0044ff"
+                            d="M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M6,20V4H13V9H18V20H6M9.95,12.45L8.55,17.45H10.15L11.45,12.45H9.95M13.45,17.45H15.05L16.45,12.45H14.95L13.45,17.45Z" />
+                    </svg>
+                    <h3 style="color: #0044ff;">Drop PDF file here</h3>
+                    <div class="pdf-to-word-browse-container">
+                        <span class="btn-corner btn-corner-tl"></span><span class="btn-corner btn-corner-tr"></span>
+                        <span class="btn-corner btn-corner-br"></span><span class="btn-corner btn-corner-bl"></span>
+                        <button class="pdf-to-word-browse-btn"
+                            onclick="document.getElementById('fileInputPdfWord').click()">Browse Files</button>
+                    </div>
+                </div>
+
+                <div id="uploadReadyPdfWord" style="display: none; width: 100%; text-align: center;">
+                    <div style="display: flex; justify-content: space-around; margin-bottom: 20px; color: #fff;">
+                        <div style="margin-bottom: 15px;">
+                            <small style="color: #b0c4ff;">Selected File:</small>
+                            <div id="fileNamePdfWord" style="font-weight: bold; color: #fff;">-</div>
+                        </div>
+                        <div>
+                            <small style="color: #b0c4ff;">File Size:</small>
+                            <div id="fileSizePdfWord" style="font-weight: bold; color: #fff;">-</div>
+                        </div>
+                    </div>
+                    <div style="margin-bottom: 10px; color: #fff; font-weight: bold;">Status: <span
+                            style="color: #0044ff;">Ready</span></div>
+
+                    <div
+                        style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px; text-align: left; padding: 0 20px;">
+                        <div>
+                            <label
+                                style="display: block; font-size: 12px; margin-bottom: 5px; color: #b0c4ff;">Conversion
+                                Type:</label>
+                            <select id="conversionTypePdfWord"
+                                style="width: 100%; padding: 8px; border: 1px solid #0044ff; border-radius: 4px; background: rgba(0, 68, 255, 0.1); color: #fff;">
+                                <option value="standard" style="color: #000;">Standard (Text & Images)</option>
+                                <option value="text" style="color: #000;">Text Only</option>
+                                <option value="ocr" style="color: #000;">OCR (Planned)</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label style="display: block; font-size: 12px; margin-bottom: 5px; color: #b0c4ff;">Image
+                                Quality:</label>
+                            <select id="imageQualityPdfWord"
+                                style="width: 100%; padding: 8px; border: 1px solid #0044ff; border-radius: 4px; background: rgba(0, 68, 255, 0.1); color: #fff;">
+                                <option value="high" style="color: #000;">High</option>
+                                <option value="standard" selected style="color: #000;">Standard</option>
+                                <option value="low" style="color: #000;">Low (Smaller File)</option>
+                            </select>
+                        </div>
+                        <div style="grid-column: span 2; display: flex; align-items: center; gap: 10px;">
+                            <input type="checkbox" id="preserveFormattingPdfWord" checked>
+                            <label for="preserveFormattingPdfWord" style="font-size: 14px; color: #fff;">Preserve
+                                Formatting (Pixel-Perfect)</label>
+                        </div>
+                    </div>
+
+                    <div class="pdf-to-word-browse-container">
+                        <span class="btn-corner btn-corner-tl"></span><span class="btn-corner btn-corner-tr"></span>
+                        <span class="btn-corner btn-corner-br"></span><span class="btn-corner btn-corner-bl"></span>
+                        <button id="startConversionBtnPdfWord" class="pdf-to-word-browse-btn">CONVERT TO WORD</button>
+                    </div>
+                </div>
+                <div id="uploadProgressPdfWord" style="display: none;">
+                    <h3 id="uploadStatusTextPdfWord" style="color: #0044ff;">Converting...</h3>
+                    <div class="progress-bar-container">
+                        <div class="progress-bar pdf-to-word-progress-bar" id="progressBarPdfWord"></div>
+                    </div>
+                    <p id="progressTextPdfWord" style="color: #0044ff;">0%</p>
+                    <div style="display: flex; gap: 20px; justify-content: center; margin-top: 20px;">
+                        <button id="saveVaultBtnPdfWord" class="card-btn"
+                            style="color: #ccc; border-color: #444; width: auto; padding: 0 20px; height: 45px; display: none; margin-right: 10px;">SAVE
+                            TO VAULT</button>
+                        <div id="cancelContainerPdfWord" class="cancel-container">
+                            <span class="cancel-btn-corner cancel-btn-corner-tl"></span><span
+                                class="cancel-btn-corner cancel-btn-corner-tr"></span>
+                            <span class="cancel-btn-corner cancel-btn-corner-br"></span><span
+                                class="cancel-btn-corner cancel-btn-corner-bl"></span>
+                            <button id="cancelBtnPdfWord" class="cancel-btn">CANCEL</button>
+                        </div>
+                        <div id="downloadContainerPdfWord" class="pdf-to-word-download-container"
+                            style="display: none;">
+                            <span class="btn-corner btn-corner-tl"></span><span class="btn-corner btn-corner-tr"></span>
+                            <span class="btn-corner btn-corner-br"></span><span class="btn-corner btn-corner-bl"></span>
+                            <button id="downloadBtnPdfWord" class="pdf-to-word-download-btn">DOWNLOAD WORD</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+    </div>
+
+    <!-- Image Compressor Modal -->
+    <div id="imageCompressorModal" class="image-compressor-modal-overlay"
+        onclick="closeModal(event, 'imageCompressorModal')" style="display: none;">
+        <div class="upload-card" style="border-color: rgba(255, 0, 204, 0.3);">
+            <button class="close-modal-btn image-compressor-close-btn"
+                onclick="closeSpecificModal('imageCompressorModal')"
+                style="color: #ff00cc; border-color: rgba(255, 0, 204, 0.5);">
+                <svg viewBox="0 0 24 24" width="32" height="32">
+                    <path fill="currentColor"
+                        d="M19,6.41L17.59,5L12,10.59L6.41,5L5,6.41L10.59,12L5,17.59L6.41,19L12,13.41L17.59,19L19,17.59L13.41,12L19,6.41Z" />
+                </svg>
+            </button>
+
+            <div id="loadingIndicatorImgComp" style="display: none; text-align: center; padding: 40px; color: #ff00cc;">
+                <h3 style="font-family: 'Rajdhani', sans-serif;">Initializing Compressor Details...</h3>
+            </div>
+
+            <!-- Initial Upload View -->
+            <div id="initialViewImgComp">
+                <div class="image-compressor-drop-zone" id="dropZoneImgComp">
+                    <input type="file" id="fileInputImgComp" hidden accept="image/jpeg, image/png">
+                    <svg viewBox="0 0 24 24" width="48" height="48" style="margin-bottom: 15px;">
+                        <path fill="#ff00cc"
+                            d="M19.35 10.04C18.67 6.59 15.64 4 12 4C9.11 4 6.6 5.64 5.35 8.04C2.34 8.36 0 10.91 0 14C0 17.31 2.69 20 6 20H19C21.76 20 24 17.76 24 15C24 12.36 21.95 10.22 19.35 10.04M14 13V17H10V13H7L12 8L17 13H14Z" />
+                    </svg>
+                    <h3 style="color: #ff00cc; font-family: 'Rajdhani', sans-serif;">Drop Image Here</h3>
+                    <p style="color: #ccc;">JPG or PNG</p>
+                    <div class="ic-br-container">
+                        <span class="ic-br-corner br-tl"></span>
+                        <span class="ic-br-corner br-tr"></span>
+                        <span class="ic-br-corner br-br"></span>
+                        <span class="ic-br-corner br-bl"></span>
+                        <button class="ic-br-btn" onclick="document.getElementById('fileInputImgComp').click()">Browse
+                            Files</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Result Comparision View -->
+            <div id="resultViewImgComp" style="display: none;">
+                <h3 style="color: #ff00cc; font-family: 'Rajdhani', sans-serif; text-align: center;">Compression Preview
+                </h3>
+
+                <div class="quality-slider-container">
+                    <div style="display: flex; gap: 15px; margin-bottom: 15px;">
+                        <div style="flex: 1;">
+                            <label style="color: #ccc; font-size: 12px; display: block; margin-bottom: 5px;">Output
+                                Format</label>
+                            <select id="outputFormatImgComp"
+                                style="width: 100%; padding: 8px; background: rgba(0,0,0,0.3); border: 1px solid #ff00cc; color: #fff; border-radius: 4px;">
+                                <option value="original">Match Original</option>
+                                <option value="image/jpeg">JPEG (Smallest Size)</option>
+                                <option value="image/png">PNG (Lossless/Transparent)</option>
+                            </select>
+                        </div>
+                        <div style="flex: 1;">
+                            <label style="color: #ccc; font-size: 12px; display: block; margin-bottom: 5px;">Max
+                                Width</label>
+                            <select id="maxWidthImgComp"
+                                style="width: 100%; padding: 8px; background: rgba(0,0,0,0.3); border: 1px solid #ff00cc; color: #fff; border-radius: 4px;">
+                                <option value="0">Original Dimensions</option>
+                                <option value="1920">1920px (FHD)</option>
+                                <option value="1280">1280px (HD)</option>
+                                <option value="800">800px (Web)</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div style="display: flex; justify-content: space-between; color: #fff; margin-bottom: 5px;">
+                        <label>Quality <span style="font-size: 0.8em; opacity: 0.7;">(JPEG Only)</span></label>
+                        <span id="qualityValueImgComp" style="color: #ff00cc; font-weight: bold;">75%</span>
+                    </div>
+                    <input type="range" id="qualitySliderImgComp" class="quality-slider" min="1" max="100" value="75">
+                </div>
+
+                <div class="compress-preview-container">
+                    <div class="preview-box">
+                        <div class="preview-label">Original</div>
+                        <img id="originalPreviewImgComp" src="" alt="Original">
+                        <div id="originalSizeImgComp" class="preview-size">0 KB</div>
+                    </div>
+                    <div class="preview-box">
+                        <div class="preview-label">Compressed</div>
+                        <img id="compressedPreviewImgComp" src="" alt="Compressed">
+                        <div id="compressedSizeImgComp" class="preview-size">0 KB</div>
+                    </div>
+                </div>
+
+                <div style="display: flex; gap: 20px; justify-content: center; margin-top: 30px;">
+                    <button id="saveVaultBtnImgComp" class="card-btn"
+                        style="color: #ccc; border-color: #444; width: auto; padding: 0 20px; height: 45px;">SAVE TO
+                        VAULT</button>
+
+                    <div class="ic-dl-container">
+                        <span class="ic-dl-corner dl-tl"></span>
+                        <span class="ic-dl-corner dl-tr"></span>
+                        <span class="ic-dl-corner dl-br"></span>
+                        <span class="ic-dl-corner dl-bl"></span>
+                        <button id="downloadBtnImgComp" class="ic-dl-btn">Download Image</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Shield Redactor Modal -->
+    <div id="shieldRedactorModal" class="shield-redactor-modal-overlay"
+        onclick="closeModal(event, 'shieldRedactorModal')" style="display: none;">
+        <div class="upload-card">
+            <button class="close-modal-btn shield-redactor-close-btn"
+                onclick="closeSpecificModal('shieldRedactorModal')">
+                <svg viewBox="0 0 24 24" width="32" height="32">
+                    <path fill="currentColor"
+                        d="M19,6.41L17.59,5L12,10.59L6.41,5L5,6.41L10.59,12L5,17.59L6.41,19L12,13.41L17.59,19L19,17.59L13.41,12L19,6.41Z" />
+                </svg>
+            </button>
+
+            <div id="vaultLoadingShield">
+                <h3>Accessing Secure Vault...</h3>
+            </div>
+
+            <!-- Initial Home View -->
+            <div id="initialViewShield">
+                <h2 class="shield-header">Shield Redactor: Privacy Vault</h2>
+                <div class="shield-choice-container">
+                    <div id="newProjectBtnShield" class="shield-choice-card">
+                        <svg viewBox="0 0 24 24" width="64" height="64" style="margin-bottom: 15px;">
+                            <path fill="#00ff80" d="M19,13H13V19H11V13H5V11H11V5H13V11H19V13Z" />
+                        </svg>
+                        <h4>New Redaction</h4>
+                        <p>Upload PDF/Image to begin local processing.</p>
+                        <input type="file" id="fileInputShield" hidden accept="image/*,application/pdf">
+                    </div>
+
+                    <div id="viewVaultBtnShield" class="shield-choice-card">
+                        <svg viewBox="0 0 24 24" width="64" height="64" style="margin-bottom: 15px;">
+                            <path fill="#00ff80"
+                                d="M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M12,20A8,8 0 0,1 4,12A8,8 0 0,1 12,4A8,8 0 0,1 20,12A8,8 0 0,1 12,20M11,17H13V15H11V17M11,13H13V7H11V13Z" />
+                        </svg>
+                        <h4>Secure Vault</h4>
+                        <p>Resume saved projects from local storage.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Editor View -->
+            <div id="editorViewShield" style="display: none;">
+                <div class="shield-editor-layout">
+                    <div class="shield-sidebar">
+                        <div id="threatShieldShield" class="threat-status-badge">Checking...</div>
+                        <div style="display: flex; gap: 5px; margin-bottom: 10px;">
+                            <button id="autoScanBtnShield" class="vault-tool-btn" style="flex: 1;">AUTO-SCAN
+                                PII</button>
+                            <button id="redactAllBtnShield" class="vault-tool-btn"
+                                style="flex: 1; display: none; background: rgba(0, 255, 128, 0.2); border-color: #00ff80;">REDACT
+                                ALL</button>
+                        </div>
+                        <div id="scanResultsShield">
+                            <!-- PII matches go here -->
+                        </div>
+                    </div>
+                    <div class="shield-canvas-container">
+                        <canvas id="editorCanvasShield"></canvas>
+                    </div>
+                </div>
+                <div class="shield-editor-actions">
+                    <button id="saveVaultBtnShield" class="card-btn">SAVE TO VAULT</button>
+                    <div style="display:flex; gap:10px;">
+                        <button id="exportFileBtnShield" class="card-btn">EXPORT CLEAN FILE</button>
+                        <button id="exportRedactedBtnShield" class="card-btn" disabled title="Requires active redactions">EXPORT REDACTED FILE</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Vault View -->
+            <div id="vaultHistoryViewShield" style="display: none;">
+                <button id="backToHomeShield">← BACK TO PROJECTS</button>
+                <div id="vaultListShield">
+                    <!-- Saved Projects List -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Loomis Modal -->
+    <div id="loomisModal" class="loomis-modal-overlay" onclick="closeModal(event, 'loomisModal')"
+        style="display: none;">
+        <div class="loomis-modal-card">
+            <div class="loomis-header">
+                <div style="display: flex; align-items: center; gap: 10px;">
+                    <h2 style="color: #ff00cc; font-family: 'Rajdhani', sans-serif; margin: 0;">LOOMIS</h2>
+                    <button class="close-modal-btn-loomis" onclick="closeSpecificModal('loomisModal')">
+                        <svg viewBox="0 0 24 24" width="24" height="24">
+                            <path fill="currentColor"
+                                d="M19,6.41L17.59,5L12,10.59L6.41,5L5,6.41L10.59,12L5,17.59L6.41,19L12,13.41L17.59,19L19,17.59L13.41,12L19,6.41Z">
+                            </path>
+                        </svg>
+                    </button>
+                </div>
+
+            </div>
+
+            <div class="loomis-layout">
+                <div class="loomis-workspace">
+                    <div id="loomisDropZone" class="loomis-dropzone pulse-primary">
+                        <svg viewBox="0 0 24 24" width="60" height="60" fill="rgba(255, 0, 204, 0.4)">
+                            <path
+                                d="M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M13.5,16V13H16L12,9L8,13H10.5V16H13.5M13,9V3.5L18.5,9H13Z" />
+                        </svg>
+                        <h3 style="color: #ff00cc;">Drop Image for Extraction</h3>
+                        <p style="color: #888;">Supports JPG, PNG, SVG</p>
+                        <input type="file" id="loomisFileInput" hidden accept="image/*">
+                    </div>
+                    <div id="loomisCanvasContainer" style="position: relative; display: none; line-height: 0;">
+                        <canvas id="loomisCanvas"
+                            style="width: 100%; border-radius: 8px; border: 1px solid rgba(255, 0, 204, 0.2);"></canvas>
+                        <div id="loomisLoupe" class="loomis-loupe">
+                            <canvas id="loupeCanvas" class="loomis-loupe-inner"></canvas>
+                            <div class="loomis-loupe-center"></div>
+                        </div>
+                    </div>
+                    <button id="changeImageBtn"
+                        style="display: none; background: rgba(255, 0, 204, 0.1); color: #ff00cc; border: 1px solid #ff00cc; padding: 8px 15px; border-radius: 4px; cursor: pointer; font-family: 'Rajdhani'; font-weight: bold; width: fit-content;">CHANGE
+                        IMAGE</button>
+                </div>
+
+                <div class="loomis-sidebar">
+                    <div>
+                        <h4 style="color: #ff00cc; margin-top: 0;">COLOR PULSE</h4>
+                        <div id="loomisPalette" class="palette-container">
+                            <!-- Swatches -->
+                        </div>
+                    </div>
+
+                    <div>
+                        <h4 style="color: #ff00cc;">CODE FLUX</h4>
+                        <div class="code-preview">
+                            <button class="copy-btn" onclick="copyLoomisCode()">COPY</button>
+                            <div id="loomisCode">// Waiting for image pulse...</div>
+                        </div>
+
+                        <button onclick="window.loomisReset()"
+                            style="background: rgba(255, 0, 204, 0.1); color: #ff00cc; border: 1px solid #ff00cc; padding: 10px; border-radius: 4px; cursor: pointer; font-family: 'Rajdhani'; font-weight: bold; margin-top: auto;">RESET
+                            ANALYZER</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- NYX Modal -->
+    <div id="nyxModal" class="nyx-modal-overlay" onclick="closeModal(event, 'nyxModal')" style="display: none;">
+        <div class="nyx-modal-card">
+            <div class="nyx-header">
+                <div style="display: flex; align-items: center; gap: 10px;">
+                    <h2 style="color: #b400ff; font-family: 'Rajdhani', sans-serif; margin: 0;">NYX LAB</h2>
+                </div>
+                <button class="close-modal-btn-nyx" onclick="closeSpecificModal('nyxModal')">
+                    <svg viewBox="0 0 24 24" width="24" height="24">
+                        <path fill="currentColor"
+                            d="M19,6.41L17.59,5L12,10.59L6.41,5L5,6.41L10.59,12L5,17.59L6.41,19L12,13.41L17.59,19L19,17.59L13.41,12L19,6.41Z" />
+                    </svg>
+                </button>
+            </div>
+            <div class="nyx-layout">
+                <div class="nyx-workspace">
+                    <div id="nyxDropZone" class="nyx-dropzone">
+                        <svg viewBox="0 0 24 24" width="60" height="60" fill="rgba(180, 0, 255, 0.4)">
+                            <path
+                                d="M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M13.5,16V13H16L12,9L8,13H10.5V16H13.5M13,9V3.5L18.5,9H13Z" />
+                        </svg>
+                        <h3 style="color: #b400ff;">Drop SVG Resource</h3>
+                        <p style="color: #888;">Live Motion & Glitch Analysis</p>
+                        <input type="file" id="nyxFileInput" hidden accept=".svg">
+                    </div>
+                    <div id="nyxPreviewContainer" style="display: none; position: relative;">
+                        <!-- SVG preview results here -->
+                    </div>
+                </div>
+                <div class="nyx-sidebar">
+                    <h4 style="color: #b400ff; margin-top: 0;">MOTION PARAMETERS</h4>
+                    <div class="nyx-controls">
+                        <!-- Sliders for NYX -->
+                        <div class="nyx-control-group">
+                            <label>GLITCH INTENSITY</label>
+                            <input type="range" id="nyxGlitchRange" min="0" max="100" value="0">
+                        </div>
+                        <div class="nyx-control-group">
+                            <label>PULSE RATE</label>
+                            <input type="range" id="nyxPulseRange" min="0" max="100" value="0">
+                        </div>
+                    </div>
+                    <div class="nyx-code-flux">
+                        <label>MOTION SNIPPET</label>
+                        <div id="nyxCodePreview" class="code-preview-box">// Waiting for SVG injection...</div>
+                    </div>
+                    <button onclick="window.nyxReset()" class="nyx-action-btn">RESET CORE</button>
+                    <button id="nyxExportBtn" class="nyx-action-btn" style="margin-top: 10px;">EXPORT
+                        SNIPPET</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- VAPOR Modal -->
+    <div id="vaporModal" class="vapor-modal-overlay" onclick="closeModal(event, 'vaporModal')" style="display: none;">
+        <div class="vapor-modal-card">
+            <div class="vapor-header">
+                <div style="display: flex; align-items: center; gap: 10px;">
+                    <h2 style="color: #00d5ff; font-family: 'Rajdhani', sans-serif; margin: 0;">VAPOR ENGINE</h2>
+                </div>
+                <button class="close-modal-btn-vapor" onclick="closeSpecificModal('vaporModal')">
+                    <svg viewBox="0 0 24 24" width="24" height="24">
+                        <path fill="currentColor"
+                            d="M19,6.41L17.59,5L12,10.59L6.41,5L5,6.41L10.59,12L5,17.59L6.41,19L12,13.41L17.59,19L19,17.59L13.41,12L19,6.41Z" />
+                    </svg>
+                </button>
+            </div>
+            <div class="vapor-layout">
+                <div class="vapor-workspace">
+                    <textarea id="vaporEditor" placeholder="Paste Markdown flux here..."></textarea>
+                </div>
+                <div class="vapor-sidebar">
+                    <h4 style="color: #00d5ff; margin-top: 0;">VISUAL PHASES</h4>
+                    <div id="vaporThemes" class="theme-grid">
+                        <div class="theme-pill active">NEON</div>
+                        <div class="theme-pill">GLASS</div>
+                        <div class="theme-pill">VOID</div>
+                    </div>
+                    <button id="vaporGenerateBtn" class="vapor-action-btn" style="margin-top: auto;">IGNITE
+                        PAGE</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- KRYPT Modal -->
+    <div id="kryptModal" class="krypt-modal-overlay" onclick="closeModal(event, 'kryptModal')" style="display: none;">
+        <div class="krypt-modal-card">
+            <div class="krypt-header">
+                <div style="display: flex; align-items: center; gap: 10px;">
+                    <h2 style="color: #00ff80; font-family: 'Rajdhani', sans-serif; margin: 0;">KRYPT VAULT</h2>
+                </div>
+                <button class="close-modal-btn-krypt" onclick="closeSpecificModal('kryptModal')">
+                    <svg viewBox="0 0 24 24" width="24" height="24">
+                        <path fill="currentColor"
+                            d="M19,6.41L17.59,5L12,10.59L6.41,5L5,6.41L10.59,12L5,17.59L6.41,19L12,13.41L17.59,19L19,17.59L13.41,12L19,6.41Z" />
+                    </svg>
+                </button>
+            </div>
+            <div class="krypt-layout">
+                <div id="kryptDropZone" class="krypt-dropzone">
+                    <div class="krypt-lock-icon">
+                        <svg viewBox="0 0 24 24" width="80" height="80" fill="rgba(0, 255, 128, 0.4)">
+                            <path
+                                d="M12,17A2,2 0 0,0 14,15C14,13.89 13.11,13 12,13A2,2 0 0,0 10,15A2,2 0 0,0 12,17M18,8A2,2 0 0,1 20,10V20A2,2 0 0,1 18,22H6A2,2 0 0,1 4,20V10C4,8.89 4.9,8 6,8H7V6A5,5 0 0,1 12,1A5,5 0 0,1 17,6V8H18M12,3A3,3 0 0,0 9,6V8H15V6A3,3 0 0,0 12,3Z" />
+                        </svg>
+                    </div>
+                    <h3 style="color: #00ff80;">Secure File Cascade</h3>
+                    <p style="color: #888;">Local AES-256 Multi-Phase Encryption</p>
+                    <input type="file" id="kryptFileInput" hidden>
+                </div>
+                <div id="kryptControls" class="krypt-controls" style="display: none;">
+                    <input type="password" id="kryptKey" placeholder="CIPHER KEY">
+                    <button id="kryptEncryptBtn" class="krypt-action-btn">ENCRYPT</button>
+                    <button id="kryptDecryptBtn" class="krypt-action-btn">DECRYPT</button>
+                    <button onclick="window.KRYPT.reset()" class="krypt-action-btn"
+                        style="margin-top: 10px; background: rgba(255, 255, 255, 0.05); border-color: rgba(0, 255, 128, 0.3);">CHANGE
+                        FILE</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ORION Modal -->
+    <div id="orionModal" class="orion-modal-overlay" onclick="closeModal(event, 'orionModal')" style="display: none;">
+        <div class="orion-modal-card">
+            <div class="orion-header">
+                <div style="display: flex; align-items: center; gap: 10px;">
+                    <h2 style="color: #0096ff; font-family: 'Rajdhani', sans-serif; margin: 0;">ORION VIZ</h2>
+                </div>
+                <button class="close-modal-btn-orion" onclick="closeSpecificModal('orionModal')">
+                    <svg viewBox="0 0 24 24" width="24" height="24">
+                        <path fill="currentColor"
+                            d="M19,6.41L17.59,5L12,10.59L6.41,5L5,6.41L10.59,12L5,17.59L6.41,19L12,13.41L17.59,19L19,17.59L13.41,12L19,6.41Z" />
+                    </svg>
+                </button>
+            </div>
+            <div class="orion-layout">
+                <div class="orion-workspace">
+                    <textarea id="orionData" placeholder="Inject JSON Stream..."></textarea>
+                    <div id="orionChart" class="orion-chart-container">
+                        <!-- D3/Manual SVG Viz results -->
+                    </div>
+                </div>
+                <div class="orion-sidebar">
+                    <h4 style="color: #0096ff; margin-top: 0;">ARRAY TARGETING</h4>
+                    <select id="orionChartType">
+                        <option value="radar">RADAR HUD</option>
+                        <option value="hex">HEX GRID</option>
+                        <option value="flow">DATA FLOW</option>
+                        <option value="network">NETWORK MAP</option>
+                        <option value="threat">THREAT MAP</option>
+                        <option value="log">LOG BASED NETWORK MAP</option>
+                    </select>
+                    <button id="orionScanBtn" class="orion-action-btn" style="margin-top: auto;">SCAN DATA</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ARTEMIS Modal -->
+    <div id="artemisModal" class="artemis-modal-overlay" onclick="closeModal(event, 'artemisModal')"
+        style="display: none;">
+        <button class="close-modal-btn-artemis" onclick="closeSpecificModal('artemisModal')">
+            <svg viewBox="0 0 24 24" width="24" height="24">
+                <path fill="currentColor"
+                    d="M19,6.41L17.59,5L12,10.59L6.41,5L5,6.41L10.59,12L5,17.59L6.41,19L12,13.41L17.59,19L19,17.59L13.41,12L19,6.41Z">
+                </path>
+            </svg>
+        </button>
+        <div class="artemis-modal-card" onclick="event.stopPropagation()">
+
+            <div class="artemis-container">
+                <!-- Left: Preview Section -->
+                <div class="artemis-preview-section">
+                    <div id="artemis-drop-zone" class="artemis-drop-zone">
+                        <div class="artemis-drop-zone-icon">📸</div>
+                        <div class="artemis-drop-zone-text">Upload Image for Analysis</div>
+                        <div class="artemis-drop-zone-subtext">Drop image here or click to browse</div>
+                        <input type="file" id="artemis-file-input" accept="image/*" multiple>
+                    </div>
+                </div>
+
+                <!-- Right: Results Panel -->
+                <div id="artemis-results" class="artemis-results-panel">
+                    <div class="artemis-header">Detection Results</div>
+
+                    <div class="artemis-overall-score-container">
+                        <div class="artemis-score-label">AI Probability</div>
+                        <div id="artemis-overall-score">0%</div>
+
+                    </div>
+
+                    <div></div>
+
+                    <div class="artemis-header" style="font-size: 18px; margin-top: 20px;">Method Breakdown</div>
+                    <div id="artemis-method-breakdown" class="artemis-method-breakdown"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL JS LOGIC -->
+    <script>
+        function openModal(id, toolName) {
+            sessionStorage.removeItem('active_project_id');
+            if (toolName) sessionStorage.setItem('active_pdf_tool', toolName);
+            const modal = document.getElementById(id || 'uploadModal');
+            if (modal) {
+                modal.style.display = 'flex';
+                setTimeout(() => modal.classList.add('active'), 10);
+            }
+        }
+
+        function closeModal(event, id) {
+            if (event.target.id === id) {
+                document.getElementById(id).classList.remove('active');
+                setTimeout(() => document.getElementById(id).style.display = 'none', 300);
+                triggerReset(id);
+            }
+        }
+
+        function closeSpecificModal(id) {
+            const modal = document.getElementById(id);
+            modal.classList.remove('active');
+            setTimeout(() => modal.style.display = 'none', 300);
+            triggerReset(id);
+        }
+
+        function triggerReset(id) {
+            if (id === 'jpgToPdfModal' && window.resetJpgToPdf) window.resetJpgToPdf();
+            if (id === 'pdfToJpgModal' && window.resetPdfToJpg) window.resetPdfToJpg();
+            if (id === 'pdfToWordModal' && window.resetPdfToWord) window.resetPdfToWord();
+            if (id === 'uploadModal' && window.resetMainEditor) window.resetMainEditor();
+            if (id === 'imageCompressorModal' && window.resetImageCompressor) window.resetImageCompressor();
+            if (id === 'shieldRedactorModal' && window.resetShieldRedactor) window.resetShieldRedactor();
+            if (id === 'loomisModal' && window.loomisReset) window.loomisReset();
+            if (id === 'nyxModal' && window.NYX) window.NYX.reset();
+            if (id === 'vaporModal' && window.VAPOR) window.VAPOR.reset();
+            if (id === 'kryptModal' && window.KRYPT) window.KRYPT.reset();
+            if (id === 'orionModal' && window.ORION) window.ORION.reset();
+            if (id === 'artemisModal' && window.ARTEMIS) window.ARTEMIS.reset();
+        }
+    </script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
+    <script type="module" src="js/upload.js"></script>
+
+    <script type="module">
+        import { init as initJpgToPdf } from '{{ asset("js/jpg-to-pdf.js") }}';
+        import { init as initPdfToJpg } from '{{ asset("js/pdf-to-jpg.js") }}';
+        import { init as initPdfToWord } from '{{ asset("js/pdf-to-word.js") }}';
+        import { init as initImageCompressor } from '{{ asset("js/image-compressor.js") }}';
+
+        // JPG to PDF
+        initJpgToPdf({
+            dropZoneId: 'dropZoneJpg',
+            fileInputId: 'fileInputJpg',
+            uploadInitialId: 'uploadInitialJpg',
+            uploadProgressId: 'uploadProgressJpg',
+            progressBarId: 'progressBarJpg',
+            progressTextId: 'progressTextJpg',
+            cancelBtnId: 'cancelBtnJpg',
+            cancelContainerId: 'cancelContainerJpg',
+            downloadBtnId: 'downloadBtnJpg',
+            downloadContainerId: 'downloadContainerJpg',
+            saveVaultBtnId: 'saveVaultBtnJpg'
+        });
+
+        // PDF to JPG
+        initPdfToJpg({
+            dropZoneId: 'dropZonePdfJpg',
+            fileInputId: 'fileInputPdfJpg',
+            uploadInitialId: 'uploadInitialPdfJpg',
+            uploadProgressId: 'uploadProgressPdfJpg',
+            progressBarId: 'progressBarPdfJpg',
+            progressTextId: 'progressTextPdfJpg',
+            cancelBtnId: 'cancelBtnPdfJpg',
+            cancelContainerId: 'cancelContainerPdfJpg',
+            downloadBtnId: 'downloadBtnPdfJpg',
+            downloadContainerId: 'downloadContainerPdfJpg',
+            saveVaultBtnId: 'saveVaultBtnPdfJpg'
+        });
+
+        // PDF to Word
+        initPdfToWord({
+            dropZoneId: 'dropZonePdfWord',
+            fileInputId: 'fileInputPdfWord',
+            uploadInitialId: 'uploadInitialPdfWord',
+            uploadReadyId: 'uploadReadyPdfWord',
+            uploadProgressId: 'uploadProgressPdfWord',
+            progressBarId: 'progressBarPdfWord',
+            progressTextId: 'progressTextPdfWord',
+            cancelBtnId: 'cancelBtnPdfWord',
+            cancelContainerId: 'cancelContainerPdfWord',
+            downloadBtnId: 'downloadBtnPdfWord',
+            downloadContainerId: 'downloadContainerPdfWord',
+            saveVaultBtnId: 'saveVaultBtnPdfWord',
+            // Options
+            fileNameId: 'fileNamePdfWord',
+            fileSizeId: 'fileSizePdfWord',
+            conversionTypeId: 'conversionTypePdfWord',
+            imageQualityId: 'imageQualityPdfWord',
+            preserveFormattingId: 'preserveFormattingPdfWord',
+            startConversionBtnId: 'startConversionBtnPdfWord'
+        });
+
+        // Image Compressor
+        initImageCompressor({
+            dropZoneId: 'dropZoneImgComp',
+            fileInputId: 'fileInputImgComp',
+            initialViewId: 'initialViewImgComp',
+            resultViewId: 'resultViewImgComp',
+            originalPreviewId: 'originalPreviewImgComp',
+            compressedPreviewId: 'compressedPreviewImgComp',
+            originalSizeId: 'originalSizeImgComp',
+            compressedSizeId: 'compressedSizeImgComp',
+            qualitySliderId: 'qualitySliderImgComp',
+            qualityValueId: 'qualityValueImgComp',
+            downloadBtnId: 'downloadBtnImgComp',
+            saveVaultBtnId: 'saveVaultBtnImgComp',
+            cancelBtnId: 'cancelBtnImgComp',
+            loadingIndicatorId: 'loadingIndicatorImgComp',
+            maxWidthId: 'maxWidthImgComp',
+            workerUrl: '{{ asset("js/image-compressor-worker.js") }}'
+        });
+
+        // Shield Redactor
+        import('{{ asset("js/shield-redactor.js") }}').then(module => {
+            module.init({
+                modalId: 'shieldRedactorModal',
+                fileInputId: 'fileInputShield',
+                initialViewId: 'initialViewShield',
+                editorViewId: 'editorViewShield',
+                vaultViewId: 'vaultHistoryViewShield',
+                canvasId: 'editorCanvasShield',
+                autoScanBtnId: 'autoScanBtnShield',
+                saveBtnId: 'saveVaultBtnShield',
+                exportBtnId: 'exportFileBtnShield',
+                threatShieldId: 'threatShieldShield',
+                scanResultsId: 'scanResultsShield',
+                newProjectBtnId: 'newProjectBtnShield',
+                viewVaultBtnId: 'viewVaultBtnShield',
+                vaultListId: 'vaultListShield',
+                backToHomeBtnId: 'backToHomeShield',
+                redactAllBtnId: 'redactAllBtnShield',
+                exportRedactedBtnId: 'exportRedactedBtnShield'
+            });
+        });
+    </script>
+    <script type="module">
+        import { init as initLoomis } from 'js/loomis.js';
+        initLoomis({
+            dropZoneId: 'loomisDropZone',
+            fileInputId: 'loomisFileInput',
+            previewCanvasId: 'loomisCanvas',
+            canvasContainerId: 'loomisCanvasContainer',
+            loupeId: 'loomisLoupe',
+            loupeCanvasId: 'loupeCanvas',
+            changeImageBtnId: 'changeImageBtn',
+            paletteContainerId: 'loomisPalette',
+            codePreviewId: 'loomisCode'
+        });
+
+        window.copyLoomisCode = () => {
+            const code = document.getElementById('loomisCode').innerText;
+            navigator.clipboard.writeText(code);
+            alert('Code Flux Copied to Clipboard!');
+        };
+
+        // NYX Lab
+        import('{{ asset("js/nyx.js") }}').then(() => {
+            if (window.NYX) {
+                window.NYX.init({
+                    dropZoneId: 'nyxDropZone',
+                    fileInputId: 'nyxFileInput',
+                    previewId: 'nyxPreviewContainer',
+                    glitchRangeId: 'nyxGlitchRange',
+                    pulseRangeId: 'nyxPulseRange',
+                    exportBtnId: 'nyxExportBtn',
+                    codePreviewId: 'nyxCodePreview'
+                });
+            }
+        });
+
+        // VAPOR Engine
+        import('{{ asset("js/vapor.js") }}').then(() => {
+            if (window.VAPOR) {
+                window.VAPOR.init({
+                    editorId: 'vaporEditor',
+                    themePillClass: '.theme-pill',
+                    generateBtnId: 'vaporGenerateBtn'
+                });
+            }
+        });
+
+        // KRYPT Vault
+        import('{{ asset("js/krypt.js") }}').then(() => {
+            if (window.KRYPT) {
+                window.KRYPT.init({
+                    dropZoneId: 'kryptDropZone',
+                    fileInputId: 'kryptFileInput',
+                    controlsId: 'kryptControls',
+                    keyInputId: 'kryptKey',
+                    encryptBtnId: 'kryptEncryptBtn',
+                    decryptBtnId: 'kryptDecryptBtn'
+                });
+            }
+        });
+
+        // ORION Viz
+        import('{{ asset("js/orion.js") }}').then(() => {
+            if (window.ORION) {
+                window.ORION.init({
+                    dataAreaId: 'orionData',
+                    chartId: 'orionChart',
+                    chartTypeId: 'orionChartType',
+                    scanBtnId: 'orionScanBtn'
+                });
+            }
+        });
+
+        // ARTEMIS AI Detector
+        import('{{ asset("js/artemis.js") }}').then(() => {
+            if (window.ARTEMIS) {
+                window.ARTEMIS.init();
+            }
+        });
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+</body>
+
+</html>
+<script>
+    document.addEventListener('mousemove', (e) => {
+        const glow = document.getElementById('pointerGlow');
+        if (glow) {
+            glow.style.setProperty('--mouse-x', e.clientX + 'px');
+            glow.style.setProperty('--mouse-y', e.clientY + 'px');
+        }
+    });
+</script>

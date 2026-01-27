@@ -1,0 +1,434 @@
+/* CSS for Cancel and Done Buttons (HUD Style) */
+
+/* CANCEL BUTTON */
+.cancel-container {
+    display: inline-block;
+    padding: 5px;
+    position: relative;
+}
+
+.cancel-btn {
+    position: relative;
+    background: rgba(67, 0, 0, 0.704);
+    border: none;
+    padding: 10px;
+    color: rgba(255, 0, 0, 1);
+    /* Red for Cancel */
+    font-family: 'Rajdhani', sans-serif;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    cursor: pointer;
+    overflow: hidden;
+    border: 1px solid rgba(255, 0, 0, 0.5);
+    /* Red Border */
+    font-size: 15px;
+    box-shadow: 0 0 10px rgba(255, 0, 0, 0.605);
+    transition: all 0.3s ease;
+    line-height: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.cancel-btn:hover {
+    background: rgba(67, 0, 0, 0.704);
+    border: none;
+    padding: 10px;
+    font-family: 'Rajdhani', sans-serif;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    cursor: pointer;
+    overflow: hidden;
+    border: 1px solid rgba(255, 0, 0, 0.5);
+    font-size: 15px;
+    box-shadow: 0 0 10px rgba(255, 0, 0, 0.605);
+    transition: all 0.3s ease;
+
+}
+
+.cancel-container:hover .cancel-btn {
+    background: rgba(56, 12, 12, 0.812);
+    box-shadow: inset 0 0 0 1px rgba(255, 0, 0, 0.8), 0 0 20px rgba(255, 0, 0, 0.4);
+    text-shadow: 0 0 10px rgb(255, 0, 0);
+    color: rgb(255, 0, 0);
+    letter-spacing: 4px;
+}
+
+.cancel-btn-corner {
+    position: absolute;
+    width: 8px;
+    height: 8px;
+    border: 2px solid rgba(255, 0, 0, 0.655);
+    transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    pointer-events: none;
+}
+
+.cancel-container:hover .cancel-btn-corner {
+    width: 10px;
+    height: 10px;
+    border-color: #fff;
+    z-index: 2;
+}
+
+.cancel-btn-corner-tl {
+    top: 0;
+    left: 0;
+    border-right: 0 !important;
+    border-bottom: 0 !important;
+}
+
+.cancel-btn-corner-tr {
+    top: 0;
+    right: 0;
+    border-left: 0 !important;
+    border-bottom: 0 !important;
+}
+
+.cancel-btn-corner-br {
+    bottom: 0;
+    right: 0;
+    border-left: 0 !important;
+    border-top: 0 !important;
+}
+
+.cancel-btn-corner-bl {
+    bottom: 0;
+    left: 0;
+    border-right: 0 !important;
+    border-top: 0 !important;
+}
+
+.cancel-container:hover .cancel-btn-corner-tl {
+    top: 10px;
+    left: 10px;
+}
+
+.cancel-container:hover .cancel-btn-corner-tr {
+    top: 10px;
+    right: 10px;
+}
+
+.cancel-container:hover .cancel-btn-corner-br {
+    bottom: 10px;
+    right: 10px;
+}
+
+.cancel-container:hover .cancel-btn-corner-bl {
+    bottom: 10px;
+    left: 10px;
+}
+
+
+/* BROWSE BUTTON */
+.browse-container {
+    display: inline-block;
+    padding: 5px;
+    position: relative;
+}
+
+.browse-btn {
+    position: relative;
+    background: rgba(0, 67, 67, 0.704);
+    border: none;
+    padding: 10px;
+    color: #00e1ff;
+    font-family: 'Rajdhani', sans-serif;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    cursor: pointer;
+    overflow: hidden;
+    border: 1px solid rgba(77, 228, 255, 0.5);
+    font-size: 15px;
+    transition: all 0.3s ease;
+    line-height: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.browse-btn:hover {
+    background: rgba(0, 67, 67, 0.704);
+    border: none;
+    padding: 10px;
+    font-family: 'Rajdhani', sans-serif;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: #fff;
+    cursor: pointer;
+    overflow: hidden;
+    border: 1px solid rgba(77, 228, 255, 0.5);
+    font-size: 15px;
+    box-shadow: 0 0 10px rgba(77, 228, 255, 0.605);
+    transition: all 0.3s ease;
+}
+
+.browse-container:hover .browse-btn {
+    background: rgba(12, 56, 56, 0.812);
+    box-shadow: inset 0 0 0 1px rgba(77, 228, 255, 0.8), 0 0 20px rgba(77, 228, 255, 0.4);
+    text-shadow: 0 0 10px rgba(77, 228, 255, 1);
+    color: rgba(77, 228, 255, 1);
+    letter-spacing: 4px;
+}
+
+.browse-btn-corner {
+    position: absolute;
+    width: 8px;
+    height: 8px;
+    border: 2px solid rgba(77, 228, 255, 0.655);
+    transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    pointer-events: none;
+}
+
+.browse-container:hover .browse-btn-corner {
+    width: 10px;
+    height: 10px;
+    border-color: #fff;
+    z-index: 2;
+}
+
+.browse-btn-corner-tl {
+    top: 0;
+    left: 0;
+    border-right: 0 !important;
+    border-bottom: 0 !important;
+}
+
+.browse-btn-corner-tr {
+    top: 0;
+    right: 0;
+    border-left: 0 !important;
+    border-bottom: 0 !important;
+}
+
+.browse-btn-corner-br {
+    bottom: 0;
+    right: 0;
+    border-left: 0 !important;
+    border-top: 0 !important;
+}
+
+.browse-btn-corner-bl {
+    bottom: 0;
+    left: 0;
+    border-right: 0 !important;
+    border-top: 0 !important;
+}
+
+.browse-container:hover .browse-btn-corner-tl {
+    top: 10px;
+    left: 10px;
+}
+
+.browse-container:hover .browse-btn-corner-tr {
+    top: 10px;
+    right: 10px;
+}
+
+.browse-container:hover .browse-btn-corner-br {
+    bottom: 10px;
+    right: 10px;
+}
+
+.browse-container:hover .browse-btn-corner-bl {
+    bottom: 10px;
+    left: 10px;
+}
+
+
+/* DONE BUTTON */
+.done-container {
+    display: inline-block;
+    padding: 5px;
+    position: relative;
+}
+
+.done-btn {
+    position: relative;
+    background: rgba(0, 67, 0, 0.704);
+    border: none;
+    padding: 10px;
+    color: #00ff00;
+    /* Green for Done */
+    font-family: 'Rajdhani', sans-serif;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    cursor: pointer;
+    overflow: hidden;
+    border: 1px solid rgba(0, 255, 0, 0.5);
+    /* Green Border */
+    font-size: 15px;
+    box-shadow: 0 0 10px rgba(0, 255, 0, 0.404);
+    transition: all 0.3s ease;
+    line-height: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.done-btn:hover {
+    background: rgba(0, 67, 0, 0.704);
+    border: none;
+    padding: 10px;
+    color: rgba(0, 255, 0, 1);
+    font-family: 'Rajdhani', sans-serif;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    cursor: pointer;
+    overflow: hidden;
+    border: 1px solid rgba(0, 255, 0, 0.5);
+    font-size: 15px;
+    box-shadow: 0 0 10px rgba(0, 255, 0, 0.404);
+    transition: all 0.3s ease;
+}
+
+.done-container:hover .done-btn {
+    background: rgba(0, 67, 0, 0.812);
+    box-shadow: inset 0 0 0 1px rgba(0, 255, 0, 0.8), 0 0 20px rgba(0, 255, 0, 0.4);
+    text-shadow: 0 0 10px rgba(0, 255, 0, 1);
+    letter-spacing: 4px;
+}
+
+.done-btn-corner {
+    position: absolute;
+    width: 8px;
+    height: 8px;
+    border: 2px solid rgba(0, 255, 0, 0.655);
+    transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    pointer-events: none;
+}
+
+.done-container:hover .done-btn-corner {
+    width: 10px;
+    height: 10px;
+    border-color: #fff;
+    z-index: 2;
+}
+
+.done-btn-corner-tl {
+    top: 0;
+    left: 0;
+    border-right: 0 !important;
+    border-bottom: 0 !important;
+}
+
+.done-btn-corner-tr {
+    top: 0;
+    right: 0;
+    border-left: 0 !important;
+    border-bottom: 0 !important;
+}
+
+.done-btn-corner-br {
+    bottom: 0;
+    right: 0;
+    border-left: 0 !important;
+    border-top: 0 !important;
+}
+
+.done-btn-corner-bl {
+    bottom: 0;
+    left: 0;
+    border-right: 0 !important;
+    border-top: 0 !important;
+}
+
+.done-container:hover .done-btn-corner-tl {
+    top: 10px;
+    left: 10px;
+}
+
+.done-container:hover .done-btn-corner-tr {
+    top: 10px;
+    right: 10px;
+}
+
+.done-container:hover .done-btn-corner-br {
+    bottom: 10px;
+    right: 10px;
+}
+
+.done-container:hover .done-btn-corner-bl {
+    bottom: 10px;
+    left: 10px;
+}
+
+/* === MERGE PDF BUTTON STYLES === */
+.merge-separator {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 10px 0;
+    margin: 10px 0;
+    position: relative;
+    cursor: pointer;
+    transition: opacity 0.3s;
+}
+
+.merge-separator:hover::before,
+.merge-separator:hover::after {
+    opacity: 1;
+    box-shadow: 0 0 10px rgba(0, 213, 255, 0.4), 0 0 2px rgba(0, 213, 255, 0.8);
+}
+
+.merge-separator::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    width: 42%;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(0, 213, 255, 0.8));
+    transition: all 0.3s ease;
+    opacity: 0.3;
+}
+
+.merge-separator::after {
+    content: '';
+    position: absolute;
+    right: 0;
+    width: 42%;
+    height: 1px;
+    background: linear-gradient(-90deg, transparent, rgba(0, 213, 255, 0.8));
+    transition: all 0.3s ease;
+    opacity: 0.3;
+}
+
+.merge-btn {
+    background: rgba(0, 15, 30, 0.9);
+    border: 1px solid rgba(0, 213, 255, 0.5);
+    color: #00d5ff;
+    padding: 6px 20px;
+    font-size: 12px;
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5), inset 0 0 5px rgba(0, 213, 255, 0.1);
+    clip-path: polygon(10% 0, 100% 0, 100% 70%, 90% 100%, 0 100%, 0 30%);
+    text-shadow: 0 0 2px rgba(0, 213, 255, 0.5);
+}
+
+.merge-btn span {
+    font-size: 16px;
+    line-height: 1;
+    font-weight: 400;
+}
+
+.merge-btn:hover {
+    background: rgba(0, 213, 255, 0.15);
+    border-color: #00d5ff;
+    color: #fff;
+    box-shadow: 0 0 20px rgba(0, 213, 255, 0.4), inset 0 0 10px rgba(0, 213, 255, 0.2);
+    text-shadow: 0 0 5px rgba(0, 213, 255, 0.8);
+    transform: scale(1.05);
+}
+
+.merge-btn:active {
+    transform: scale(0.98);
+    box-shadow: 0 0 10px rgba(0, 213, 255, 0.2);
+}

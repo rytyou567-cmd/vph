@@ -1,0 +1,880 @@
+/* PDF EDITOR STYLES - CYBERPUNK THEME */
+.editor-header {
+    position: relative;
+    z-index: 100;
+    /* Required to float above canvas */
+    height: 60px;
+    background-color: rgba(0, 15, 30, 0.6);
+    /* Glass Dark */
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid rgba(0, 213, 255, 0.3);
+    /* Neon Cyan Border */
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 20px;
+    box-shadow: 0 0 15px rgba(0, 213, 255, 0.1);
+    overflow: visible !important;
+    /* Ensure dropdowns show */
+}
+
+.toolbar-left,
+.toolbar-center,
+.toolbar-right {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+/* Base Tool Button */
+.icon-btn,
+.tool-btn {
+    background: transparent;
+    border: 1px solid transparent;
+    cursor: pointer;
+    padding: 8px;
+    border-radius: 4px;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #a0ecff;
+    /* Faint Cyan Text */
+}
+
+/* Hover State - Chopped Glow */
+.icon-btn:hover,
+.tool-btn:hover {
+    background-color: rgba(0, 213, 255, 0.1);
+    border-color: rgba(0, 213, 255, 0.5);
+    box-shadow: 0 0 8px rgba(0, 213, 255, 0.3);
+    color: #fff;
+}
+
+/* Active State */
+.tool-btn.active {
+    background-color: rgba(0, 213, 255, 0.2);
+    border-color: #00d5ff;
+    box-shadow: 0 0 10px rgba(0, 213, 255, 0.4);
+    color: #fff;
+}
+
+.tool-btn svg,
+.icon-btn svg {
+    width: 24px;
+    height: 24px;
+    fill: #a0ecff;
+    /* Faint Cyan Icon */
+    transition: fill 0.2s;
+}
+
+.tool-btn:hover svg,
+.icon-btn:hover svg,
+.tool-btn.active svg {
+    fill: #fff;
+    /* Bright White on Hover/Active */
+    filter: drop-shadow(0 0 5px #00d5ff);
+}
+
+.tool-btn.active span {
+    color: #fff;
+}
+
+.logo-small {
+    font-weight: 800;
+    font-family: 'Rajdhani', sans-serif;
+    background: linear-gradient(180deg, #ffffff 0%, #00d5ff 100%);
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    font-size: 20px;
+    margin-left: 10px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.logo-link {
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.logo-link:hover {
+    transform: scale(1.05);
+}
+
+.separator {
+    width: 1px;
+    height: 30px;
+    background-color: rgba(0, 213, 255, 0.3);
+    margin: 0 5px;
+}
+
+.done-btn-editor {
+    background-color: transparent;
+    color: #00d5ff;
+    border: 1px solid #00d5ff;
+    padding: 8px 20px;
+    border-radius: 4px;
+    font-weight: 700;
+    font-family: 'Rajdhani', sans-serif;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: 0.3s;
+    box-shadow: 0 0 5px rgba(0, 213, 255, 0.2);
+}
+
+.done-btn-editor:hover {
+    background-color: #00d5ff;
+    color: #000;
+    box-shadow: 0 0 15px rgba(0, 213, 255, 0.6);
+}
+
+/* Layout */
+.editor-container {
+    display: flex;
+    height: calc(100vh - 60px);
+    background-color: transparent;
+    /* Show Circuit BG */
+}
+
+.sidebar {
+    width: 250px;
+    background: rgba(0, 10, 20, 0.5);
+    /* Glass Dark */
+    backdrop-filter: blur(5px);
+    border-right: 1px solid rgba(0, 213, 255, 0.2);
+    display: flex;
+    flex-direction: column;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    overflow: hidden;
+    /* Holographic Start State */
+    width: 0;
+    opacity: 0;
+    transform: translateX(-20px);
+    border-right: 1px solid rgba(0, 213, 255, 0);
+    box-shadow: none;
+}
+
+.sidebar.active {
+    width: 250px;
+    opacity: 1;
+    transform: translateX(0);
+    border-right: 1px solid rgba(0, 213, 255, 0.4);
+    box-shadow: 10px 0 30px rgba(0, 213, 255, 0.1), inset -5px 0 10px rgba(0, 213, 255, 0.05);
+    background: rgba(0, 10, 20, 0.6);
+}
+
+.sidebar.active::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 2px;
+    height: 100%;
+    background: linear-gradient(180deg, transparent, #00d5ff, transparent);
+    animation: sidebarScan 2s linear infinite;
+    opacity: 0.5;
+}
+
+@keyframes sidebarScan {
+    0% {
+        top: -100%;
+    }
+
+    100% {
+        top: 100%;
+    }
+}
+
+.sidebar-header {
+    padding: 15px;
+    font-weight: bold;
+    border-bottom: 1px solid rgba(0, 213, 255, 0.2);
+    background-color: rgba(0, 213, 255, 0.05);
+    color: #00d5ff;
+    font-family: 'Rajdhani', sans-serif;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+}
+
+.sidebar-items {
+    flex: 1;
+    overflow-y: auto;
+    padding: 10px;
+}
+
+/* Sidebar Thumbnails */
+.thumbnail-item {
+    margin-bottom: 20px;
+    cursor: pointer;
+    border: 1px solid rgba(0, 213, 255, 0.2);
+    transition: all 0.3s;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    border-radius: 4px;
+    background: rgba(0, 0, 0, 0.2);
+    position: relative;
+    overflow: hidden;
+}
+
+.thumbnail-item:hover {
+    border-color: #00d5ff;
+    box-shadow: 0 0 15px rgba(0, 213, 255, 0.3);
+}
+
+.thumbnail-item.active {
+    border-color: #00ffaa;
+    /* Green for active page */
+    box-shadow: 0 0 15px rgba(0, 255, 170, 0.3);
+}
+
+.add-page-box {
+    padding: 15px;
+    border-top: 1px solid rgba(0, 213, 255, 0.2);
+    text-align: center;
+    background: transparent;
+}
+
+.add-page-btn {
+    width: 100%;
+    padding: 10px;
+    background: transparent;
+    border: 1px dashed rgba(0, 213, 255, 0.5);
+    color: #a0ecff;
+    cursor: pointer;
+    border-radius: 4px;
+    font-family: 'Rajdhani', sans-serif;
+    text-transform: uppercase;
+    font-weight: 600;
+    transition: 0.3s;
+}
+
+.add-page-btn:hover {
+    background: rgba(0, 213, 255, 0.1);
+    color: #00d5ff;
+    border-color: #00d5ff;
+    box-shadow: 0 0 10px rgba(0, 213, 255, 0.2);
+}
+
+.main-canvas {
+    flex: 1;
+    overflow: auto;
+    padding: 40px;
+    display: flex;
+    justify-content: center;
+}
+
+.pdf-container {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+}
+
+/* Page Rendering Wrapper */
+.pdf-page-wrapper {
+    position: relative;
+    box-shadow: 0 0 20px rgba(0, 213, 255, 0.15);
+    /* Holo Glow */
+    background-color: white;
+    /* Keep white for PDF readability */
+    border: 1px solid rgba(0, 213, 255, 0.1);
+}
+
+/* Dropdown Styles - Glass */
+.tool-dropdown {
+    position: relative;
+    display: inline-block;
+}
+
+.dropdown-content {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    background: rgba(5, 15, 25, 0.95);
+    /* Deep Dark */
+    backdrop-filter: blur(10px);
+    min-width: 180px;
+    z-index: 1000;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8);
+    border-radius: 4px;
+    border: 1px solid rgba(0, 213, 255, 0.3);
+    padding: 5px 0;
+}
+
+.tool-dropdown:hover .dropdown-content {
+    display: block !important;
+}
+
+.dropdown-btn {
+    width: 100%;
+    text-align: left;
+    padding: 10px 15px;
+    border: none;
+    background: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: #a0ecff;
+    font-family: 'Nunito', sans-serif;
+    font-size: 14px;
+    transition: 0.2s;
+}
+
+.dropdown-btn:hover {
+    background-color: rgba(0, 213, 255, 0.15);
+    color: #fff;
+    padding-left: 20px;
+    /* Slide effect */
+}
+
+.dropdown-btn svg {
+    width: 18px;
+    height: 18px;
+    fill: #00d5ff;
+}
+
+.submenu-content {
+    display: none;
+    position: absolute;
+    left: 100%;
+    top: -5px;
+    width: 160px;
+    background: rgba(5, 15, 25, 0.95);
+    border: 1px solid rgba(0, 213, 255, 0.3);
+    border-radius: 4px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8);
+}
+
+.submenu-container:hover .submenu-content {
+    display: block;
+}
+
+.canvas-stack {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 10;
+    /* Drawing layers */
+}
+
+.layer-canvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    /* Let events pass to interaction layer */
+}
+
+.interaction-canvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    width: 100%;
+    height: 100%;
+    pointer-events: auto;
+    /* Catch events here */
+}
+
+/* In Edit Text Mode, we need to click "through" the draw canvas to the Text Layer */
+.edit-text-mode .interaction-canvas {
+    pointer-events: none;
+}
+
+.edit-text-mode .textLayer {
+    pointer-events: auto;
+}
+
+.edit-text-mode .textLayer>span {
+    cursor: text;
+    border: 1px dashed #ccc;
+}
+
+/* Image Editing Styles */
+/* Image Editing Styles */
+.image-wrapper {
+    position: absolute;
+    display: inline-block;
+    border: 1px solid transparent;
+    cursor: move;
+    /* Boosted from 20 to sit above interaction canvas */
+    pointer-events: auto;
+}
+
+.image-wrapper:hover,
+.image-wrapper.selected {
+    border: 1px dashed #00d5ff;
+    /* Cyan Select */
+    box-shadow: 0 0 10px rgba(0, 213, 255, 0.2);
+}
+
+.image-wrapper img,
+.image-wrapper canvas {
+    width: 100%;
+    height: 100%;
+    display: block;
+    pointer-events: none;
+    /* Let wrapper handle events */
+}
+
+.resize-handle {
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    background-color: #00d5ff;
+    /* Cyan Handle */
+    border: 1px solid #fff;
+    border-radius: 50%;
+    border-radius: 50%;
+    display: none;
+    box-shadow: 0 0 5px rgba(0, 213, 255, 0.5);
+}
+
+/* Image Toolbar - Sci-Fi Upgrade */
+.image-toolbar {
+    position: absolute;
+    bottom: 100%;
+    left: 0;
+    display: flex;
+    gap: 8px;
+    background: rgba(5, 15, 25, 0.95);
+    /* Deep Dark Glass */
+    backdrop-filter: blur(10px);
+    padding: 8px;
+    border: 1px solid rgba(0, 213, 255, 0.3);
+    border-radius: 4px;
+    border-radius: 4px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+    /* Ensure Top Visibility */
+    white-space: nowrap;
+    margin-bottom: 25px;
+}
+
+.image-toolbar button {
+    background: rgba(0, 213, 255, 0.1);
+    border: 1px solid rgba(0, 213, 255, 0.3);
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 11px;
+    padding: 4px 10px;
+    color: #a0ecff;
+    font-family: 'Rajdhani', sans-serif;
+    text-transform: uppercase;
+    transition: all 0.2s;
+}
+
+.image-toolbar button:hover {
+    background: rgba(0, 213, 255, 0.3);
+    color: #fff;
+    box-shadow: 0 0 8px rgba(0, 213, 255, 0.4);
+    border-color: #00d5ff;
+}
+
+/* Optimized Loading Animation (Pulse) */
+/* Avoids layout thrashing by using opacity */
+.loading-dots {
+    animation: pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes pulse {
+    0% {
+        opacity: 1;
+    }
+
+    50% {
+        opacity: 0.4;
+    }
+
+    100% {
+        opacity: 1;
+    }
+}
+
+/* Dedicated Text Edit Toolbar Styles */
+/* Dedicated Text Edit Toolbar Styles - Sci-Fi */
+.text-edit-toolbar {
+    background: rgba(5, 15, 25, 0.95);
+    /* Deep Dark Glass */
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(0, 213, 255, 0.3);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+    border-radius: 6px;
+    padding: 8px;
+    gap: 10px;
+    /* Ensure on top */
+    height: 40px;
+    /* Slight fix height */
+    display: flex;
+    align-items: center;
+}
+
+.text-edit-toolbar button {
+    border: 1px solid rgba(0, 213, 255, 0.3);
+    background: rgba(0, 213, 255, 0.1);
+    border-radius: 4px;
+    padding: 4px 10px;
+    font-size: 12px;
+    color: #a0ecff;
+    transition: all 0.2s;
+    font-family: 'Rajdhani', sans-serif;
+    text-transform: uppercase;
+}
+
+.text-edit-toolbar button:hover {
+    background: rgba(0, 213, 255, 0.3);
+    border-color: #00d5ff;
+    color: #fff;
+    box-shadow: 0 0 8px rgba(0, 213, 255, 0.4);
+}
+
+.text-edit-toolbar button:hover {
+    background: #e6f7ff;
+    border-color: #40a9ff;
+    color: #1890ff;
+}
+
+.text-edit-toolbar input[type="color"] {
+    cursor: pointer;
+    border-radius: 3px;
+    vertical-align: middle;
+}
+
+
+.handle-rotate {
+    top: -20px;
+    left: 50%;
+    margin-left: -5px;
+    cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><path fill="black" d="M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M12,4A8,8 0 0,1 20,12A8,8 0 0,1 12,20A8,8 0 0,1 4,12A8,8 0 0,1 12,4M12,6A6,6 0 0,0 6,12A6,6 0 0,0 12,18A6,6 0 0,0 18,12A6,6 0 0,0 12,6Z"/></svg>') 16 16, auto;
+    background: #28a745 !important;
+    /* Green for rotate */
+}
+
+.handle-rotate::after {
+    content: "";
+    position: absolute;
+    top: 10px;
+    left: 4px;
+    width: 2px;
+    height: 10px;
+    height: 10px;
+    background: #28a745;
+}
+
+.image-wrapper:hover .resize-handle,
+.image-wrapper.selected .resize-handle {
+    display: block;
+}
+
+/* Handle Positions */
+.handle-nw {
+    top: -5px;
+    left: -5px;
+    cursor: nw-resize;
+}
+
+.handle-n {
+    top: -5px;
+    left: 50%;
+    margin-left: -5px;
+    cursor: n-resize;
+}
+
+.handle-ne {
+    top: -5px;
+    right: -5px;
+    cursor: ne-resize;
+}
+
+.handle-e {
+    top: 50%;
+    right: -5px;
+    margin-top: -5px;
+    cursor: e-resize;
+}
+
+.handle-se {
+    bottom: -5px;
+    right: -5px;
+    cursor: se-resize;
+}
+
+.handle-s {
+    bottom: -5px;
+    left: 50%;
+    margin-left: -5px;
+    cursor: s-resize;
+}
+
+
+.handle-sw {
+    bottom: -5px;
+    left: -5px;
+    cursor: sw-resize;
+}
+
+.handle-w {
+    top: 50%;
+    left: -5px;
+    margin-top: -5px;
+    cursor: w-resize;
+}
+
+.annotation-layer {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 20;
+    /* Above canvas stack */
+}
+
+/* Text Editing Styles */
+.text-wrapper {
+    position: absolute;
+    display: inline-block;
+    border: 1px dashed transparent;
+    display: inline-block;
+    border: 1px dashed transparent;
+    cursor: move;
+    /* Above images */
+    pointer-events: auto;
+}
+
+.text-wrapper:hover,
+.text-wrapper.selected {
+    border: 1px dashed #00bfff;
+}
+
+.text-wrapper:hover .resize-handle,
+.text-wrapper.selected .resize-handle {
+    display: block;
+}
+
+.text-content {
+    cursor: text;
+    /* Clicking inside allows typing, but dragging works on border/handle */
+    min-height: 100%;
+    min-width: 100%;
+    white-space: pre-wrap;
+    /* Preserve newlines */
+    line-height: 1.2;
+}
+
+/* Text Tool Dropdown Styling */
+/* Text Tool Dropdown Styling - Dark Mode */
+.tool-dropdown .dropdown-content input[type="number"] {
+    padding: 6px;
+    border: 1px solid rgba(0, 213, 255, 0.3);
+    border-radius: 4px;
+    background: rgba(0, 20, 40, 0.6);
+    color: white;
+    font-size: 13px;
+    transition: border-color 0.2s;
+}
+
+.tool-dropdown .dropdown-content input[type="number"]:focus {
+    border-color: #00d5ff;
+    outline: none;
+    box-shadow: 0 0 5px rgba(0, 213, 255, 0.5);
+}
+
+.tool-dropdown .dropdown-content label {
+    font-weight: 600;
+    color: #a0ecff;
+    margin-bottom: 4px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.tool-dropdown .dropdown-content .setting-row {
+    margin-bottom: 12px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    /* Divider */
+    padding-bottom: 8px;
+}
+
+.tool-dropdown .dropdown-content .setting-row:last-child {
+    border-bottom: none;
+}
+
+.tool-dropdown .dropdown-content {
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    border: 1px solid rgba(0, 213, 255, 0.2);
+    padding: 15px !important;
+    border-radius: 6px;
+    width: 220px !important;
+}
+
+.handle-w {
+    top: 50%;
+    left: -5px;
+    margin-top: -5px;
+    cursor: w-resize;
+}
+
+.pdf-page-wrapper.edit-text-mode .draw-canvas {
+    pointer-events: none;
+}
+
+/* Editor Specific Global Overrides */
+.editor-body,
+.editor-body html {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    font-family: 'Nunito', sans-serif;
+    background: none;
+    /* Override background image if needed */
+}
+
+/* Critical Fix for Text Editing */
+.edit-text-mode .textLayer {
+    opacity: 1 !important;
+    pointer-events: none !important;
+}
+
+.edit-text-mode .textLayer>span {
+    color: auto !important;
+    background-color: rgba(255, 255, 255, 0.9);
+    cursor: text !important;
+    pointer-events: auto !important;
+    border: 1px solid #a0c4ff;
+}
+
+/* Ensure stack allows interaction */
+/* Ensure stack allows drawing */
+.canvas-stack {
+    pointer-events: none;
+}
+
+.canvas-stack>.interaction-canvas {
+    pointer-events: auto;
+}
+
+
+/* Tools Elements */
+.text-annotation {
+    position: absolute;
+    color: black;
+    font-size: 16px;
+    background: transparent;
+    border: 1px dashed rgba(0, 0, 0, 0.1);
+    padding: 2px;
+    min-width: 50px;
+    outline: none;
+}
+
+.text-annotation:focus {
+    border: 1px solid #1890ff;
+    background: rgba(255, 255, 255, 0.8);
+}
+
+.draggable-image {
+    cursor: move;
+    border: 1px dashed transparent;
+}
+
+.draggable-image:hover {
+    border: 1px dashed #1890ff;
+}
+
+/* PDF.js Text Layer */
+.textLayer {
+    position: absolute;
+    text-align: initial;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    overflow: hidden;
+    opacity: 0.2;
+    z-index: 1;
+    line-height: 1.0;
+    line-height: 1.0;
+    pointer-events: none;
+    /* By default */
+}
+
+.textLayer>span {
+    color: transparent;
+    position: absolute;
+    white-space: pre;
+    cursor: text;
+    transform-origin: 0% 0%;
+}
+
+.textLayer ::selection {
+    background: rgba(0, 0, 255, 0.2);
+    color: transparent;
+}
+
+/* When Edit Mode is active */
+.pdf-page-wrapper.edit-text-mode .textLayer {
+    pointer-events: auto;
+    opacity: 1;
+    /* Make visible when editing? Or keep transparent but editable? 
+                   If we make it visible, it overlays the canvas text (double vision).
+                   Usually we use transparent color.
+                   To 'Edit', we trick it: 
+                   1. User clicks text.
+                   2. We hide that part of canvas? (Hard)
+                   3. We just let them type in the overlapping span and they see double?
+                   Better: For this simplified demo, we just make the selection layer active.
+                   Changing PDF text in browser is VERY hard. 
+                   I will assume 'Edit Text' means adding new text or basic contenteditable on spans 
+                   (which won't save easily without backend support).
+                   I'll set opacity to 1 and color to black so they can see what spans are there,
+                   but yes, it will overlay the canvas.
+                */
+}
+
+.pdf-page-wrapper.edit-text-mode .textLayer>span {
+    color: transparent;
+    /* Keep transparent usually */
+    /* If we want to simulate editing, we might change color to black and background to white */
+}
+
+/* Edit Mode Active Styles */
+.pdf-page-wrapper.edit-text-mode .textLayer>span:focus {
+    color: black;
+    background-color: white;
+    background-color: white;
+    outline: 1px solid #1890ff;
+}
+
+/* Image Clip Box (Inner) */
+.image-clip-box {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    /* Overflow handled by JS toggle */
+}
+
+/* Crop Mode Handles (8 Points) */
+.image-wrapper.cropping .resize-handle {
+    background: #ffffff;
+    border: 1px solid #1890ff;
+    /* Blue border */
+    border-radius: 0;
+    /* Square */
+    width: 8px;
+    height: 8px;
+    width: 8px;
+    height: 8px;
+    /* Ensure visible */
+}
+
+.image-wrapper.cropping {
+    outline: 2px dashed #1890ff;
+    /* Visual cue for crop mode */
+}

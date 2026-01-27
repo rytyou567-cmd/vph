@@ -1,0 +1,989 @@
+/* === Quad Expansion Tool Styles === */
+
+/* Specific Modal Overlays for Quad Expansion Tools */
+.nyx-modal-overlay,
+.vapor-modal-overlay,
+.krypt-modal-overlay,
+.orion-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.85);
+    backdrop-filter: blur(10px);
+    z-index: 1000;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+    overflow: hidden;
+}
+
+.nyx-modal-overlay.active,
+.vapor-modal-overlay.active,
+.krypt-modal-overlay.active,
+.orion-modal-overlay.active {
+    opacity: 1;
+    pointer-events: auto;
+    display: flex;
+}
+
+/* --- HUD COMPONENT DEFAULTS --- */
+.nyx-modal-card {
+    --tool-primary: #b400ff;
+    --tool-bg: #0a0015;
+}
+
+.vapor-modal-card {
+    --tool-primary: #00d5ff;
+    --tool-bg: #00080a;
+}
+
+.krypt-modal-card {
+    --tool-primary: #00ff80;
+    --tool-bg: #000a05;
+}
+
+.orion-modal-card {
+    --tool-primary: #0096ff;
+    --tool-bg: #00050a;
+}
+
+/* Custom HUD Slider */
+.nyx-control-group input[type="range"],
+.orion-sidebar input[type="range"] {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 100%;
+    background: transparent;
+}
+
+.nyx-control-group input[type="range"]::-webkit-slider-runnable-track,
+.orion-sidebar input[type="range"]::-webkit-slider-runnable-track {
+    width: 100%;
+    height: 6px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 3px;
+    border: 1px solid rgba(var(--tool-primary-rgb), 0.3);
+}
+
+.nyx-control-group input[type="range"]::-webkit-slider-thumb,
+.orion-sidebar input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    height: 20px;
+    width: 10px;
+    background: var(--tool-primary);
+    margin-top: -8px;
+    cursor: pointer;
+    box-shadow: 0 0 15px var(--tool-primary);
+    clip-path: polygon(20% 0, 100% 0, 80% 100%, 0% 100%);
+}
+
+/* Premium Action Buttons inside Modals */
+.nyx-action-btn,
+.vapor-action-btn,
+.krypt-action-btn,
+.orion-action-btn {
+    width: 100%;
+    position: relative;
+    padding: 12px 20px;
+    background: rgba(var(--tool-primary-rgb), 0.1);
+    color: var(--tool-primary);
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: bold;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    border: 1px solid var(--tool-primary);
+    cursor: pointer;
+    clip-path: polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px);
+    transition: all 0.3s ease;
+    overflow: hidden;
+}
+
+.nyx-action-btn:hover,
+.vapor-action-btn:hover,
+.krypt-action-btn:hover,
+.orion-action-btn:hover {
+    background: var(--tool-primary);
+    color: #000;
+    box-shadow: 0 0 20px rgba(var(--tool-primary-rgb), 0.6);
+}
+
+/* Common Modal Headers & Layouts */
+.nyx-header,
+.vapor-header,
+.krypt-header,
+.orion-header {
+    padding: 15px 25px;
+    background: rgba(0, 0, 0, 0.3);
+    border-bottom: 1px solid rgba(var(--tool-primary-rgb), 0.3);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.nyx-layout,
+.vapor-layout,
+.orion-layout {
+    display: grid;
+    grid-template-columns: 1fr 320px;
+    flex: 1;
+    overflow: hidden;
+}
+
+.nyx-workspace,
+.vapor-workspace,
+.orion-workspace {
+    padding: 30px;
+    overflow-y: auto;
+    background: rgba(0, 0, 0, 0.2);
+}
+
+.nyx-sidebar,
+.vapor-sidebar,
+.orion-sidebar {
+    padding: 25px;
+    background: rgba(var(--tool-primary-rgb), 0.05);
+    border-left: 1px solid rgba(var(--tool-primary-rgb), 0.1);
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    overflow-y: auto;
+}
+
+/* Close Buttons */
+.close-modal-btn-nyx,
+.close-modal-btn-vapor,
+.close-modal-btn-krypt,
+.close-modal-btn-orion {
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(var(--tool-primary-rgb), 0.1);
+    border: 1px solid var(--tool-primary);
+    color: var(--tool-primary);
+    cursor: pointer;
+    transition: 0.3s;
+    clip-path: polygon(8px 0, 100% 0, 100% calc(100% - 8px), calc(100% - 8px) 100%, 0 100%, 0 8px);
+}
+
+.close-modal-btn-nyx:hover,
+.close-modal-btn-vapor:hover,
+.close-modal-btn-krypt:hover,
+.close-modal-btn-orion:hover {
+    background: var(--tool-primary);
+    color: #000;
+    box-shadow: 0 0 15px var(--tool-primary);
+}
+
+/* NYX: SVG Glitch (Violet) */
+.nyx-modal-card {
+    --tool-primary-rgb: 180, 0, 255;
+}
+
+.nyx-tool-card {
+    background: rgba(40, 0, 60, 0.4);
+    border: 1px solid rgba(180, 0, 255, 0.3);
+    border-radius: 20px;
+    padding: 30px;
+    transition: 0.3s;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+.nyx-tool-card:hover {
+    transform: translateY(-5px);
+    border-color: rgba(180, 0, 255, 0.8);
+    box-shadow: 0 10px 30px rgba(180, 0, 255, 0.25);
+}
+
+.nyx-modal-card {
+    background: #0a0015;
+    border: 1px solid #b400ff;
+    width: 90%;
+    max-width: 1000px;
+    height: 80vh;
+    border-radius: 12px;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    position: relative;
+    box-shadow: 0 0 50px rgba(180, 0, 255, 0.4);
+    transform: scale(0.9);
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.modal-overlay.active .nyx-modal-card {
+    transform: scale(1);
+}
+
+.nyx-tool-card .card-icon {
+    background: linear-gradient(135deg, #b400ff 0%, #7000aa 100%);
+    box-shadow: 0 4px 15px rgba(180, 0, 255, 0.3);
+}
+
+.nyx-tool-card .card-tag {
+    color: #b400ff;
+    background: rgba(180, 0, 255, 0.1);
+}
+
+.nyx-tool-btn {
+    width: 100%;
+    position: relative;
+    height: 3.5em;
+    background-color: transparent;
+    color: #b400ff;
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 16px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    border: none;
+    cursor: pointer;
+    clip-path: polygon(12px 0px, 100% 0px, 100% calc(100% - 12px), calc(100% - 12px) 100%, 0px 100%, 0px 12px);
+    transition: all 0.3s ease;
+}
+
+.nyx-tool-btn::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: #b400ff;
+    z-index: -1;
+    opacity: 0.2;
+    transition: opacity 0.3s ease;
+}
+
+.nyx-tool-btn::after {
+    content: "";
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    width: calc(100% - 4px);
+    height: calc(100% - 4px);
+    background: rgba(15, 0, 25, 0.9);
+    z-index: -1;
+    clip-path: polygon(11px 0px, 100% 0px, 100% calc(100% - 11px), calc(100% - 11px) 100%, 0px 100%, 0px 11px);
+}
+
+.nyx-tool-btn:hover {
+    color: #fff !important;
+    text-shadow: 0 0 10px #b400ff;
+}
+
+/* NYX Animations */
+.nyx-glitch-active {
+    animation: nyx-glitch 0.2s infinite linear alternate-reverse;
+}
+
+.nyx-pulse-active {
+    animation: nyx-pulse 1.5s infinite ease-in-out;
+}
+
+@keyframes nyx-glitch {
+    0% {
+        transform: translate(0);
+    }
+
+    20% {
+        transform: translate(-2px, 2px);
+    }
+
+    40% {
+        transform: translate(-2px, -2px);
+    }
+
+    60% {
+        transform: translate(2px, 2px);
+    }
+
+    80% {
+        transform: translate(2px, -2px);
+    }
+
+    100% {
+        transform: translate(0);
+    }
+}
+
+@keyframes nyx-pulse {
+
+    0%,
+    100% {
+        transform: scale(1);
+        filter: brightness(1);
+    }
+
+    50% {
+        transform: scale(1.05);
+        filter: brightness(1.2);
+    }
+}
+
+.nyx-dropzone {
+    border: 2px dashed rgba(180, 0, 255, 0.4);
+    border-radius: 12px;
+    padding: 60px;
+    text-align: center;
+    cursor: pointer;
+    transition: 0.3s;
+    background: rgba(180, 0, 255, 0.05);
+}
+
+.nyx-dropzone:hover,
+.nyx-dropzone.active {
+    border-color: #b400ff;
+    background: rgba(180, 0, 255, 0.1);
+    box-shadow: 0 0 15px rgba(180, 0, 255, 0.4);
+}
+
+.nyx-workspace {
+    position: relative;
+    background-image: linear-gradient(rgba(180, 0, 255, 0.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(180, 0, 255, 0.04) 1px, transparent 1px);
+    background-size: 30px 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 400px;
+}
+
+.nyx-workspace::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(to bottom, transparent, rgba(180, 0, 255, 0.05), transparent);
+    background-size: 100% 200%;
+    animation: scanline 4s linear infinite;
+    pointer-events: none;
+}
+
+@keyframes scanline {
+    0% {
+        background-position: 0 -100%;
+    }
+
+    100% {
+        background-position: 0 100%;
+    }
+}
+
+.nyx-sidebar h4,
+.vapor-sidebar h4,
+.orion-sidebar h4 {
+    font-family: 'Rajdhani', sans-serif;
+    letter-spacing: 2px;
+    font-size: 14px;
+    margin-bottom: 25px;
+    border-left: 3px solid var(--tool-primary);
+    padding-left: 10px;
+}
+
+.nyx-code-flux {
+    margin: 20px 0;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+}
+
+.nyx-code-flux label {
+    display: block;
+    color: var(--tool-primary);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    margin-bottom: 12px;
+    text-transform: uppercase;
+    opacity: 0.8;
+}
+
+.code-preview-box {
+    background: rgba(0, 0, 0, 0.4);
+    border: 1px solid rgba(var(--tool-primary-rgb), 0.2);
+    padding: 15px;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 12px;
+    color: var(--tool-primary);
+    border-radius: 4px;
+    white-space: pre-wrap;
+    word-break: break-all;
+    overflow-y: auto;
+    max-height: 200px;
+    line-height: 1.5;
+}
+
+.nyx-control-group label {
+    display: block;
+    color: var(--tool-primary);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    margin-bottom: 12px;
+    text-transform: uppercase;
+    opacity: 0.8;
+}
+
+/* Removed redundant rules */
+
+/* Range inputs handled by global custom HUD slider */
+
+/* VAPOR: Markdown Landing (Cyan) */
+.vapor-modal-card {
+    --tool-primary-rgb: 0, 213, 255;
+}
+
+.vapor-tool-card {
+    background: rgba(0, 40, 50, 0.4);
+    border: 1px solid rgba(0, 213, 255, 0.3);
+    border-radius: 20px;
+    padding: 30px;
+    transition: 0.3s;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+.vapor-tool-card:hover {
+    transform: translateY(-5px);
+    border-color: rgba(0, 213, 255, 0.8);
+    box-shadow: 0 10px 30px rgba(0, 213, 255, 0.25);
+}
+
+.vapor-modal-card {
+    background: #00080a;
+    border: 1px solid #00d5ff;
+    width: 90%;
+    max-width: 1000px;
+    height: 80vh;
+    border-radius: 12px;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    position: relative;
+    box-shadow: 0 0 50px rgba(0, 213, 255, 0.3);
+    transform: scale(0.9);
+    transition: transform 0.3s ease;
+}
+
+.modal-overlay.active .vapor-modal-card {
+    transform: scale(1);
+}
+
+.vapor-tool-card .card-icon {
+    background: linear-gradient(135deg, #00d5ff 0%, #0088aa 100%);
+    box-shadow: 0 4px 15px rgba(0, 213, 255, 0.3);
+}
+
+.vapor-tool-card .card-tag {
+    color: #00d5ff;
+    background: rgba(0, 213, 255, 0.1);
+}
+
+.vapor-tool-btn {
+    width: 100%;
+    position: relative;
+    height: 3.5em;
+    background-color: transparent;
+    color: #00d5ff;
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 16px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    border: none;
+    cursor: pointer;
+    clip-path: polygon(12px 0px, 100% 0px, 100% calc(100% - 12px), calc(100% - 12px) 100%, 0px 100%, 0px 12px);
+    transition: all 0.3s ease;
+}
+
+.vapor-tool-btn::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: #00d5ff;
+    z-index: -1;
+    opacity: 0.2;
+    transition: opacity 0.3s ease;
+}
+
+.vapor-tool-btn::after {
+    content: "";
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    width: calc(100% - 4px);
+    height: calc(100% - 4px);
+    background: rgba(0, 15, 20, 0.9);
+    z-index: -1;
+    clip-path: polygon(11px 0px, 100% 0px, 100% calc(100% - 11px), calc(100% - 11px) 100%, 0px 100%, 0px 11px);
+}
+
+.vapor-tool-btn:hover {
+    color: #fff !important;
+    text-shadow: 0 0 10px #00d5ff;
+}
+
+/* VAPOR Engine UI */
+.vapor-layout {
+    display: grid;
+    grid-template-columns: 1fr 300px;
+    flex: 1;
+    overflow: hidden;
+}
+
+.vapor-workspace {
+    padding: 20px;
+    background: #050505;
+}
+
+#vaporEditor {
+    width: 100%;
+    height: 100%;
+    background: transparent;
+    border: none;
+    color: #00d5ff;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 14px;
+    resize: none;
+    outline: none;
+    padding: 20px;
+    background-image: linear-gradient(rgba(0, 213, 255, 0.02) 1px, transparent 1px);
+    background-size: 100% 2em;
+}
+
+.vapor-sidebar {
+    padding: 20px;
+    background: rgba(0, 0, 0, 0.4);
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.theme-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 10px;
+}
+
+.theme-pill {
+    padding: 12px;
+    text-align: center;
+    background: rgba(0, 213, 255, 0.05);
+    border: 1px solid rgba(0, 213, 255, 0.2);
+    border-radius: 8px;
+    cursor: pointer;
+    font-family: 'Rajdhani';
+    font-weight: bold;
+    color: #00d5ff;
+    transition: 0.3s;
+}
+
+.theme-pill:hover,
+.theme-pill.active {
+    background: rgba(0, 213, 255, 0.2);
+    border-color: #00d5ff;
+    box-shadow: 0 0 10px rgba(0, 213, 255, 0.4);
+}
+
+/* KRYPT: Secure Vault (Green) */
+.krypt-modal-card {
+    --tool-primary-rgb: 0, 255, 128;
+}
+
+.krypt-tool-card {
+    background: rgba(0, 40, 20, 0.4);
+    border: 1px solid rgba(0, 255, 128, 0.3);
+    border-radius: 20px;
+    padding: 30px;
+    transition: 0.3s;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+.krypt-tool-card:hover {
+    transform: translateY(-5px);
+    border-color: rgba(0, 255, 128, 0.8);
+    box-shadow: 0 10px 30px rgba(0, 255, 128, 0.25);
+}
+
+.krypt-modal-card {
+    background: #000a05;
+    border: 1px solid #00ff80;
+    width: 90%;
+    max-width: 600px;
+    height: 60vh;
+    border-radius: 12px;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    position: relative;
+    box-shadow: 0 0 50px rgba(0, 255, 128, 0.3);
+    transform: scale(0.9);
+    transition: transform 0.3s ease;
+}
+
+.modal-overlay.active .krypt-modal-card {
+    transform: scale(1);
+}
+
+.krypt-tool-card .card-icon {
+    background: linear-gradient(135deg, #00ff80 0%, #008f48 100%);
+    box-shadow: 0 4px 15px rgba(0, 255, 128, 0.3);
+}
+
+.krypt-tool-card .card-tag {
+    color: #00ff80;
+    background: rgba(0, 255, 128, 0.1);
+}
+
+.krypt-tool-btn {
+    width: 100%;
+    position: relative;
+    height: 3.5em;
+    background-color: transparent;
+    color: #00ff80;
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 16px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    border: none;
+    cursor: pointer;
+    clip-path: polygon(12px 0px, 100% 0px, 100% calc(100% - 12px), calc(100% - 12px) 100%, 0px 100%, 0px 12px);
+    transition: all 0.3s ease;
+}
+
+.krypt-tool-btn::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: #00ff80;
+    z-index: -1;
+    opacity: 0.2;
+    transition: opacity 0.3s ease;
+}
+
+.krypt-tool-btn::after {
+    content: "";
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    width: calc(100% - 4px);
+    height: calc(100% - 4px);
+    background: rgba(0, 15, 5, 0.9);
+    z-index: -1;
+    clip-path: polygon(11px 0px, 100% 0px, 100% calc(100% - 11px), calc(100% - 11px) 100%, 0px 100%, 0px 11px);
+}
+
+.krypt-tool-btn:hover {
+    color: #fff !important;
+    text-shadow: 0 0 10px #00ff80;
+}
+
+/* KRYPT Vault UI */
+.krypt-layout {
+    padding: 30px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    flex: 1;
+}
+
+.krypt-dropzone {
+    border: 2px dashed rgba(0, 255, 128, 0.4);
+    border-radius: 12px;
+    padding: 60px;
+    text-align: center;
+    cursor: pointer;
+    transition: 0.3s;
+    background: rgba(0, 255, 128, 0.05);
+    width: 100%;
+    max-width: 500px;
+}
+
+.krypt-dropzone:hover {
+    border-color: #00ff80;
+    background: rgba(0, 255, 128, 0.1);
+    box-shadow: 0 0 20px rgba(0, 255, 128, 0.3);
+}
+
+.krypt-dropzone {
+    position: relative;
+    overflow: hidden;
+}
+
+.krypt-dropzone::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background: rgba(0, 255, 128, 0.3);
+    box-shadow: 0 0 10px #00ff80;
+    animation: krypt-scan 3s infinite linear;
+    pointer-events: none;
+}
+
+@keyframes krypt-scan {
+    0% {
+        top: 0;
+    }
+
+    100% {
+        top: 100%;
+    }
+}
+
+.krypt-controls {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    width: 100%;
+    max-width: 400px;
+}
+
+#kryptKey {
+    background: rgba(0, 20, 10, 0.8);
+    border: 1px solid rgba(0, 255, 128, 0.5);
+    color: #00ff80;
+    padding: 15px;
+    border-radius: 0;
+    clip-path: polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px);
+    font-family: 'Courier New', monospace;
+    font-size: 16px;
+    text-align: center;
+    letter-spacing: 2px;
+    outline: none;
+}
+
+#kryptKey {
+    background: rgba(0, 20, 10, 0.8);
+    border: 1px solid rgba(0, 255, 128, 0.5);
+    color: #00ff80;
+    padding: 15px;
+    border-radius: 0;
+    clip-path: polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px);
+    font-family: 'Courier New', monospace;
+    font-size: 16px;
+    text-align: center;
+    letter-spacing: 2px;
+    outline: none;
+}
+
+/* Removed old action btn */
+
+/* ORION: Data Viz (Holographic Blue) */
+.orion-modal-card {
+    --tool-primary-rgb: 0, 150, 255;
+}
+
+.orion-tool-card {
+    background: rgba(0, 20, 40, 0.4);
+    border: 1px solid rgba(0, 150, 255, 0.3);
+    border-radius: 20px;
+    padding: 30px;
+    transition: 0.3s;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+.orion-tool-card:hover {
+    transform: translateY(-5px);
+    border-color: rgba(0, 150, 255, 0.8);
+    box-shadow: 0 10px 30px rgba(0, 150, 255, 0.25);
+}
+
+.orion-modal-card {
+    background: #00050a;
+    border: 1px solid rgba(0, 150, 255, 0.4);
+    width: 80%;
+    height: 80%;
+    position: relative;
+    border-radius: 12px;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    box-sizing: border-box;
+    box-shadow: 0 0 50px rgba(0, 150, 255, 0.3);
+    transform: scale(0.9);
+    transition: transform 0.3s ease;
+}
+
+.modal-overlay.active .orion-modal-card {
+    transform: scale(1);
+}
+
+.orion-tool-card .card-icon {
+    background: linear-gradient(135deg, #0096ff 0%, #0055aa 100%);
+    box-shadow: 0 4px 15px rgba(0, 150, 255, 0.3);
+}
+
+.orion-tool-card .card-tag {
+    color: #0096ff;
+    background: rgba(0, 150, 255, 0.1);
+}
+
+.orion-tool-btn {
+    width: 100%;
+    position: relative;
+    height: 3.5em;
+    background-color: transparent;
+    color: #0096ff;
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 16px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    border: none;
+    cursor: pointer;
+    clip-path: polygon(12px 0px, 100% 0px, 100% calc(100% - 12px), calc(100% - 12px) 100%, 0px 100%, 0px 12px);
+    transition: all 0.3s ease;
+}
+
+.orion-tool-btn::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: #0096ff;
+    z-index: -1;
+    opacity: 0.2;
+    transition: opacity 0.3s ease;
+}
+
+.orion-tool-btn::after {
+    content: "";
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    width: calc(100% - 4px);
+    height: calc(100% - 4px);
+    background: rgba(0, 5, 15, 0.9);
+    z-index: -1;
+    clip-path: polygon(11px 0px, 100% 0px, 100% calc(100% - 11px), calc(100% - 11px) 100%, 0px 100%, 0px 11px);
+}
+
+.orion-tool-btn:hover {
+    color: #fff !important;
+    text-shadow: 0 0 10px #0096ff;
+}
+
+/* ORION Viz UI */
+.orion-layout {
+    display: grid;
+    grid-template-columns: 1fr 300px;
+    flex: 1;
+    overflow: hidden;
+    background: #000;
+}
+
+.orion-workspace {
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    overflow-y: auto;
+}
+
+#orionData {
+    height: 120px;
+    background: rgba(0, 150, 255, 0.05);
+    border: 1px solid rgba(0, 150, 255, 0.2);
+    color: #0096ff;
+    border-radius: 8px;
+    padding: 10px;
+    font-family: 'Courier New', monospace;
+    resize: none;
+    outline: none;
+}
+
+.orion-chart-container {
+    flex: 1;
+    border: 1px solid rgba(0, 150, 255, 0.1);
+    background: radial-gradient(circle at center, #001525, #000);
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+    min-height: 400px;
+}
+
+.orion-chart-container::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-image: linear-gradient(rgba(0, 150, 255, 0.05) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0, 150, 255, 0.05) 1px, transparent 1px);
+    background-size: 20px 20px;
+}
+
+.orion-sidebar {
+    padding: 20px;
+    background: rgba(0, 5, 15, 0.95);
+    border-left: 1px solid rgba(0, 150, 255, 0.1);
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+#orionChartType {
+    background: #050510;
+    border: 1px solid #0096ff;
+    color: #0096ff;
+    padding: 12px;
+    border-radius: 0;
+    clip-path: polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px);
+    font-family: 'Rajdhani';
+    font-weight: bold;
+    outline: none;
+    cursor: pointer;
+}
+
+.orion-action-btn {
+    background: rgba(0, 150, 255, 0.1);
+    color: #0096ff;
+    border: 1px solid #0096ff;
+    padding: 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-family: 'Rajdhani';
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+.orion-action-btn:hover {
+    background: #0096ff;
+    color: #000;
+    box-shadow: 0 0 15px rgba(0, 150, 255, 0.4);
+}

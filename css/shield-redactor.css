@@ -1,0 +1,360 @@
+/* Dedicated Shield Redactor Overlay */
+.shield-redactor-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 5, 10, 0.6);
+    backdrop-filter: blur(12px);
+    z-index: 2000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    opacity: 1;
+    pointer-events: auto;
+    transition: opacity 0.3s ease;
+    overflow: hidden;
+}
+
+.shield-redactor-modal-overlay.active {
+    opacity: 1;
+    pointer-events: all;
+}
+
+.shield-redactor-modal-overlay.active .upload-card {
+    transform: scale(1);
+}
+
+/* Modal Overrides */
+#shieldRedactorModal .upload-card {
+    border-color: rgba(0, 255, 128, 0.3);
+    width: 95%;
+    max-width: 1100px;
+}
+
+#shieldRedactorModal .close-modal-btn.shield-redactor-close-btn {
+    color: #00ff80;
+    border-color: rgba(0, 255, 128, 0.5);
+}
+
+.shield-redactor-close-btn:hover {
+    background-color: #00ff80 !important;
+    box-shadow: 0 0 15px #00ff80 !important;
+    color: #000 !important;
+}
+
+/* Loading State */
+#vaultLoadingShield {
+    display: none;
+    text-align: center;
+    padding: 40px;
+    color: #00ff80;
+}
+
+#vaultLoadingShield h3 {
+    font-family: 'Rajdhani', sans-serif;
+}
+
+.shield-header {
+    color: #00ff80;
+    font-family: 'Rajdhani', sans-serif;
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+/* Initial Choice View */
+.shield-choice-container {
+    display: flex;
+    gap: 30px;
+    justify-content: center;
+    height: 350px;
+}
+
+.shield-choice-card {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    border-radius: 15px;
+    transition: 0.3s;
+}
+
+#newProjectBtnShield {
+    border: 1px dashed #00ff80;
+    background: rgba(0, 255, 128, 0.05);
+}
+
+#viewVaultBtnShield {
+    border: 1px solid #00ff80;
+    background: rgba(0, 255, 128, 0.1);
+}
+
+.shield-choice-card:hover {
+    background: rgba(0, 255, 128, 0.15) !important;
+    transform: scale(1.02);
+    box-shadow: 0 0 20px rgba(0, 255, 128, 0.2);
+}
+
+.shield-choice-card h4 {
+    color: #00ff80;
+    font-family: 'Rajdhani', sans-serif;
+}
+
+.shield-choice-card p {
+    color: #ccc;
+    font-size: 0.8em;
+    text-align: center;
+    padding: 0 20px;
+}
+
+/* Editor View Layout */
+.shield-editor-layout {
+    display: flex;
+    gap: 20px;
+    height: 500px;
+}
+
+.shield-sidebar {
+    width: 220px;
+    border-right: 1px solid rgba(0, 255, 128, 0.2);
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.shield-canvas-container {
+    flex: 1;
+    background: #000;
+    border-radius: 10px;
+    position: relative;
+    overflow: auto;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+}
+
+#editorCanvasShield {
+    display: block;
+    max-width: 100%;
+    cursor: crosshair;
+    box-shadow: 0 0 40px rgba(0, 0, 0, 0.5);
+}
+
+#scanResultsShield {
+    flex: 1;
+    overflow-y: auto;
+    font-size: 12px;
+    color: #eee;
+    padding-right: 5px;
+}
+
+/* Scrollbar for scan results */
+#scanResultsShield::-webkit-scrollbar {
+    width: 4px;
+}
+
+#scanResultsShield::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.05);
+}
+
+#scanResultsShield::-webkit-scrollbar-thumb {
+    background: rgba(0, 255, 128, 0.3);
+    border-radius: 2px;
+}
+
+/* Editor Buttons Row */
+.shield-editor-actions {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+}
+
+#saveVaultBtnShield {
+    color: #ccc;
+    border-color: #444;
+    width: auto;
+    padding: 0 20px;
+}
+
+#exportFileBtnShield {
+    color: #00ff80;
+    border-color: #00ff80;
+    width: auto;
+    padding: 0 20px;
+}
+
+/* Vault History View */
+#backToHomeShield {
+    background: none;
+    border: none;
+    color: #00ff80;
+    cursor: pointer;
+    margin-bottom: 15px;
+    font-weight: bold;
+}
+
+#vaultListShield {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 15px;
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+.vault-item {
+    position: relative;
+    border: 1px solid #444;
+    padding: 10px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.vault-item:hover {
+    background: rgba(0, 255, 128, 0.2) !important;
+    border-color: #00ff80 !important;
+}
+
+.vault-item-tool-label {
+    font-size: 9px;
+    text-transform: uppercase;
+    color: #888;
+    background: rgba(255, 255, 255, 0.05);
+    padding: 2px 5px;
+    border-radius: 3px;
+    display: inline-block;
+    margin-bottom: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.vault-item-delete {
+    width: 24px;
+    height: 24px;
+    border-radius: 4px;
+    background: rgba(255, 0, 0, 0.1);
+    color: #ff4444;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    border: 1px solid rgba(255, 0, 0, 0.3);
+    transition: 0.3s;
+    z-index: 10;
+    cursor: pointer;
+}
+
+.vault-item-delete:hover {
+    background: #ff4444;
+    color: #fff;
+    transform: scale(1.1);
+}
+
+.vault-tool-btn {
+    transition: all 0.3s ease;
+    font-family: 'Rajdhani', sans-serif;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    font-size: 14px;
+    background: rgba(0, 255, 128, 0.1);
+    border: 1px solid #00ff80;
+    color: #00ff80;
+    padding: 10px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.vault-item-download:hover {
+    background: rgba(0, 255, 128, 0.3) !important;
+    border-color: #00ff80 !important;
+}
+
+.vault-item-delete:hover {
+    background: rgba(255, 77, 77, 0.3) !important;
+    border-color: #ff4d4d !important;
+}
+
+/* --- THREAT RADAR --- */
+.threat-status-badge {
+    padding: 10px;
+    margin-bottom: 20px;
+    border-radius: 4px;
+    text-align: center;
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: 700;
+    font-size: 14px;
+    letter-spacing: 1px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    transition: all 0.3s ease;
+}
+
+.threat-status-badge.scanning {
+    color: #a0ecff;
+    background: rgba(0, 213, 255, 0.1);
+    border-color: #00d5ff;
+    animation: scanning-pulse 1.5s infinite;
+}
+
+.threat-status-badge.safe {
+    color: #00ff80;
+    background: rgba(0, 255, 128, 0.1);
+    border-color: #00ff80;
+    box-shadow: 0 0 15px rgba(0, 255, 128, 0.2);
+}
+
+.threat-status-badge.suspicious {
+    color: #ffcc00;
+    background: rgba(255, 204, 0, 0.1);
+    border-color: #ffcc00;
+}
+
+.threat-status-badge.threat {
+    color: #ff4d4d;
+    background: rgba(255, 77, 77, 0.1);
+    border-color: #ff4d4d;
+    box-shadow: 0 0 20px rgba(255, 77, 77, 0.3);
+    animation: threat-blink 1s infinite alternate;
+}
+
+@keyframes scanning-pulse {
+    0% {
+        opacity: 0.6;
+    }
+
+    50% {
+        opacity: 1;
+    }
+
+    100% {
+        opacity: 0.6;
+    }
+}
+
+@keyframes threat-blink {
+    from {
+        background: rgba(255, 77, 77, 0.1);
+    }
+
+    to {
+        background: rgba(255, 77, 77, 0.3);
+    }
+}
+
+.threat-item {
+    animation: slide-in-threat 0.3s ease-out;
+}
+
+@keyframes slide-in-threat {
+    from {
+        transform: translateX(-20px);
+        opacity: 0;
+    }
+
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}

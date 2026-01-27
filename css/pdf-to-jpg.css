@@ -1,0 +1,420 @@
+@import url('style.css');
+
+/* Theme Overrides for PDF to JPG (Purple) */
+
+.pdf-to-jpg-browse-container,
+.pdf-to-jpg-download-container {
+    position: relative;
+    display: inline-block;
+    padding: 5px;
+}
+
+.pdf-to-jpg-browse-btn {
+    background: rgba(166, 0, 255, 0.1);
+    border: 1px solid rgba(166, 0, 255, 0.5);
+    color: #a600ff;
+    font-family: 'Rajdhani', sans-serif;
+    text-transform: uppercase;
+    padding: 12px 30px;
+    cursor: pointer;
+    box-shadow: 0 0 10px rgba(166, 0, 255, 0.1);
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    font-weight: 600;
+    min-width: 180px;
+}
+
+.pdf-to-jpg-download-btn {
+    background: linear-gradient(135deg, #a600ff 0%, #6200ff 100%);
+    border: none;
+    color: white;
+    font-family: 'Rajdhani', sans-serif;
+    text-transform: uppercase;
+    padding: 15px 40px;
+    cursor: pointer;
+    box-shadow: 0 5px 15px rgba(98, 0, 255, 0.4);
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+    font-size: 18px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    min-width: 250px;
+    white-space: nowrap;
+}
+
+.pdf-to-jpg-browse-container .btn-corner,
+.pdf-to-jpg-download-container .btn-corner {
+    border-color: rgba(166, 0, 255, 0.6);
+}
+
+.pdf-to-jpg-browse-container:hover .pdf-to-jpg-browse-btn {
+    background: rgba(166, 0, 255, 0.2);
+    box-shadow: inset 0 0 0 1px rgba(166, 0, 255, 0.8), 0 0 20px rgba(166, 0, 255, 0.4);
+    text-shadow: 0 0 10px rgba(166, 0, 255, 0.8);
+    color: #fff;
+    letter-spacing: 2px;
+}
+
+.pdf-to-jpg-download-container:hover .pdf-to-jpg-download-btn {
+    box-shadow: 0 0 20px rgba(166, 0, 255, 0.6), inset 0 0 10px rgba(255, 255, 255, 0.2);
+    transform: translateY(-2px);
+    letter-spacing: 2px;
+}
+
+.pdf-to-jpg-browse-container:hover .btn-corner,
+.pdf-to-jpg-download-container:hover .btn-corner {
+    width: 12px;
+    height: 12px;
+    border-color: #fff;
+    z-index: 2;
+}
+
+.pdf-to-jpg-browse-container:hover .btn-corner-tl,
+.pdf-to-jpg-download-container:hover .btn-corner-tl {
+    top: 10px;
+    left: 10px;
+}
+
+.pdf-to-jpg-browse-container:hover .btn-corner-tr,
+.pdf-to-jpg-download-container:hover .btn-corner-tr {
+    top: 10px;
+    right: 10px;
+}
+
+.pdf-to-jpg-browse-container:hover .btn-corner-br,
+.pdf-to-jpg-download-container:hover .btn-corner-br {
+    bottom: 10px;
+    right: 10px;
+}
+
+.pdf-to-jpg-browse-container:hover .btn-corner-bl,
+.pdf-to-jpg-download-container:hover .btn-corner-bl {
+    bottom: 10px;
+    left: 10px;
+}
+
+/* 4. DASHED DROP ZONE */
+.pdf-to-jpg-drop-zone {
+    border: 2px dashed #a600ff;
+    /* Light blue dashed border */
+    border-radius: 10px;
+    padding: 40px 20px;
+    text-align: center;
+    background: rgba(166, 0, 255, 0.156);
+    backdrop-filter: blur(50px);
+}
+
+.pdf-to-jpg-drop-zone:hover {
+    background: rgba(166, 0, 255, 0.156);
+    backdrop-filter: blur(50px);
+    border-color: #a600ff;
+    box-shadow: 0 0 7px 1px rgb(166, 0, 255);
+}
+
+.pdf-to-jpg-drop-zone:active {
+    background: rgba(166, 0, 255, 0.156);
+    backdrop-filter: blur(50px);
+    border-color: #a600ff;
+    box-shadow: 0 0 7px 1px rgb(166, 0, 255);
+}
+
+/* ICON & TEXT STYLES */
+.pdf-to-jpg-upload-icon {
+    width: 48px;
+    height: 48px;
+    margin-bottom: 15px;
+}
+
+.pdf-to-jpg-drop-zone h3 {
+    font-size: 22px;
+    font-weight: 600;
+    color: #000;
+    margin-bottom: 20px;
+}
+
+
+
+.pdf-to-jpg-file-info {
+    color: #aaa;
+    font-size: 12px;
+    margin-top: 10px;
+}
+
+
+
+/* NEW STYLES for Progress and Buttons */
+.pdf-to-jpg-progress-container {
+    width: 100%;
+    background-color: #f3f3f3;
+    border-radius: 5px;
+    margin: 20px 0;
+}
+
+.pdf-to-jpg-progress-bar {
+    width: 0%;
+    height: 20px;
+    background-color: #a600ff;
+    border-radius: 5px;
+    transition: width 0.2s;
+    box-shadow: 0 0 10px 2px #a600ff;
+}
+
+
+.pdf-to-jpg-main-container p {
+    color: #e0b0ff;
+    text-align: center;
+    margin-bottom: 40px;
+    font-size: 1.2rem;
+}
+
+.pdf-to-jpg-drop-zone {
+    border-color: #a600ff;
+    background: rgba(166, 0, 255, 0.2);
+}
+
+.pdf-to-jpg-drop-zone:hover {
+    border-color: #b033ff;
+    box-shadow: 0 0 15px rgba(166, 0, 255, 0.3);
+}
+
+.pdf-to-jpg-browse-btn {
+    border-color: #a600ff;
+    color: #a600ff;
+    box-shadow: 0 0 10px rgba(166, 0, 255, 0.1);
+}
+
+.pdf-to-jpg-browse-btn:hover {
+    background: rgba(166, 0, 255, 0.1);
+    box-shadow: 0 0 20px rgba(166, 0, 255, 0.4);
+    text-shadow: 0 0 10px #a600ff;
+}
+
+.pdf-to-jpg-progress-bar {
+    background-color: #a600ff;
+    box-shadow: 0 0 10px 2px #a600ff;
+}
+
+.pdf-to-jpg-action-btn {
+    padding: 10px 20px;
+    border-radius: 5px;
+    border: none;
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: 700;
+    text-transform: uppercase;
+    cursor: pointer;
+    margin: 5px;
+    font-size: 1rem;
+}
+
+.pdf-to-jpg-action-btn.cancel {
+    background: rgba(255, 50, 50, 0.2);
+    color: #ff5555;
+    border: 1px solid #ff5555;
+}
+
+.pdf-to-jpg-action-btn.download {
+    background: #a600ff;
+    color: #fff;
+    box-shadow: 0 0 15px rgba(166, 0, 255, 0.5);
+}
+
+.pdf-to-jpg-action-btn:hover {
+    transform: scale(1.05);
+    transition: 0.2s;
+}
+
+.pdf-to-jpg-icon-container svg path {
+    fill: #a600ff;
+}
+
+.pdf-to-jpg-close-modal-btn {
+    position: absolute;
+    top: -50px;
+    right: 0;
+    width: 40px;
+    height: 40px;
+    background: rgba(5, 15, 25, 0.8);
+    border: 1px solid rgba(166, 0, 255, 0.5);
+    color: #a600ff;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: 0.3s;
+    /* Chopped circle */
+    clip-path: polygon(10px 0, 100% 0,
+            100% calc(100% - 10px), calc(100% - 10px) 100%,
+            0 100%, 0 10px);
+}
+
+.pdf-to-jpg-close-modal-btn:hover {
+    color: #000;
+    box-shadow: 0 0 15px #a600ff;
+    background-color: #a600ff;
+}
+
+.pdf-to-jpg-close-modal-btn:hover::before {
+    transform: scale(1);
+}
+
+.pdf-to-jpg-tool-card {
+    background: rgba(166, 0, 255, 0.2);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(166, 0, 255, 0.2);
+    border-radius: 20px;
+    padding: 30px;
+    transition: 0.3s;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+.pdf-to-jpg-tool-card:hover {
+    transform: translateY(-5px);
+    border-color: rgba(166, 0, 255, 0.6);
+    box-shadow: 0 10px 30px rgba(166, 0, 255, 0.15);
+}
+
+.pdf-to-jpg-card-btn {
+    width: 100%;
+    position: relative;
+    height: 3.5em;
+    background-color: transparent;
+    color: #a600ff;
+    /* Neon Cyan */
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 16px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    border: none;
+    cursor: pointer;
+
+    /* The Content Shape */
+    clip-path: polygon(12px 0px,
+            100% 0px,
+            100% calc(100% - 12px),
+            calc(100% - 12px) 100%,
+            0px 100%,
+            0px 12px);
+    transition: all 0.3s ease;
+}
+
+/* The Border (simulated via pseudo-element due to clip-path clipping actual borders) */
+.pdf-to-jpg-card-btn::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: #a600ff;
+    z-index: -1;
+    /* Masking inner area to create 'border' only */
+    /* This method allows the clip-path on parent to cut the border too */
+    opacity: 0.3;
+    /* Dim default state */
+    transition: opacity 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* Inner cut to make it outlined */
+.pdf-to-jpg-card-btn::after {
+    content: "";
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    width: calc(100% - 4px);
+    height: calc(100% - 4px);
+    background: rgba(0, 10, 20, 0.8);
+    /* Dark background matching current card */
+    z-index: -1;
+    /* Same chopped shape but slightly smaller */
+    clip-path: polygon(11px 0px,
+            100% 0px,
+            100% calc(100% - 11px),
+            calc(100% - 11px) 100%,
+            0px 100%,
+            0px 11px);
+}
+
+.pdf-to-jpg-card-btn:hover {
+    color: #fff !important;
+    text-shadow: 0 0 10px #a600ff;
+}
+
+.pdf-to-jpg-card-btn:hover::before {
+    opacity: 1;
+    /* Bright border */
+    box-shadow: 0 0 20px rgba(166, 0, 255, 0.4);
+    /* Glow */
+}
+
+/* 6. MODAL STYLES (0kn Aesthetic) */
+.pdf-to-jpg-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 5, 10, 0.6);
+    /* Lighter dark */
+    backdrop-filter: blur(12px);
+    /* Intense blur */
+    z-index: 2000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    opacity: 1;
+    pointer-events: auto;
+    transition: opacity 0.3s ease;
+    overflow: hidden;
+}
+
+.pdf-to-jpg-modal-overlay.active {
+    opacity: 1;
+    pointer-events: all;
+}
+
+.pdf-to-jpg-upload-card {
+    background: rgba(45, 0, 54, 0.2);
+    border: 1px solid rgba(221, 0, 255, 0.586);
+    border-radius: 4px;
+    padding: 30px;
+    box-shadow: 0 10px 30px rgba(69, 0, 71, 0.5);
+    width: 100%;
+    max-width: 800px;
+    position: relative;
+    transform: scale(0.95);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    border-radius: 10px;
+}
+
+
+.pdf-to-jpg-upload-card.pdf-to-jpg-reset-animating {
+    animation: pdf-to-jpg-reset-pulse 0.6s ease-out;
+}
+
+@keyframes pdf-to-jpg-reset-pulse {
+    0% {
+        transform: scale(1);
+        box-shadow: 0 0 0 rgba(166, 0, 255, 0);
+    }
+
+    30% {
+        transform: scale(1.02);
+        box-shadow: 0 0 30px rgba(166, 0, 255, 0.4);
+    }
+
+    100% {
+        transform: scale(1);
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    }
+}

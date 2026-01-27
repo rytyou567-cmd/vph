@@ -1,0 +1,219 @@
+/* === UPCOMING TOOLS STYLES === */
+
+/* Tool 1: Image Compressor (Neon Pink/Fuchsia) */
+.image-compressor-card {
+    background: rgba(50, 0, 40, 0.4);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 0, 204, 0.3);
+    border-radius: 20px;
+    padding: 30px;
+    transition: 0.3s;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+.image-compressor-card:hover {
+    transform: translateY(-5px);
+    border-color: rgba(255, 0, 204, 0.8);
+    box-shadow: 0 10px 30px rgba(255, 0, 204, 0.25);
+}
+
+.image-compressor-btn {
+    width: 100%;
+    position: relative;
+    height: 3.5em;
+    background-color: transparent;
+    color: #ff00cc;
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 16px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    border: none;
+    cursor: pointer;
+    clip-path: polygon(12px 0px, 100% 0px, 100% calc(100% - 12px), calc(100% - 12px) 100%, 0px 100%, 0px 12px);
+    transition: all 0.3s ease;
+}
+
+.image-compressor-btn::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: #ff00cc;
+    z-index: -1;
+    opacity: 0.2;
+    transition: opacity 0.3s ease;
+}
+
+.image-compressor-btn::after {
+    content: "";
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    width: calc(100% - 4px);
+    height: calc(100% - 4px);
+    background: rgba(25, 0, 20, 0.9);
+    z-index: -1;
+    clip-path: polygon(11px 0px, 100% 0px, 100% calc(100% - 11px), calc(100% - 11px) 100%, 0px 100%, 0px 11px);
+}
+
+.image-compressor-btn:hover {
+    color: #fff !important;
+    text-shadow: 0 0 10px #ff00cc;
+}
+
+.image-compressor-btn:hover::before {
+    opacity: 0.8;
+    box-shadow: 0 0 20px rgba(255, 0, 204, 0.4);
+}
+
+/* Tool 2: Emerald/Green Theme (Upcoming) */
+.upcoming-tool-2-card {
+    background: rgba(0, 40, 20, 0.4);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(0, 255, 128, 0.3);
+    border-radius: 20px;
+    padding: 30px;
+    transition: 0.3s;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+.upcoming-tool-2-card:hover {
+    transform: translateY(-5px);
+    border-color: rgba(0, 255, 128, 0.8);
+    box-shadow: 0 10px 30px rgba(0, 255, 128, 0.25);
+}
+
+.upcoming-tool-2-btn {
+    width: 100%;
+    position: relative;
+    height: 3.5em;
+    background-color: transparent;
+    color: #00ff80;
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 16px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    border: none;
+    cursor: pointer;
+    opacity: 0.8;
+    clip-path: polygon(12px 0px, 100% 0px, 100% calc(100% - 12px), calc(100% - 12px) 100%, 0px 100%, 0px 12px);
+    transition: all 0.3s ease;
+}
+
+.upcoming-tool-2-btn::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: #00ff80;
+    z-index: -1;
+    opacity: 0.2;
+    transition: opacity 0.3s ease;
+}
+
+.upcoming-tool-2-btn::after {
+    content: "";
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    width: calc(100% - 4px);
+    height: calc(100% - 4px);
+    background: rgba(0, 20, 10, 0.9);
+    z-index: -1;
+    clip-path: polygon(11px 0px, 100% 0px, 100% calc(100% - 11px), calc(100% - 11px) 100%, 0px 100%, 0px 11px);
+}
+
+.upcoming-tool-2-btn:hover {
+    color: #fff !important;
+    text-shadow: 0 0 10px #00ff80;
+}
+
+.upcoming-tool-2-btn:hover::before {
+    opacity: 0.8;
+    box-shadow: 0 0 20px rgba(0, 255, 128, 0.4);
+}
+
+/* Tool 3: Gold/Yellow Theme */
+.upcoming-tool-3-card {
+    background: rgba(40, 30, 0, 0.4);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 200, 0, 0.3);
+    border-radius: 20px;
+    padding: 30px;
+    transition: 0.3s;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+.upcoming-tool-3-card:hover {
+    transform: translateY(-5px);
+    border-color: rgba(255, 200, 0, 0.8);
+    box-shadow: 0 10px 30px rgba(255, 200, 0, 0.25);
+}
+
+.upcoming-tool-3-btn {
+    width: 100%;
+    position: relative;
+    height: 3.5em;
+    background-color: transparent;
+    color: #ffc800;
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 16px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    border: none;
+    cursor: not-allowed;
+    opacity: 0.8;
+    clip-path: polygon(12px 0px, 100% 0px, 100% calc(100% - 12px), calc(100% - 12px) 100%, 0px 100%, 0px 12px);
+    transition: all 0.3s ease;
+}
+
+.upcoming-tool-3-btn::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: #ffc800;
+    z-index: -1;
+    opacity: 0.2;
+    transition: opacity 0.3s ease;
+}
+
+.upcoming-tool-3-btn::after {
+    content: "";
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    width: calc(100% - 4px);
+    height: calc(100% - 4px);
+    background: rgba(20, 15, 0, 0.9);
+    z-index: -1;
+    clip-path: polygon(11px 0px, 100% 0px, 100% calc(100% - 11px), calc(100% - 11px) 100%, 0px 100%, 0px 11px);
+}
+
+.upcoming-tool-3-btn:hover {
+    color: #fff !important;
+    text-shadow: 0 0 10px #ffc800;
+}
+
+.upcoming-tool-3-btn:hover::before {
+    opacity: 0.8;
+    box-shadow: 0 0 20px rgba(255, 200, 0, 0.4);
+}

@@ -1,0 +1,664 @@
+/* Dedicated ARTEMIS Overlay */
+.artemis-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 5, 10, 0.6);
+    backdrop-filter: blur(12px);
+    z-index: 2000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    /* padding: 20px; Removed to ensure perfect centering */
+    opacity: 1;
+    pointer-events: auto;
+    transition: opacity 0.3s ease;
+    overflow: hidden;
+}
+
+.artemis-modal-overlay.active {
+    opacity: 1;
+    pointer-events: all;
+}
+
+.artemis-modal-overlay.active .artemis-modal-card {
+    transform: scale(1);
+}
+
+/* Tool Card */
+.artemis-tool-card {
+    background: rgba(30, 0, 50, 0.4);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(200, 0, 255, 0.3);
+    border-radius: 20px;
+    padding: 30px;
+    transition: 0.3s;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    position: relative;
+    overflow: hidden;
+}
+
+.artemis-tool-card:hover {
+    transform: translateY(-5px);
+    border-color: rgba(200, 0, 255, 0.8);
+    box-shadow: 0 10px 30px rgba(200, 0, 255, 0.25);
+}
+
+.artemis-tool-card::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(200, 0, 255, 0.05) 0%, transparent 70%);
+    animation: artemis-card-pulse 6s ease-in-out infinite;
+    pointer-events: none;
+}
+
+@keyframes artemis-card-pulse {
+
+    0%,
+    100% {
+        transform: translate(0, 0) scale(1);
+        opacity: 0.3;
+    }
+
+    50% {
+        transform: translate(5%, 5%) scale(1.1);
+        opacity: 0.6;
+    }
+}
+
+.artemis-tool-card .card-icon {
+    background: linear-gradient(135deg, #c800ff 0%, #7000aa 100%);
+    box-shadow: 0 4px 15px rgba(200, 0, 255, 0.3);
+    width: 60px;
+    height: 60px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 20px;
+    color: white;
+}
+
+.artemis-tool-card .card-tag {
+    color: #c800ff;
+    background: rgba(200, 0, 255, 0.1);
+    font-size: 0.75rem;
+    padding: 4px 12px;
+    border-radius: 50px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 15px;
+}
+
+.artemis-tool-card .card-title {
+    color: white;
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 1.5rem;
+    margin: 0 0 10px 0;
+    font-weight: 600;
+}
+
+.artemis-tool-card .card-desc {
+    color: rgba(200, 0, 255, 0.8);
+    font-size: 0.95rem;
+    line-height: 1.6;
+    margin-bottom: 25px;
+}
+
+/* Tool Button */
+.artemis-tool-btn {
+    width: 100%;
+    position: relative;
+    height: 3.5em;
+    background-color: transparent;
+    color: #c800ff;
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 16px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    border: none;
+    cursor: pointer;
+    clip-path: polygon(12px 0px, 100% 0px, 100% calc(100% - 12px), calc(100% - 12px) 100%, 0px 100%, 0px 12px);
+    transition: all 0.3s ease;
+}
+
+.artemis-tool-btn::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: #c800ff;
+    z-index: -1;
+    opacity: 0.2;
+    transition: opacity 0.3s ease;
+}
+
+.artemis-tool-btn::after {
+    content: "";
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    width: calc(100% - 4px);
+    height: calc(100% - 4px);
+    background: rgba(15, 0, 25, 0.9);
+    z-index: -1;
+    clip-path: polygon(11px 0px, 100% 0px, 100% calc(100% - 11px), calc(100% - 11px) 100%, 0px 100%, 0px 11px);
+}
+
+.artemis-tool-btn:hover {
+    color: #fff !important;
+    text-shadow: 0 0 10px #c800ff;
+}
+
+/* ARTEMIS: AI Image Detection CSS */
+
+.artemis-modal-card {
+    background: linear-gradient(135deg, #0a0015 0%, #1a0a2e 100%);
+    border: 2px solid rgba(200, 0, 255, 0.5);
+    width: 90%;
+    max-width: 1400px;
+    height: 85%;
+    max-height: 900px;
+    border-radius: 8px;
+    display: flex;
+    overflow: hidden;
+    position: relative;
+    box-shadow: 0 0 60px rgba(200, 0, 255, 0.4), inset 0 0 40px rgba(138, 43, 226, 0.1);
+    box-sizing: border-box;
+    /* Fix for overflow issues */
+}
+
+/* Ensure all children respect box model */
+.artemis-modal-card * {
+    box-sizing: border-box;
+}
+
+.artemis-modal-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background:
+        repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(200, 0, 255, 0.03) 2px, rgba(200, 0, 255, 0.03) 4px);
+    pointer-events: none;
+    animation: artemis-scan 8s linear infinite;
+}
+
+@keyframes artemis-scan {
+    0% {
+        transform: translateY(0);
+    }
+
+    100% {
+        transform: translateY(-100%);
+    }
+}
+
+
+
+.close-modal-btn-artemis {
+    position: absolute;
+    top: 30px;
+    right: 30px;
+    width: 40px;
+    height: 40px;
+    background: rgba(10, 0, 20, 0.9);
+    border: 1px solid #c800ff;
+    color: #c800ff;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: 0.3s;
+    /* Chopped circle style from Loomis */
+    clip-path: polygon(10px 0, 100% 0,
+            100% calc(100% - 10px), calc(100% - 10px) 100%,
+            0 100%, 0 10px);
+    z-index: 1000;
+}
+
+.close-modal-btn-artemis::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: #c800ff;
+    z-index: -1;
+    transform: scale(0);
+    transition: transform 0.3s ease;
+}
+
+.close-modal-btn-artemis:hover {
+    color: #000;
+    box-shadow: 0 0 15px #c800ff;
+    background-color: #c800ff;
+}
+
+.close-modal-btn-artemis:hover::before {
+    transform: scale(1);
+}
+
+.artemis-container {
+    display: flex;
+    flex-direction: column;
+    /* Stack Drop Zone on top of Results */
+    gap: 4px;
+    /* Tightest gap */
+    padding: 20px;
+    width: 100%;
+    height: 100%;
+}
+
+/* Drop Zone */
+.artemis-drop-zone {
+    border: 3px dashed rgba(200, 0, 255, 0.4);
+    border-radius: 12px;
+    padding: 30px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    background: rgba(138, 43, 226, 0.05);
+    position: relative;
+    /* overflow: hidden; Removed to allow hover effects if needed, but flex relies on content */
+    flex: 0 0 220px;
+    width: 100%;
+    /* Fixed height to save space for canvas */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Drop Zone content styles stay same */
+.artemis-drop-zone-icon {
+    font-size: 48px;
+    margin-bottom: 15px;
+    color: #c800ff;
+    text-shadow: 0 0 20px rgba(200, 0, 255, 0.5);
+}
+
+.artemis-drop-zone-text {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 16px;
+    color: #c800ff;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+}
+
+.artemis-drop-zone-subtext {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 13px;
+    color: rgba(200, 0, 255, 0.6);
+    margin-top: 8px;
+}
+
+/* SMART COLLAPSE: Shrink Drop Zone when active */
+/* SMART COLLAPSE: Shrink Drop Zone when active */
+.artemis-container.has-image .artemis-drop-zone {
+    flex: 0 0 50px;
+    min-height: 50px;
+    padding: 0 20px;
+    flex-direction: row;
+    justify-content: space-between;
+    margin-bottom: 0;
+    /* Remove margin as requested to reduce gap */
+    border-width: 1px;
+    background: rgba(138, 43, 226, 0.15);
+}
+
+.artemis-container.has-image .artemis-drop-zone:hover {
+    background: rgba(138, 43, 226, 0.25);
+}
+
+.artemis-container.has-image .artemis-drop-zone-icon {
+    font-size: 20px;
+    margin: 0;
+    margin-right: 15px;
+}
+
+.artemis-container.has-image .artemis-drop-zone-text {
+    font-size: 14px;
+    letter-spacing: 1px;
+}
+
+.artemis-container.has-image .artemis-drop-zone-subtext {
+    display: none;
+}
+
+
+/* Results Panel */
+.artemis-results-panel {
+    background: rgba(10, 0, 21, 0.8);
+    border: 1px solid rgba(200, 0, 255, 0.3);
+    border-radius: 8px;
+    padding: 25px;
+    overflow-y: auto;
+    display: none;
+    width: 100%;
+    /* Expand to full width since preview is hidden */
+    flex: 1;
+    min-height: 0;
+}
+
+.artemis-results-panel.active {
+    display: block;
+}
+
+.artemis-header {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 24px;
+    font-weight: 700;
+    color: #c800ff;
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    margin-bottom: 20px;
+    text-shadow: 0 0 10px rgba(200, 0, 255, 0.5);
+    border-bottom: 2px solid rgba(200, 0, 255, 0.3);
+    padding-bottom: 10px;
+}
+
+/* Overall Score */
+.artemis-overall-score-container {
+    background: rgba(138, 43, 226, 0.1);
+    border: 1px solid rgba(200, 0, 255, 0.4);
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 25px;
+    text-align: center;
+}
+
+.artemis-score-label {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 14px;
+    color: rgb(237, 173, 255);
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    margin-bottom: 10px;
+}
+
+#artemis-overall-score {
+    font-family: 'Orbitron', monospace;
+    font-size: 48px;
+    font-weight: 700;
+    color: #ff00ff;
+    text-shadow: 0 0 20px currentColor;
+}
+
+.artemis-confidence-bar-container {
+    width: 100%;
+    height: 20px;
+    background: rgba(0, 0, 0, 0.5);
+    border: 1px solid rgba(200, 0, 255, 0.3);
+    border-radius: 10px;
+    overflow: hidden;
+    margin-top: 15px;
+    position: relative;
+}
+
+#artemis-confidence-bar {
+    height: 100%;
+    background: linear-gradient(90deg, #ff00ff, #cc00ff);
+    border-radius: 10px;
+    transition: width 0.5s ease;
+    box-shadow: 0 0 15px currentColor;
+}
+
+/* Method Breakdown */
+.artemis-method-breakdown {
+    justify-content: start;
+}
+
+.artemis-method-item {
+    background: rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(200, 0, 255, 0.2);
+    border-radius: 6px;
+    padding: 15px;
+    margin-bottom: 15px;
+    transition: all 0.3s ease;
+}
+
+.artemis-method-item:hover {
+    border-color: rgba(200, 0, 255, 0.5);
+    background: rgba(138, 43, 226, 0.1);
+}
+
+.artemis-method-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.artemis-method-name {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 16px;
+    font-weight: 600;
+    color: #c800ff;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.artemis-method-score {
+    font-family: 'Orbitron', monospace;
+    font-size: 18px;
+    font-weight: 700;
+}
+
+.artemis-method-bar {
+    width: 100%;
+    height: 8px;
+    background: rgba(0, 0, 0, 0.5);
+    border-radius: 4px;
+    overflow: hidden;
+    margin-bottom: 8px;
+}
+
+.artemis-method-fill {
+    height: 100%;
+    border-radius: 4px;
+    transition: width 0.5s ease;
+    box-shadow: 0 0 10px currentColor;
+}
+
+.artemis-method-markers {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.artemis-marker {
+    font-family: 'Courier New', monospace;
+    font-size: 11px;
+    color: rgb(242, 196, 255);
+    padding: 2px 8px;
+    background: rgba(138, 43, 226, 0.1);
+    border-radius: 3px;
+    display: inline-block;
+}
+
+/* Verification Badge */
+.artemis-verification-badge {
+    padding: 15px;
+    border-radius: 12px;
+    margin-bottom: 25px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    backdrop-filter: blur(5px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    transition: all 0.3s ease;
+}
+
+.artemis-verification-badge.verified {
+    background: rgba(0, 255, 128, 0.1);
+    border-color: rgba(0, 255, 128, 0.3);
+    box-shadow: 0 0 15px rgba(0, 255, 128, 0.1);
+}
+
+.artemis-verification-badge.unverified {
+    background: rgba(255, 170, 0, 0.1);
+    border-color: rgba(255, 170, 0, 0.3);
+    box-shadow: 0 0 15px rgba(255, 170, 0, 0.1);
+}
+
+.badge-icon {
+    font-size: 24px;
+}
+
+.badge-text {
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: 700;
+    font-size: 14px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+}
+
+.artemis-verification-badge.verified .badge-text {
+    color: #00ff80;
+}
+
+.artemis-verification-badge.unverified .badge-text {
+    color: #ffaa00;
+}
+
+.artemis-analyzing {
+    animation: artemis-pulse 1.5s ease-in-out infinite;
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+}
+
+@keyframes artemis-pulse {
+
+    0%,
+    100% {
+        opacity: 1;
+        transform: scale(1);
+        filter: drop-shadow(0 0 5px rgba(200, 0, 255, 0.5));
+    }
+
+    50% {
+        opacity: 0.6;
+        transform: scale(0.98);
+        filter: drop-shadow(0 0 15px rgba(200, 0, 255, 0.8));
+    }
+}
+
+/* Scrollbar */
+.artemis-results-panel::-webkit-scrollbar {
+    width: 8px;
+}
+
+.artemis-results-panel::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 4px;
+}
+
+.artemis-results-panel::-webkit-scrollbar-thumb {
+    background: rgba(200, 0, 255, 0.5);
+    border-radius: 4px;
+}
+
+.artemis-results-panel::-webkit-scrollbar-thumb:hover {
+    background: rgba(200, 0, 255, 0.7);
+}
+
+/* Input hidden */
+#artemis-file-input {
+    display: none;
+}
+
+
+
+/* Metadata Section */
+.artemis-metadata-section {
+    margin-top: 30px;
+    padding: 20px;
+    background: rgba(138, 43, 226, 0.05);
+    border: 1px solid rgba(200, 0, 255, 0.2);
+    border-radius: 12px;
+    position: relative;
+    overflow: hidden;
+}
+
+.artemis-metadata-section::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 3px;
+    background: linear-gradient(90deg, transparent, #c800ff, transparent);
+}
+
+.artemis-section-title {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 14px;
+    color: #c800ff;
+    margin-bottom: 20px;
+    letter-spacing: 2px;
+    text-shadow: 0 0 10px rgba(200, 0, 255, 0.5);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.artemis-section-title::after {
+    content: "";
+    flex-grow: 1;
+    height: 1px;
+    background: rgba(200, 0, 255, 0.2);
+}
+
+.artemis-metadata-table {
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: fixed;
+}
+
+.artemis-metadata-table tr {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.artemis-metadata-table tr:last-child {
+    border-bottom: none;
+}
+
+.artemis-metadata-table td {
+    padding: 10px 5px;
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 14px;
+    word-wrap: break-word;
+}
+
+.artemis-metadata-table td:first-child {
+    color: rgba(255, 255, 255, 0.6);
+    width: 35%;
+    font-weight: 500;
+}
+
+.artemis-metadata-table td:last-child {
+    color: #fff;
+    font-family: 'Courier New', monospace;
+    font-size: 13px;
+    text-align: right;
+    word-break: break-all;
+}

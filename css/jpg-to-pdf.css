@@ -1,0 +1,478 @@
+/* Dedicated JPG to PDF Overlay */
+.jpg-to-pdf-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 5, 10, 0.6);
+    backdrop-filter: blur(12px);
+    z-index: 2000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    opacity: 1;
+    pointer-events: auto;
+    transition: opacity 0.3s ease;
+    overflow: hidden;
+}
+
+.jpg-to-pdf-modal-overlay.active {
+    opacity: 1;
+    pointer-events: all;
+}
+
+.jpg-to-pdf-modal-overlay.active .upload-card-jpg-t-pdf {
+    transform: scale(1);
+}
+
+.upload-card-jpg-t-pdf {
+    background: transparent;
+    backdrop-filter: blur(2px);
+    width: 100%;
+    max-width: 800px;
+    border: 1px solid rgba(255, 153, 0, 0.3);
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+    padding: 30px;
+    position: relative;
+    transform: scale(0.95);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.upload-card-jpg-t-pdf.reset-animating {
+    animation: reset-pulse 0.6s ease-out;
+}
+
+@keyframes reset-pulse {
+    0% {
+        transform: scale(1);
+        box-shadow: 0 0 0 rgba(255, 153, 0, 0);
+    }
+
+    30% {
+        transform: scale(1.02);
+        box-shadow: 0 0 30px rgba(255, 153, 0, 0.4);
+    }
+
+    100% {
+        transform: scale(1);
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+    }
+}
+
+/* DASHED DROP ZONE */
+.drop-zone-jpg-t-pdf {
+    border: 2px dashed #ff9900;
+    border-radius: 10px;
+    padding: 40px 20px;
+    text-align: center;
+    background: rgba(255, 153, 0, 0.05);
+    backdrop-filter: blur(50px);
+    transition: all 0.3s ease;
+}
+
+.drop-zone-jpg-t-pdf:hover {
+    background: rgba(255, 153, 0, 0.08);
+    border-color: #ffaa00;
+    box-shadow: 0 0 15px rgba(255, 153, 0, 0.2);
+}
+
+.upload-icon-jpg-t-pdf {
+    width: 48px;
+    height: 48px;
+    margin-bottom: 15px;
+}
+
+.drop-zone-jpg-t-pdf h3,
+#uploadStatusTextJpg,
+#progressTextJpg {
+    font-size: 22px;
+    font-weight: 600;
+    color: #ff9900;
+    margin-bottom: 20px;
+}
+
+#progressTextJpg {
+    font-size: 18px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+
+/* BROWSE BUTTON */
+.browse-container-jpg-t-pdf {
+    display: inline-block;
+    padding: 5px;
+    position: relative;
+}
+
+.browse-btn-jpg-t-pdf {
+    position: relative;
+    background: rgba(255, 153, 0, 0.1);
+    border: 1px solid rgba(255, 153, 0, 0.5);
+    padding: 12px 30px;
+    color: #ff9900;
+    font-family: 'Rajdhani', sans-serif;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: 600;
+    min-width: 180px;
+    box-shadow: 0 0 10px rgba(255, 153, 0, 0.1);
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.browse-container-jpg-t-pdf:hover .browse-btn-jpg-t-pdf {
+    background: rgba(255, 153, 0, 0.2);
+    box-shadow: inset 0 0 0 1px rgba(255, 153, 0, 0.8), 0 0 20px rgba(255, 153, 0, 0.4);
+    text-shadow: 0 0 10px rgba(255, 153, 0, 0.8);
+    color: #fff;
+    letter-spacing: 2px;
+}
+
+.browse-btn-corner-jpg-t-pdf {
+    position: absolute;
+    width: 8px;
+    height: 8px;
+    border: 2px solid rgba(255, 153, 0, 0.6);
+    transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    pointer-events: none;
+}
+
+.browse-container-jpg-t-pdf:hover .browse-btn-corner-jpg-t-pdf {
+    width: 12px;
+    height: 12px;
+    border-color: #fff;
+    z-index: 2;
+}
+
+.browse-container-jpg-t-pdf:hover .btn-corner-tl {
+    top: 10px;
+    left: 10px;
+}
+
+.browse-container-jpg-t-pdf:hover .btn-corner-tr {
+    top: 10px;
+    right: 10px;
+}
+
+.browse-container-jpg-t-pdf:hover .btn-corner-br {
+    bottom: 10px;
+    right: 10px;
+}
+
+.browse-container-jpg-t-pdf:hover .btn-corner-bl {
+    bottom: 10px;
+    left: 10px;
+}
+
+/* PROGRESS BAR */
+.progress-bar-container-jpg-t-pdf {
+    width: 100%;
+    height: 12px;
+    background: rgba(255, 153, 0, 0.1);
+    border-radius: 6px;
+    margin: 20px 0;
+    overflow: hidden;
+    border: 1px solid rgba(255, 153, 0, 0.2);
+}
+
+.progress-bar-jpg-t-pdf {
+    width: 0%;
+    height: 100%;
+    background: linear-gradient(90deg, #ff9900, #ff5500);
+    box-shadow: 0 0 15px rgba(255, 85, 0, 0.5);
+    transition: width 0.3s ease;
+}
+
+/* CANCEL BUTTON */
+.cancel-container-jpg-t-pdf {
+    display: inline-block;
+    padding: 5px;
+    position: relative;
+}
+
+.cancel-btn-jpg-t-pdf {
+    position: relative;
+    background: rgba(255, 50, 50, 0.1);
+    border: 1px solid rgba(255, 50, 50, 0.5);
+    padding: 12px 30px;
+    color: #ff5555;
+    font-family: 'Rajdhani', sans-serif;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: 600;
+    min-width: 180px;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.cancel-container-jpg-t-pdf:hover .cancel-btn-jpg-t-pdf {
+    background: rgba(255, 50, 50, 0.2);
+    box-shadow: inset 0 0 0 1px rgba(255, 85, 85, 0.8), 0 0 20px rgba(255, 85, 85, 0.4);
+    text-shadow: 0 0 10px rgba(255, 85, 85, 0.8);
+    color: #fff;
+    letter-spacing: 2px;
+}
+
+.cancel-btn-corner-jpg-t-pdf {
+    position: absolute;
+    width: 8px;
+    height: 8px;
+    border: 2px solid rgba(255, 85, 85, 0.6);
+    transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    pointer-events: none;
+}
+
+.cancel-container-jpg-t-pdf:hover .cancel-btn-corner-jpg-t-pdf {
+    width: 12px;
+    height: 12px;
+    border-color: #fff;
+    z-index: 2;
+}
+
+.cancel-container-jpg-t-pdf:hover .btn-corner-tl {
+    top: 10px;
+    left: 10px;
+}
+
+.cancel-container-jpg-t-pdf:hover .btn-corner-tr {
+    top: 10px;
+    right: 10px;
+}
+
+.cancel-container-jpg-t-pdf:hover .btn-corner-br {
+    bottom: 10px;
+    right: 10px;
+}
+
+.cancel-container-jpg-t-pdf:hover .btn-corner-bl {
+    bottom: 10px;
+    left: 10px;
+}
+
+/* DOWNLOAD BUTTON */
+.download-container-orange {
+    position: relative;
+    display: inline-block;
+    padding: 5px;
+}
+
+.download-btn-orange {
+    background: linear-gradient(135deg, #ff9900 0%, #ff5500 100%);
+    border: none;
+    color: white;
+    font-family: 'Rajdhani', sans-serif;
+    text-transform: uppercase;
+    padding: 15px 40px;
+    cursor: pointer;
+    box-shadow: 0 5px 15px rgba(255, 85, 0, 0.4);
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+    font-size: 18px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    min-width: 250px;
+    white-space: nowrap;
+}
+
+.download-container-orange:hover .download-btn-orange {
+    box-shadow: inset 0 0 0 1px rgba(255, 153, 0, 0.8), 0 0 20px rgba(255, 153, 0, 0.4);
+    text-shadow: 0 0 10px rgba(255, 153, 0, 0.8);
+    color: #003e05;
+    letter-spacing: 2px;
+}
+
+.btn-corner-orange {
+    position: absolute;
+    width: 8px;
+    height: 8px;
+    border: 2px solid rgba(255, 153, 0, 0.8);
+    transition: all 0.4s ease;
+    pointer-events: none;
+}
+
+.download-container-orange:hover .btn-corner-orange {
+    width: 12px;
+    height: 12px;
+    border-color: #003e05;
+    z-index: 2;
+}
+
+.download-container-orange:hover .btn-corner-tl {
+    top: 10px;
+    left: 10px;
+}
+
+.download-container-orange:hover .btn-corner-tr {
+    top: 10px;
+    right: 10px;
+}
+
+.download-container-orange:hover .btn-corner-br {
+    bottom: 10px;
+    right: 10px;
+}
+
+.download-container-orange:hover .btn-corner-bl {
+    bottom: 10px;
+    left: 10px;
+}
+
+.close-modal-btn-jpg-t-pdf {
+    position: absolute;
+    top: -50px;
+    right: 0;
+    width: 40px;
+    height: 40px;
+    background: rgba(5, 15, 25, 0.8);
+    border: 1px solid rgba(255, 153, 0, 0.5);
+    color: #ff9900;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: 0.3s;
+    /* Chopped circle */
+    clip-path: polygon(10px 0, 100% 0,
+            100% calc(100% - 10px), calc(100% - 10px) 100%,
+            0 100%, 0 10px);
+}
+
+.close-modal-btn-jpg-t-pdf:hover {
+    color: #000;
+    box-shadow: 0 0 15px #ff9900;
+    background-color: #ff9900;
+}
+
+.close-modal-btn-jpg-t-pdf:hover::before {
+    transform: scale(1);
+}
+
+/* PREVIEW AND INFO */
+.thumbnail-container-jpg-t-pdf {
+    margin: 15px 0;
+    text-align: center;
+}
+
+#fileThumbnail-jpg-t-pdf {
+    max-height: 150px;
+    max-width: 100%;
+    border-radius: 8px;
+    box-shadow: 0 4px 15px rgba(255, 153, 0, 0.2);
+    border: 1px solid rgba(255, 153, 0, 0.3);
+}
+
+.file-info-jpg-t-pdf {
+    color: #ff9900;
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 14px;
+    margin-top: 10px;
+    opacity: 0.8;
+}
+
+.tool-card-jpg-t-pdf {
+    background: rgba(255, 153, 0, 0.2);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 153, 0, 0.2);
+    border-radius: 20px;
+    padding: 30px;
+    transition: 0.3s;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+.tool-card-jpg-t-pdf:hover {
+    transform: translateY(-5px);
+    border-color: rgba(255, 153, 0, 0.6);
+    box-shadow: 0 10px 30px rgba(255, 153, 0, 0.15);
+}
+
+.card-btn-jpg-t-pdf {
+    width: 100%;
+    position: relative;
+    height: 3.5em;
+    background-color: transparent;
+    color: #ff9900;
+    /* Neon Cyan */
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 16px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    border: none;
+    cursor: pointer;
+
+    /* The Content Shape */
+    clip-path: polygon(12px 0px,
+            100% 0px,
+            100% calc(100% - 12px),
+            calc(100% - 12px) 100%,
+            0px 100%,
+            0px 12px);
+    transition: all 0.3s ease;
+}
+
+/* The Border (simulated via pseudo-element due to clip-path clipping actual borders) */
+.card-btn-jpg-t-pdf::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: #ff9900;
+    z-index: -1;
+    /* Masking inner area to create 'border' only */
+    /* This method allows the clip-path on parent to cut the border too */
+    opacity: 0.3;
+    /* Dim default state */
+    transition: opacity 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* Inner cut to make it outlined */
+.card-btn-jpg-t-pdf::after {
+    content: "";
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    width: calc(100% - 4px);
+    height: calc(100% - 4px);
+    background: rgba(0, 10, 20, 0.8);
+    /* Dark background matching current card */
+    z-index: -1;
+    /* Same chopped shape but slightly smaller */
+    clip-path: polygon(11px 0px,
+            100% 0px,
+            100% calc(100% - 11px),
+            calc(100% - 11px) 100%,
+            0px 100%,
+            0px 11px);
+}
+
+.card-btn-jpg-t-pdf:hover {
+    color: #fff !important;
+    text-shadow: 0 0 10px #ff9900;
+}
+
+.card-btn-jpg-t-pdf:hover::before {
+    opacity: 1;
+    /* Bright border */
+    box-shadow: 0 0 20px rgba(255, 153, 0, 0.4);
+    /* Glow */
+}

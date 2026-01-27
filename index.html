@@ -1459,6 +1459,41 @@
                 window.ARTEMIS.init();
             }
         });
+
+        // GIF Maker
+        import('./js/gif-maker.js').then(module => {
+            module.GIF_MAKER.init({
+                dropZone: 'gifDropZone',
+                fileInput: 'gifFileInput',
+                frameGrid: 'gifFrameGrid',
+                previewCanvas: 'gifPreviewCanvas',
+                previewContainer: 'gifPreviewContainer',
+                frameCount: 'frameCount',
+                delayInput: 'gifDelayInput',
+                delaySlider: 'gifDelaySlider',
+                widthInput: 'gifWidthInput',
+                heightInput: 'gifHeightInput',
+                fitMethod: 'gifFitMethod',
+                generateBtn: 'generateGifBtn',
+                title: 'gifTitle',
+                tags: 'gifTags',
+                nsfw: 'gifNSFW',
+                private: 'gifPrivate',
+                watermark: 'gifWatermark',
+                watermarkText: 'gifWatermarkText',
+                watermarkPosition: 'gifWatermarkPosition',
+                toggleMoreOptions: 'toggleMoreOptions',
+                moreOptionsPanel: 'gifMoreOptions',
+                reverse: 'gifReverse',
+                forverse: 'gifForverse',
+                disableDithering: 'gifDisableDithering',
+                globalPalette: 'gifGlobalPalette',
+                playCount: 'gifPlayCount',
+                bgColor: 'gifBgColor',
+                optimization: 'gifOptimization',
+                compression: 'gifCompression'
+            });
+        });
     </script>
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 </body>

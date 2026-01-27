@@ -289,8 +289,8 @@ export const GIF_MAKER = (() => {
             }
 
             // Determine the correct base path for worker script
-            const basePath = window.location.pathname.includes('/vp/')
-                ? window.location.origin + '/vp'
+            const basePath = window.location.pathname.includes('/vph/')
+                ? window.location.origin + '/vph'
                 : window.location.origin;
 
             const gif = new GIF({
@@ -452,3 +452,4 @@ export const GIF_MAKER = (() => {
 })();
 
 window.GIF_MAKER = GIF_MAKER;
+

@@ -403,7 +403,7 @@ export const GIF_MAKER = (() => {
     function loadGifLibrary() {
         return new Promise((resolve, reject) => {
             const script = document.createElement('script');
-            script.src = window.location.origin + '/js/gif.js';
+            script.src = window.location.origin + './js/gif.js';
             script.onload = resolve;
             script.onerror = reject;
             document.head.appendChild(script);
@@ -425,4 +425,5 @@ export const GIF_MAKER = (() => {
 })();
 
 window.GIF_MAKER = GIF_MAKER;
+
 

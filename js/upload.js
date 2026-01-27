@@ -211,7 +211,7 @@ if (cancelBtn) {
 
 if (doneBtn) {
     doneBtn.addEventListener('click', () => {
-        window.location.href = '/viewports-pdf-editor';
+        window.location.href = '/pdfeditor.html';
     });
 }
 
@@ -245,3 +245,4 @@ function resetUpload() {
 
 // Expose reset globally
 window.resetMainEditor = resetUpload;
+

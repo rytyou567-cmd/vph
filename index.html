@@ -958,13 +958,6 @@
                         <h3 style="color: #ff00cc;">Drop Image for Extraction</h3>
                         <p style="color: #888;">Supports JPG, PNG, SVG</p>
                         <input type="file" id="loomisFileInput" hidden accept="image/*">
-                        <div class="ic-br-container" style="margin-top: 15px;">
-                            <span class="ic-br-corner br-tl"></span>
-                            <span class="ic-br-corner br-tr"></span>
-                            <span class="ic-br-corner br-br"></span>
-                            <span class="ic-br-corner br-bl"></span>
-                            <button class="ic-br-btn">Browse Files</button>
-                        </div>
                     </div>
                     <div id="loomisCanvasContainer" style="position: relative; display: none; line-height: 0;">
                         <canvas id="loomisCanvas"
@@ -1124,14 +1117,6 @@
                     <h3 style="color: #00ff80;">Secure File Cascade</h3>
                     <p style="color: #888;">Local AES-256 Multi-Phase Encryption</p>
                     <input type="file" id="kryptFileInput" hidden>
-                    <div class="ic-br-container" style="margin-top: 15px; --ic-accent: #00ff80;">
-                        <span class="ic-br-corner br-tl" style="border-color: var(--ic-accent)"></span>
-                        <span class="ic-br-corner br-tr" style="border-color: var(--ic-accent)"></span>
-                        <span class="ic-br-corner br-br" style="border-color: var(--ic-accent)"></span>
-                        <span class="ic-br-corner br-bl" style="border-color: var(--ic-accent)"></span>
-                        <button class="ic-br-btn" style="color: var(--ic-accent); border-color: var(--ic-accent)">Browse
-                            Files</button>
-                    </div>
                 </div>
                 <div id="kryptControls" class="krypt-controls" style="display: none;">
                     <input type="password" id="kryptKey" placeholder="CIPHER KEY">
@@ -1203,14 +1188,6 @@
                         <div class="artemis-drop-zone-text">Upload Image for Analysis</div>
                         <div class="artemis-drop-zone-subtext">Drop image here or click to browse</div>
                         <input type="file" id="artemis-file-input" accept="image/*" multiple hidden>
-                        <div class="ic-br-container" style="margin-top: 15px; --ic-accent: #c800ff;">
-                            <span class="ic-br-corner br-tl" style="border-color: var(--ic-accent)"></span>
-                            <span class="ic-br-corner br-tr" style="border-color: var(--ic-accent)"></span>
-                            <span class="ic-br-corner br-br" style="border-color: var(--ic-accent)"></span>
-                            <span class="ic-br-corner br-bl" style="border-color: var(--ic-accent)"></span>
-                            <button class="ic-br-btn"
-                                style="color: var(--ic-accent); border-color: var(--ic-accent)">Browse Files</button>
-                        </div>
                     </div>
                 </div>
 
@@ -1228,6 +1205,203 @@
 
                     <div class="artemis-header" style="font-size: 18px; margin-top: 20px;">Method Breakdown</div>
                     <div id="artemis-method-breakdown" class="artemis-method-breakdown"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- GIF Maker Modal -->
+    <div id="gifMakerModal" class="gif-maker-modal-overlay" onclick="closeModal(event, 'gifMakerModal')"
+        style="display: none;">
+        <div class="gif-maker-card" onclick="event.stopPropagation()">
+            <div class="gif-maker-header">
+                <h2 style="color: #ffaa00; font-family: 'Rajdhani', sans-serif; margin: 0;">GIF STUDIO</h2>
+                <button class="close-modal-btn-gif" onclick="closeSpecificModal('gifMakerModal')">
+                    <svg viewBox="0 0 24 24" width="24" height="24">
+                        <path fill="currentColor"
+                            d="M19,6.41L17.59,5L12,10.59L6.41,5L5,6.41L10.59,12L5,17.59L6.41,19L12,13.41L17.59,19L19,17.59L13.41,12L19,6.41Z" />
+                    </svg>
+                </button>
+            </div>
+            <div class="gif-maker-layout">
+                <div class="gif-maker-workspace">
+                    <div class="gif-preview-container" id="gifPreviewContainer">
+                        <div id="gifDropZone" class="gif-dropzone">
+                            <svg viewBox="0 0 24 24" width="60" height="60" fill="rgba(255, 170, 0, 0.4)">
+                                <path
+                                    d="M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M13.5,16V13H16L12,9L8,13H10.5V16H13.5M13,9V3.5L18.5,9H13Z" />
+                            </svg>
+                            <h3 style="color: #ffaa00;">Drop Frames for Animation</h3>
+                            <button class="reset-btn" onclick="document.getElementById('gifFileInput').click()">Upload
+                                Images</button>
+                            <input type="file" id="gifFileInput" hidden accept="image/*" multiple>
+                        </div>
+                        <canvas id="gifPreviewCanvas" style="display: none;"></canvas>
+                    </div>
+                    <div class="frame-list-container">
+                        <div class="frame-list-header">
+                            <span>ARRANGE YOUR IMAGES</span>
+                            <span id="frameCount">0 Frames</span>
+                        </div>
+                        <div class="frame-grid" id="gifFrameGrid">
+                            <!-- Frames will be injected here -->
+                        </div>
+                    </div>
+                </div>
+                <div class="gif-maker-sidebar">
+                    <div class="control-group">
+                        <label>Frame Delay (ms)</label>
+                        <div class="input-row">
+                            <input type="number" id="gifDelayInput" value="500" min="10" max="5000">
+                            <input type="range" id="gifDelaySlider" min="10" max="2000" value="500">
+                        </div>
+                    </div>
+                    <div class="control-group">
+                        <label>Dimensions (W x H)</label>
+                        <div class="input-row">
+                            <input type="number" id="gifWidthInput" value="500">
+                            <span>x</span>
+                            <input type="number" id="gifHeightInput" value="500">
+                        </div>
+                        <div class="input-row">
+                            <label style="font-size: 0.7rem;">Fit Method</label>
+                            <select id="gifFitMethod" style="flex: 1;">
+                                <option value="stretch">Stretch</option>
+                                <option value="contain">Fit</option>
+                                <option value="cover">Cover (Crop)</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="control-group">
+                        <div style="display: flex; flex-wrap: wrap; gap: 5px; margin-bottom: 20px;">
+                            <button class="vault-tool-btn" style="padding: 5px 10px; font-size: 0.7rem;">Add text to
+                                GIF</button>
+                            <button class="vault-tool-btn" style="padding: 5px 10px; font-size: 0.7rem;">Crop
+                                GIF</button>
+                            <button class="vault-tool-btn" style="padding: 5px 10px; font-size: 0.7rem;">Rotate
+                                GIF</button>
+                            <button class="vault-tool-btn" style="padding: 5px 10px; font-size: 0.7rem;">Add
+                                Image</button>
+                            <button class="vault-tool-btn" style="padding: 5px 10px; font-size: 0.7rem;">Draw</button>
+                            <button id="toggleMoreOptions" class="vault-tool-btn"
+                                style="padding: 5px 10px; font-size: 0.7rem; background: rgba(255,170,0,0.1); border-color: rgba(255,170,0,0.3);">More
+                                Options ▾</button>
+                        </div>
+
+                        <div id="gifMoreOptions" class="gif-advanced-options" style="display: none;">
+                            <div class="toggle-group"
+                                style="padding: 15px; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,170,0,0.1); border-radius: 4px; gap: 12px;">
+                                <label class="toggle-item"><input type="checkbox" id="gifReverse"> Reverse GIF</label>
+                                <label class="toggle-item" style="align-items: flex-start;">
+                                    <input type="checkbox" id="gifForverse">
+                                    <div style="font-size: 0.75rem; line-height: 1.2;">
+                                        Forverse (Plays forward then backward, good for slow motion and for making
+                                        looping less choppy)
+                                    </div>
+                                </label>
+                                <label class="toggle-item"><input type="checkbox" id="gifDisableDithering"> Disable
+                                    Dithering (smaller filesize, but color banding)</label>
+                                <label class="toggle-item" style="align-items: flex-start;">
+                                    <input type="checkbox" id="gifGlobalPalette">
+                                    <div style="font-size: 0.75rem; line-height: 1.2;">
+                                        Use a single global color palette (reduces flashing/flickering, sometimes higher
+                                        quality, a bit slower to generate)
+                                    </div>
+                                </label>
+
+                                <div class="control-group" style="margin-top: 5px;">
+                                    <label>Play Count</label>
+                                    <div class="input-row">
+                                        <input type="number" id="gifPlayCount" value="0" min="0" style="width: 70px;">
+                                        <span style="font-size: 0.7rem;">0 means loop forever</span>
+                                    </div>
+                                </div>
+
+                                <div class="control-group">
+                                    <label>Background Color</label>
+                                    <div class="input-row">
+                                        <span style="color: #ffaa00;">#</span>
+                                        <input type="text" id="gifBgColor" value="ffffff"
+                                            style="width: 100px; text-transform: uppercase;">
+                                    </div>
+                                    <div style="font-size: 0.7rem; color: #888; margin-top: 4px;">For frames with
+                                        transparency. Delete to maintain transparency.</div>
+                                </div>
+
+                                <div class="control-group">
+                                    <label>Filesize optimization</label>
+                                    <select id="gifOptimization" style="width: 100%;">
+                                        <option value="none">None</option>
+                                        <option value="basic">Basic (Fastest)</option>
+                                        <option value="advanced" selected>Advanced (smaller files)</option>
+                                    </select>
+                                </div>
+
+                                <div class="control-group">
+                                    <label>Lossy GIF compression</label>
+                                    <select id="gifCompression" style="width: 100%;">
+                                        <option value="0">None (Lossless optimize only)</option>
+                                        <option value="20">Low</option>
+                                        <option value="40">Medium</option>
+                                        <option value="60">High</option>
+                                        <option value="80">Ultra</option>
+                                        <option value="100">Mega</option>
+                                        <option value="120">Giga</option>
+                                        <option value="140">Plaid</option>
+                                        <option value="200">Wombat Alpaca Noodle</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="control-group">
+                        <label>Project Details</label>
+                        <input type="text" id="gifTitle" placeholder="Enter a clever title!"
+                            style="background: rgba(0,0,0,0.5); border: 1px solid rgba(255,170,0,0.3); color: #fff; padding: 10px; border-radius: 4px;">
+                        <input type="text" id="gifTags" placeholder="Tags (comma separated)"
+                            style="background: rgba(0,0,0,0.5); border: 1px solid rgba(255,170,0,0.3); color: #fff; padding: 10px; border-radius: 4px; margin-top: 5px;">
+                    </div>
+
+                    <div class="toggle-group">
+                        <label class="toggle-item"><input type="checkbox" id="gifNSFW"> This image is NSFW</label>
+                        <label class="toggle-item"><input type="checkbox" id="gifPrivate"> Private (Only for
+                            download)</label>
+                    </div>
+
+                    <div class="control-group">
+                        <label class="toggle-item" style="margin-bottom: 10px;">
+                            <input type="checkbox" id="gifWatermark" checked> Add Watermark
+                        </label>
+                        <div id="watermarkOptions"
+                            style="padding-left: 20px; display: flex; flex-direction: column; gap: 10px;">
+                            <div>
+                                <label style="font-size: 0.7rem; margin-bottom: 4px; display: block;">Watermark
+                                    text</label>
+                                <input type="text" id="gifWatermarkText" value="ViewPorts GIF Studio"
+                                    placeholder="Enter watermark text"
+                                    style="width: 100%; background: rgba(0,0,0,0.5); border: 1px solid rgba(255,170,0,0.3); color: #fff; padding: 8px; border-radius: 4px;">
+                            </div>
+                            <div>
+                                <label style="font-size: 0.7rem; margin-bottom: 4px; display: block;">Watermark
+                                    position</label>
+                                <select id="gifWatermarkPosition"
+                                    style="width: 100%; background: rgba(0,0,0,0.5); border: 1px solid rgba(255,170,0,0.3); color: #fff; padding: 8px; border-radius: 4px;">
+                                    <option value="bottom-left" selected>Bottom Left</option>
+                                    <option value="bottom-right">Bottom Right</option>
+                                    <option value="top-left">Top Left</option>
+                                    <option value="top-right">Top Right</option>
+                                    <option value="center">Center</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="gif-actions">
+                        <button id="generateGifBtn" class="generate-btn">Generate GIF</button>
+                        <button onclick="window.GIF_MAKER.reset()" class="reset-btn">Reset All</button>
+                    </div>
                 </div>
             </div>
         </div>

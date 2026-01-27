@@ -288,12 +288,17 @@ export const GIF_MAKER = (() => {
                 await loadGifLibrary();
             }
 
+            // Determine the correct base path for worker script
+            const basePath = window.location.pathname.includes('/vp/')
+                ? window.location.origin + '/vp'
+                : window.location.origin;
+
             const gif = new GIF({
                 workers: 2,
                 quality: elements.disableDithering && elements.disableDithering.checked ? 1 : 10,
                 width: parseInt(elements.widthInput.value) || 500,
                 height: parseInt(elements.heightInput.value) || 500,
-                workerScript: 'https://cdn.jsdelivr.net/npm/gif.js@0.2.0/dist/gif.worker.js',
+                workerScript: basePath + '/js/gif.worker.js',
                 transparent: elements.bgColor && elements.bgColor.value ? null : 'rgba(0,0,0,0)',
                 background: elements.bgColor && elements.bgColor.value ? '#' + elements.bgColor.value : null,
                 repeat: (elements.playCount ? parseInt(elements.playCount.value) : 0) || 0,

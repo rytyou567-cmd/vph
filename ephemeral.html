@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mesh Drop | P2P Zero-Server File Transfer</title>
+    <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --neon-green: #0f0;
+            --cyber-blue: #0af;
+            --dark-bg: #050505;
+            --panel-bg: rgba(0, 10, 0, 0.9);
+            --border: 1px solid #0f0;
+        }
+
+        body {
+            background-color: var(--dark-bg);
+            color: var(--neon-green);
+            font-family: 'Fira Code', monospace;
+            margin: 0;
+            padding: 20px;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            box-sizing: border-box;
+            overflow: hidden;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid var(--neon-green);
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+
+        .grid-container {
+            display: grid;
+            grid-template-columns: 250px 1fr 300px;
+            gap: 20px;
+            flex: 1;
+            min-height: 0;
+        }
+
+        /* MOBILE RESPONSIVE */
+        @media (max-width: 900px) {
+            body {
+                height: auto;
+                overflow: auto;
+                padding: 10px;
+            }
+
+            .grid-container {
+                display: flex;
+                flex-direction: column;
+                grid-template-columns: 1fr;
+                gap: 15px;
+            }
+
+            .header {
+                flex-direction: column;
+                gap: 10px;
+                text-align: center;
+            }
+
+            .header>div {
+                text-align: center !important;
+            }
+
+            .grid-container>div {
+                min-height: 300px;
+            }
+
+            #accept-modal {
+                width: 80%;
+                padding: 20px;
+            }
+        }
+
+        .panel {
+            border: var(--border);
+            background: var(--panel-bg);
+            padding: 20px;
+            box-shadow: inset 0 0 15px rgba(0, 255, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            min-height: 0;
+        }
+
+        /* DROP ZONE */
+        #drop-zone {
+            flex: 1;
+            border: 2px dashed var(--neon-green);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            transition: all 0.3s;
+            cursor: pointer;
+            background: rgba(0, 255, 0, 0.02);
+            min-height: 150px;
+        }
+
+        #drop-zone.dragover {
+            background: rgba(0, 255, 0, 0.1);
+            box-shadow: 0 0 30px rgba(0, 255, 0, 0.2);
+        }
+
+        #btn-select-file {
+            margin-top: 15px;
+            display: none;
+            /* Only show on small screens or always as helper */
+            width: auto;
+            border-color: var(--cyber-blue);
+            color: var(--cyber-blue);
+            font-size: 11px;
+        }
+
+        @media (max-width: 900px) {
+            #btn-select-file {
+                display: inline-block;
+            }
+        }
+
+        /* TRANSFERS */
+        #transfers {
+            margin-top: 20px;
+            overflow-y: auto;
+            flex: 1;
+        }
+
+        .transfer-item {
+            border-bottom: 1px solid rgba(0, 255, 0, 0.2);
+            padding: 10px 0;
+            font-size: 11px;
+        }
+
+        .progress-bar {
+            height: 4px;
+            background: #111;
+            margin-top: 5px;
+            border-radius: 2px;
+            overflow: hidden;
+        }
+
+        .progress-inner {
+            height: 100%;
+            background: var(--cyber-blue);
+            width: 0%;
+            transition: width 0.1s;
+        }
+
+        .download-link {
+            color: #0f0;
+            font-size: 9px;
+            margin-top: 5px;
+            display: block;
+            text-decoration: none;
+            border: 1px solid #0f0;
+            padding: 5px;
+            text-align: center;
+        }
+
+        .download-link:hover {
+            background: #0f0;
+            color: #000;
+        }
+
+        /* MODAL */
+        #accept-modal {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: #000;
+            border: 2px solid var(--cyber-blue);
+            padding: 30px;
+            z-index: 1000;
+            box-shadow: 0 0 50px rgba(0, 170, 255, 0.4);
+            text-align: center;
+        }
+
+        .overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 999;
+        }
+
+        /* FOOTER */
+        .footer-room {
+            margin-top: 15px;
+            border-top: 1px solid #333;
+            padding-top: 10px;
+            display: flex;
+            justify-content: space-between;
+            font-size: 9px;
+            opacity: 0.6;
+        }
+
+        button {
+            background: transparent;
+            border: 1px solid #0f0;
+            color: #0f0;
+            padding: 8px;
+            cursor: pointer;
+            font-family: inherit;
+        }
+
+        button:hover {
+            background: #0f0;
+            color: #000;
+        }
+
+        input[type="text"] {
+            background: #000;
+            border: 1px solid #0f5;
+            color: #fff;
+            padding: 10px;
+            font-family: inherit;
+            width: 100%;
+            box-sizing: border-box;
+            outline: none;
+        }
+
+        #log-terminal {
+            flex: 1;
+            font-size: 9px;
+            color: #0f0;
+            margin-top: 10px;
+            overflow-y: auto;
+            line-height: 1.4;
+        }
+
+        .node-item {
+            font-size: 11px;
+            padding: 5px;
+            border-bottom: 1px dashed #0f0;
+            opacity: 0.8;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="header">
+        <div>
+            <h1 style="margin:0; font-size: 18px;">MESH_DROP_V2</h1>
+            <div style="font-size: 9px; color: var(--cyber-blue);">P2P_DIRECT_BLOB_TRANSFER // NO_SERVER</div>
+        </div>
+        <div style="text-align: right;">
+            <div style="display: flex; align-items: center; gap: 10px; justify-content: flex-end;">
+                <div id="my-peer-id" style="font-weight: bold; font-size: 12px;">INITIALIZING...</div>
+                <button id="btn-copy-id" style="padding: 2px 8px; font-size: 9px; margin: 0; width: auto;">COPY</button>
+            </div>
+            <div style="font-size: 9px; opacity: 0.5;">YOUR_UPLINK_SIGNATURE</div>
+        </div>
+    </div>
+
+    <div class="grid-container">
+        <!-- LEFT: NODE CONTROL -->
+        <div class="panel">
+            <h3 style="margin-top: 0; font-size: 12px; color: var(--cyber-blue);">PEER_UPLINK</h3>
+            <div id="peer-list" style="flex:1; overflow-y:auto;"></div>
+
+            <div style="margin-top: 10px;">
+                <h3 style="font-size: 11px; color: #555;">SWARM_NODES [<span id="peer-count">0</span>]</h3>
+                <input type="text" id="connect-to-peer-id" placeholder="PASTE PEER_ID..."
+                    style="font-size: 10px; padding: 8px;">
+                <button id="btn-connect"
+                    style="width: 100%; margin-top: 5px; font-size: 10px;">ESTABLISH_UPLINK</button>
+            </div>
+        </div>
+
+        <!-- CENTER: DROP ZONE -->
+        <div class="panel">
+            <div id="drop-zone">
+                <div style="font-size: 30px; margin-bottom: 10px;">↥</div>
+                <div style="font-weight: bold; font-size: 12px; letter-spacing: 2px;">DRAG & DROP FILES</div>
+                <div style="font-size: 9px; opacity: 0.6; margin-top: 5px;">TRANSFERS REQUIRE EXPLICIT ACCEPTANCE</div>
+
+                <input type="file" id="file-input-hidden" style="display: none;" multiple>
+                <button id="btn-select-file"
+                    onclick="document.getElementById('file-input-hidden').click()">SELECT_FILE</button>
+            </div>
+
+            <div
+                style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #333; padding-bottom: 5px; margin-bottom: 10px; margin-top: 10px;">
+                <h3 style="font-size: 12px; margin: 0;">ACTIVE_UPLINKS</h3>
+                <button onclick="clearHistory()" id="btn-clear-history"
+                    style="font-size: 8px; padding: 2px 5px; margin: 0; border-color: #666; color: #666;">CLEAR_LOG</button>
+            </div>
+            <div id="transfers">
+                <!-- transfer items go here -->
+            </div>
+        </div>
+
+        <!-- RIGHT: EVENT LOGS -->
+        <div class="panel">
+            <h3 style="margin-top: 0; font-size: 12px; color: var(--cyber-blue);">KERNEL_EVENT_LOG</h3>
+            <div id="log-terminal">
+                <div>> READY_FOR_HANDSHAKE...</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="footer-room">
+        <span>STATUS: SWARM_CORE_ACTIVE</span>
+        <span>NEURAL_DOMAIN: <span style="color:var(--cyber-blue)">PUBLIC_MESH</span></span>
+        <span>LATENCY: <span id="latency-pulse">--</span>ms</span>
+    </div>
+
+    <!-- ACCEPT MODAL -->
+    <div id="accept-modal">
+        <h2 style="color: var(--cyber-blue); margin-top:0; font-size: 16px;">INCOMING_UPLINK</h2>
+        <div id="accept-file-info" style="font-size: 12px; margin-bottom: 20px; line-height: 1.5;"></div>
+        <div style="display: flex; gap: 15px; justify-content: center;">
+            <button id="btn-accept-transfer"
+                style="border-color: #0f0; color: #0f0; width: 100px; font-size: 11px;">ACCEPT</button>
+            <button id="btn-accept-all"
+                style="display: none; border-color: #0af; color: #0af; width: 100px; font-size: 11px;">ACCEPT
+                ALL</button>
+            <button id="btn-reject-transfer"
+                style="border-color: #f33; color: #f33; width: 100px; font-size: 11px;">REJECT</button>
+        </div>
+    </div>
+    <div class="overlay" id="modal-overlay"></div>
+
+    <script src="js/ephemeral-mesh.js"></script>
+</body>
+
+</html>

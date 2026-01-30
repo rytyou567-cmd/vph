@@ -54,11 +54,12 @@ const elBtnReject = document.getElementById('btn-reject-transfer');
 const elUploadSpeed = document.getElementById('upload-speed');
 const elDownloadSpeed = document.getElementById('download-speed');
 
-// Metrics tracking
-let uploadBytes = 0;
-let downloadBytes = 0;
-let uploadStartTime = null;
-let downloadStartTime = null;
+// Metrics tracking with sliding window (2 second window)
+const metricsSamples = {
+    upload: [],
+    download: []
+};
+const METRICS_WINDOW_MS = 2000; // 2 second window for speed calculation
 let lastChunkTime = Date.now();
 
 function log(msg) {
@@ -68,32 +69,52 @@ function log(msg) {
 }
 
 /**
- * Update transfer metrics (upload/download speed, latency)
+ * Track bytes transferred for real-time speed calculation
+ */
+function trackUpload(bytes) {
+    metricsSamples.upload.push({ time: Date.now(), bytes });
+}
+
+function trackDownload(bytes) {
+    metricsSamples.download.push({ time: Date.now(), bytes });
+}
+
+/**
+ * Update transfer metrics (upload/download speed) using sliding window
  */
 function updateMetrics() {
     const now = Date.now();
+    const cutoff = now - METRICS_WINDOW_MS;
 
-    // Calculate upload speed
-    if (uploadStartTime && uploadBytes > 0) {
-        const uploadDuration = (now - uploadStartTime) / 1000; // seconds
-        const uploadKBps = (uploadBytes / 1024) / uploadDuration;
-        elUploadSpeed.textContent = uploadKBps >= 1024
-            ? `${(uploadKBps / 1024).toFixed(2)} MB/s`
-            : `${uploadKBps.toFixed(2)} KB/s`;
+    // Clean old samples and calculate upload speed
+    metricsSamples.upload = metricsSamples.upload.filter(s => s.time > cutoff);
+    if (metricsSamples.upload.length > 0) {
+        const totalBytes = metricsSamples.upload.reduce((sum, s) => sum + s.bytes, 0);
+        const duration = (now - metricsSamples.upload[0].time) / 1000 || 0.001; // Avoid division by zero
+        const kbps = (totalBytes / 1024) / duration;
+        elUploadSpeed.textContent = kbps >= 1024
+            ? `${(kbps / 1024).toFixed(2)} MB/s`
+            : `${kbps.toFixed(2)} KB/s`;
+    } else {
+        elUploadSpeed.textContent = '0 KB/s';
     }
 
-    // Calculate download speed
-    if (downloadStartTime && downloadBytes > 0) {
-        const downloadDuration = (now - downloadStartTime) / 1000; // seconds
-        const downloadKBps = (downloadBytes / 1024) / downloadDuration;
-        elDownloadSpeed.textContent = downloadKBps >= 1024
-            ? `${(downloadKBps / 1024).toFixed(2)} MB/s`
-            : `${downloadKBps.toFixed(2)} KB/s`;
+    // Clean old samples and calculate download speed
+    metricsSamples.download = metricsSamples.download.filter(s => s.time > cutoff);
+    if (metricsSamples.download.length > 0) {
+        const totalBytes = metricsSamples.download.reduce((sum, s) => sum + s.bytes, 0);
+        const duration = (now - metricsSamples.download[0].time) / 1000 || 0.001;
+        const kbps = (totalBytes / 1024) / duration;
+        elDownloadSpeed.textContent = kbps >= 1024
+            ? `${(kbps / 1024).toFixed(2)} MB/s`
+            : `${kbps.toFixed(2)} KB/s`;
+    } else {
+        elDownloadSpeed.textContent = '0 KB/s';
     }
 }
 
-// Update metrics every 500ms
-setInterval(updateMetrics, 500);
+// Update metrics every 300ms for smoother updates
+setInterval(updateMetrics, 300);
 
 /**
  * Update transfer status text and color
@@ -1036,6 +1057,10 @@ async function startFileStream(id, conn) {
                     chunk: encryptedData,
                     iv: iv
                 });
+
+                // Track upload metrics for encrypted transfers
+                trackUpload(encryptedData.byteLength);
+                if (i === 0) log(`FIRST_CHUNK_SENT :: ${id} to ${conn.peer}`);
             } catch (error) {
                 console.error('Encryption failed:', error);
                 log(`ENCRYPTION_ERROR :: ${id} to ${conn.peer}`);
@@ -1052,9 +1077,8 @@ async function startFileStream(id, conn) {
 
             if (i === 0) log(`FIRST_CHUNK_SENT :: ${id} to ${conn.peer}`);
 
-            // Metrics tracking
-            if (!uploadStartTime) uploadStartTime = Date.now();
-            uploadBytes += chunk.byteLength;
+            // Track upload metrics for unencrypted transfers
+            trackUpload(chunk.byteLength);
             lastChunkTime = Date.now();
         }
 
@@ -1187,11 +1211,9 @@ async function handleFileChunk(data, conn) {
 
     session.receivedCount++;
 
-    // Track download metrics
-    if (!downloadStartTime) downloadStartTime = Date.now();
-    // Use actual chunk length for accurate metrics
+    // Track download metrics using sliding window
     const chunkSize = data.chunk ? data.chunk.byteLength : CHUNK_SIZE;
-    downloadBytes += chunkSize;
+    trackDownload(chunkSize);
     lastChunkTime = Date.now();
 
     // Calculate progress in MB (same as sender side)

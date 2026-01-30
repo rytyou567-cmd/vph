@@ -1030,20 +1030,34 @@ async function startFileStream(id, conn) {
  * Handle chunk acknowledgement from receiver
  */
 function handleFileChunkAck(data) {
-    const session = pendingSends[data.transferId];
-    if (!session) return;
+    try {
+        // Find session by transferId directly
+        const session = pendingSends[data.transferId];
 
-    const percent = Math.floor((data.receivedCount / data.total) * 100);
-    updateProgress(data.transferId, percent);
+        if (!session) {
+            console.warn(`ACK received for unknown session: ${data.transferId}`);
+            return;
+        }
 
-    if (data.receivedCount === data.total) {
-        updateProgress(data.transferId, 100);
-        updateTransferStatus(data.transferId, 'COMPLETE', '#0f0');
-        session.active = false;
-        log(`REMOTE_COMPLETE :: ${data.receivedCount}/${data.total} chunks verified on ${session.peerId || 'remote'}`);
+        // Log progress occasionally to avoid spam
+        if (data.receivedCount === data.total || data.receivedCount % 5 === 0) {
+            log(`ACK_RECEIVED :: ${data.receivedCount}/${data.total} for ${data.transferId}`);
+        }
 
-        // Final cleanup after successful verification
-        setTimeout(() => delete pendingSends[data.transferId], 5000);
+        const percent = Math.floor((data.receivedCount / data.total) * 100);
+        updateProgress(data.transferId, percent);
+
+        if (data.receivedCount === data.total) {
+            log(`ACK_COMPLETE :: All chunks verified by receiver for ${data.transferId}`);
+            updateProgress(data.transferId, 100);
+            updateTransferStatus(data.transferId, 'COMPLETE', '#0f0');
+            session.active = false;
+
+            // Final cleanup after successful verification
+            setTimeout(() => delete pendingSends[data.transferId], 5000);
+        }
+    } catch (e) {
+        console.error('Error handling ACK:', e);
     }
 }
 
@@ -1107,8 +1121,8 @@ async function handleFileChunk(data, conn) {
         }
     } catch (error) {
         console.error('Decryption error:', error);
-        log(`DECRYPTION_ERROR :: ${data.transferId}`);
-        return;
+        log(`DECRYPTION_ERROR :: ${data.transferId} - ${error.message}`);
+        return; // This return causes the halt!
     }
 
     session.receivedCount++;
@@ -1119,6 +1133,11 @@ async function handleFileChunk(data, conn) {
     const chunkSize = data.chunk ? data.chunk.byteLength : CHUNK_SIZE;
     downloadBytes += chunkSize;
     lastChunkTime = Date.now();
+
+    // Log periodic progress on receiver side
+    if (session.receivedCount % 20 === 0) {
+        console.log(`RCT_PROGRESS :: ${session.receivedCount}/${data.total}`);
+    }
 
     const percent = Math.floor((session.receivedCount / data.total) * 100);
     updateProgress(data.transferId, percent);

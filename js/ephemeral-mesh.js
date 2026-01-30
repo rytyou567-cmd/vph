@@ -39,7 +39,6 @@ const elPeerList = document.getElementById('peer-list');
 const elDropZone = document.getElementById('drop-zone');
 const elTransfers = document.getElementById('transfers');
 const elLog = document.getElementById('log-terminal');
-const elFingerprint = document.getElementById('my-fingerprint');
 const elEncryptionStatus = document.getElementById('encryption-status');
 
 // Modal DOM
@@ -537,15 +536,7 @@ async function initializeEncryption() {
         myFingerprint = await CryptoUtils.generateFingerprint(myPublicKeyData);
         log('Fingerprint generated');
 
-        // Display fingerprint
-        if (elFingerprint) {
-            elFingerprint.innerText = CryptoUtils.formatFingerprint(myFingerprint);
-            elFingerprint.title = myFingerprint; // Full fingerprint on hover
-        } else {
-            log('WARNING: Fingerprint element not found');
-        }
-
-        log(`ENCRYPTION_READY :: ${CryptoUtils.formatFingerprint(myFingerprint)}`);
+        log(`ENCRYPTION_READY!...`);
 
         // Mark encryption as ready
         encryptionReady = true;
@@ -721,7 +712,7 @@ async function handleKeyExchange(data, conn) {
         });
 
         updateUI();
-        log(`ENCRYPTION_READY :: ${peerId} [${CryptoUtils.formatFingerprint(data.fingerprint)}]`);
+        log(`ENCRYPTION_READY :: ${peerId}`);
     } catch (error) {
         console.error('Key exchange handling failed:', error);
         log(`KEY_EXCHANGE_ERROR :: ${conn.peer}`);
@@ -795,8 +786,27 @@ elFileInput.addEventListener('change', (e) => {
 });
 
 window.clearHistory = () => {
+    // Clear UI
     elTransfers.innerHTML = '';
-    log("HISTORY_CLEARED");
+
+    // Clear all file data from RAM
+    Object.keys(incomingFiles).forEach(key => delete incomingFiles[key]);
+    Object.keys(pendingSends).forEach(key => delete pendingSends[key]);
+    Object.keys(streamHandles).forEach(key => {
+        const stream = streamHandles[key];
+        if (stream && stream.close) stream.close().catch(() => { });
+        delete streamHandles[key];
+    });
+    Object.keys(transferModes).forEach(key => delete transferModes[key]);
+
+    // Clear pending offers queue
+    pendingOffers.length = 0;
+
+    // Reset metrics
+    metricsSamples.upload = [];
+    metricsSamples.download = [];
+
+    log("HISTORY_CLEARED :: RAM cleaned");
 };
 
 // 3. Offer a file

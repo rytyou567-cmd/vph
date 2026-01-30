@@ -745,32 +745,32 @@ async function shareFile(file) {
         return alert("NO PEERS SELECTED.\nPlease select at least one peer to send files.");
     }
 
-    const transferId = 'tx_' + Math.random().toString(36).substr(2, 6);
-    pendingSends[transferId] = { file, active: true };
-
-    // Determine if transfer will be encrypted
-    const isEncrypted = !unencryptedMode && peers.some(p => keyExchangeStatus[p.peer] === 'ready');
-
-    const statusMsg = isEncrypted
-        ? `🔐 OFFERING (ENCRYPTED) to ${peers.length} peer(s)`
-        : `🔓 OFFERING (UNENCRYPTED) to ${peers.length} peer(s)`;
-
-    createTransferUI(transferId, file.name, statusMsg, true);
-    log(`OFFERING :: ${file.name} to ${peers.length} peer(s) ${isEncrypted ? '🔐' : '🔓'}`);
+    log(`OFFER_BROADCAST :: ${file.name} to ${peers.length} peers`);
 
     peers.forEach(p => {
-        const offerType = !unencryptedMode && keyExchangeStatus[p.peer] === 'ready'
-            ? 'FILE_OFFER_ENCRYPTED'
-            : 'FILE_OFFER';
+        // Generate a unique ID for THIS peer-send operation
+        const transferId = 'tx_' + Math.random().toString(36).substr(2, 6);
+        const isEncrypted = !unencryptedMode && keyExchangeStatus[p.peer] === 'ready' && sharedKeys[p.peer];
+
+        pendingSends[transferId] = {
+            file,
+            active: true,
+            peerId: p.peer
+        };
+
+        const statusMsg = isEncrypted ? '🔐 OFFERING (ENCRYPTED)' : '🔓 OFFERING (UNENCRYPTED)';
+
+        // Include peer ID in the card name for sender clarity
+        createTransferUI(transferId, `${file.name} (to ${p.peer})`, statusMsg, true);
 
         p.send({
-            type: offerType,
+            type: isEncrypted ? 'FILE_OFFER_ENCRYPTED' : 'FILE_OFFER',
             transferId,
             fileName: file.name,
             fileSize: file.size,
             fileType: file.type,
             sender: myId,
-            encrypted: !unencryptedMode && keyExchangeStatus[p.peer] === 'ready'
+            encrypted: isEncrypted
         });
     });
 }
@@ -778,10 +778,15 @@ async function shareFile(file) {
 window.cancelTransfer = (id) => {
     if (pendingSends[id]) {
         pendingSends[id].active = false;
-        log(`CANCELLED_SEND :: ${id}`);
-        for (let pId in connectedPeers) {
+        const pId = pendingSends[id].peerId;
+
+        log(`CANCEL_SEND :: ${id} to ${pId}`);
+
+        // Only notify the specific peer associated with this unique ID
+        if (pId && connectedPeers[pId]) {
             connectedPeers[pId].send({ type: 'FILE_CANCEL', transferId: id });
         }
+
         updateTransferStatus(id, 'CANCELLED', '#666');
     }
 };
@@ -929,25 +934,27 @@ async function startFileStream(id, conn) {
     updateTransferStatus(id, 'STREAMING', '#0af');
     log(`STREAM_START :: ${file.name} -> ${conn.peer}`);
 
-    const buffer = await file.arrayBuffer();
-    const totalChunks = Math.ceil(buffer.byteLength / CHUNK_SIZE);
+    const CHUNK_SIZE = 16384; // 16KB for safe P2P transfer
+    const totalChunks = Math.ceil(file.size / CHUNK_SIZE);
 
     for (let i = 0; i < totalChunks; i++) {
         if (!session.active) break; // Check for cancellation mid-stream
+        if (conn.readyState !== 'open') {
+            log(`STALL_DETECTED :: Connection lost with ${conn.peer}`);
+            break;
+        }
 
         const start = i * CHUNK_SIZE;
-        const end = Math.min(start + CHUNK_SIZE, buffer.byteLength);
-        const chunk = buffer.slice(start, end);
+        // Memory efficient: only read the current slice into memory
+        const blob = file.slice(start, start + CHUNK_SIZE);
+        const chunk = await blob.arrayBuffer();
 
-        // Check if encryption is available for this peer
-        // Skip encryption if WE are in unencrypted mode OR if THEY are in unencrypted mode
+        // Check if encryption is available for this specific peer
         const hasEncryption = !unencryptedMode && !unencryptedPeers.has(conn.peer) && keyExchangeStatus[conn.peer] === 'ready' && sharedKeys[conn.peer];
 
         if (hasEncryption) {
-            // Encrypt chunk
             try {
                 const { encryptedData, iv } = await CryptoUtils.encryptChunk(chunk, sharedKeys[conn.peer]);
-
                 conn.send({
                     type: 'FILE_CHUNK_ENCRYPTED',
                     transferId: id,
@@ -958,11 +965,10 @@ async function startFileStream(id, conn) {
                 });
             } catch (error) {
                 console.error('Encryption failed:', error);
-                log(`ENCRYPTION_ERROR :: ${id}`);
+                log(`ENCRYPTION_ERROR :: ${id} to ${conn.peer}`);
                 break;
             }
         } else {
-            // Send unencrypted (fallback)
             conn.send({
                 type: 'FILE_CHUNK',
                 transferId: id,
@@ -971,25 +977,22 @@ async function startFileStream(id, conn) {
                 chunk: chunk
             });
 
-            // Track upload metrics
+            // Metrics tracking
             if (!uploadStartTime) uploadStartTime = Date.now();
             uploadBytes += chunk.byteLength;
             lastChunkTime = Date.now();
         }
 
+        // Periodic pause to prevent UI blocking and allow ACKs to process
         if (i % 5 === 0) {
-            // Optimistic progress for sender UI (optional, could be removed or labeled differently)
-            // But let's show "Sent" progress separately? 
-            // For now, let's just let ACKs handle the main progress bar.
-            // updateProgress(id, Math.floor((i / totalChunks) * 100)); 
-            await new Promise(r => setTimeout(r, 20));
+            await new Promise(r => setTimeout(r, 10));
         }
     }
 
     if (session.active) {
-        // Don't mark COMPLETE yet, wait for final ACK
+        // Don't mark COMPLETE yet, wait for final confirmation (ACK) from the receiver
         updateTransferStatus(id, 'WAITING FOR RECEIVER...', '#f90');
-        log(`STREAM_SENT :: ${file.name} - waiting for remote confirmation`);
+        log(`STREAM_SENT :: ${file.name} - waiting for verification from ${conn.peer}`);
     }
 }
 
@@ -1004,9 +1007,13 @@ function handleFileChunkAck(data) {
     updateProgress(data.transferId, percent);
 
     if (data.receivedCount === data.total) {
+        updateProgress(data.transferId, 100);
         updateTransferStatus(data.transferId, 'COMPLETE', '#0f0');
         session.active = false;
-        log(`REMOTE_COMPLETE :: ${data.receivedCount}/${data.total} chunks verified`);
+        log(`REMOTE_COMPLETE :: ${data.receivedCount}/${data.total} chunks verified on ${session.peerId || 'remote'}`);
+
+        // Final cleanup after successful verification
+        setTimeout(() => delete pendingSends[data.transferId], 5000);
     }
 }
 

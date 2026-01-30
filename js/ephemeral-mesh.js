@@ -143,6 +143,16 @@ peer.on('open', async (id) => {
     }
 });
 
+// Helper for safe sending (catches binarypack errors)
+function safeSend(conn, data) {
+    try {
+        conn.send(data);
+    } catch (e) {
+        console.error(`SEND_FAILED :: ${data.type} to ${conn.peer}`, e);
+        log(`SEND_ERROR :: ${data.type} - ${e.message}`);
+    }
+}
+
 peer.on('connection', (conn) => {
     // Always call handleP2PConnection immediately to attach listeners
     // This prevents dropping messages (key exchange, offers) while waiting for initialization

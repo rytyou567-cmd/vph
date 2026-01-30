@@ -208,6 +208,13 @@ function handleP2PConnection(conn) {
 }
 
 function handleIncomingData(data, conn) {
+    // Trace log for ALL incoming data (temporarily for debugging)
+    if (data.type !== 'FILE_CHUNK' && data.type !== 'FILE_CHUNK_ENCRYPTED') {
+        console.log(`RX_MSG :: ${data.type} from ${conn.peer}`);
+    } else if (data.index % 100 === 0) {
+        console.log(`RX_CHUNK :: ${data.index}/${data.total} from ${conn.peer}`);
+    }
+
     switch (data.type) {
         case 'KEY_EXCHANGE':
             handleKeyExchange(data, conn);
@@ -242,6 +249,7 @@ function handleIncomingData(data, conn) {
             handleFileChunk(data, conn);
             break;
         case 'FILE_CHUNK_ACK':
+            log(`ACK_RECEIVED_RAW :: ${data.transferId} [${data.receivedCount}/${data.total}]`);
             handleFileChunkAck(data);
             break;
         case 'UNENCRYPTED_MODE_NOTIFICATION':
@@ -1007,6 +1015,8 @@ async function startFileStream(id, conn) {
                 chunk: chunk
             });
 
+            if (i === 0) log(`FIRST_CHUNK_SENT :: ${id} to ${conn.peer}`);
+
             // Metrics tracking
             if (!uploadStartTime) uploadStartTime = Date.now();
             uploadBytes += chunk.byteLength;
@@ -1017,7 +1027,14 @@ async function startFileStream(id, conn) {
         if (i % 5 === 0) {
             await new Promise(r => setTimeout(r, 10));
         }
+
+        // Trace logging for sender
+        if (i === 0 || i % 100 === 0) {
+            console.log(`SENDER_TRACE :: Sent chunk ${i}/${totalChunks}`);
+        }
     }
+
+    log(`SENDER_LOOP_COMPLETE :: Finished iterate for ${totalChunks} chunks`);
 
     if (session.active) {
         // Don't mark COMPLETE yet, wait for final confirmation (ACK) from the receiver
@@ -1153,6 +1170,7 @@ async function handleFileChunk(data, conn) {
     }
 
     if (session.receivedCount === data.total) {
+        log(`ACK_SENT :: Final confirmation for ${data.transferId}`);
         updateProgress(data.transferId, 100);
 
         // Handle completion based on transfer mode
@@ -1214,6 +1232,8 @@ function createTransferUI(id, name, status, canCancel = false) {
         ${canCancel ? `<button onclick="cancelTransfer('${id}')" class="btn-cancel" style="font-size:8px; width:auto; padding:2px 5px; margin-top:5px; border-color:#666; color:#666;">CANCEL_UPLINK</button>` : ''}
     `;
     elTransfers.prepend(div);
+    if (document.getElementById('accept-modal')) document.getElementById('accept-modal').style.zIndex = '2000';
+    if (document.getElementById('modal-overlay')) document.getElementById('modal-overlay').style.zIndex = '1999';
 }
 
 function updateProgress(id, percent) {

@@ -29,6 +29,10 @@ const streamHandles = {}; // transferId -> FileSystemWritableFileStream
 let unencryptedMode = false; // Set to true when user chooses to proceed without encryption
 const unencryptedPeers = new Set(); // Track which specific peers are in unencrypted mode
 
+// Encryption state tracking
+let encryptionReady = false; // Track if encryption initialization is complete
+let pendingConnections = []; // Queue connections that arrive during initialization
+
 // DOM
 const elId = document.getElementById('my-peer-id');
 const elPeerCount = document.getElementById('peer-count');
@@ -141,7 +145,13 @@ peer.on('open', async (id) => {
 });
 
 peer.on('connection', (conn) => {
-    handleP2PConnection(conn);
+    // Queue connection if encryption is still initializing (not in unencrypted mode)
+    if (!encryptionReady && !unencryptedMode) {
+        log(`QUEUED_CONNECTION :: ${conn.peer} (waiting for encryption)`);
+        pendingConnections.push(conn);
+    } else {
+        handleP2PConnection(conn);
+    }
 });
 
 function handleP2PConnection(conn) {
@@ -170,20 +180,9 @@ function handleP2PConnection(conn) {
             return; // Skip encryption entirely
         }
 
-        // Wait for encryption to be ready before initiating key exchange
-        let hasLogged = false; // Track if we've already logged for this peer
-        const waitForEncryption = () => {
-            if (myKeyPair && myPublicKeyData) {
-                initiateKeyExchange(conn);
-            } else {
-                if (!hasLogged) {
-                    log(`Waiting for encryption initialization before key exchange with ${conn.peer}...`);
-                    hasLogged = true;
-                }
-                setTimeout(waitForEncryption, 100); // Retry every 100ms
-            }
-        };
-        waitForEncryption();
+        // Initiate key exchange immediately
+        // (This is now safe because handleP2PConnection is only called after encryptionReady is true)
+        initiateKeyExchange(conn);
     });
 
     conn.on('data', (data) => {
@@ -483,6 +482,18 @@ async function initializeEncryption() {
         }
 
         log(`ENCRYPTION_READY :: ${CryptoUtils.formatFingerprint(myFingerprint)}`);
+
+        // Mark encryption as ready
+        encryptionReady = true;
+
+        // Process queued connections
+        if (pendingConnections.length > 0) {
+            log(`PROCESSING_QUEUE :: ${pendingConnections.length} pending connections waiting for encryption`);
+            for (const conn of pendingConnections) {
+                handleP2PConnection(conn);
+            }
+            pendingConnections = []; // Clear queue
+        }
     } catch (error) {
         console.error('Encryption initialization failed:', error);
         log('ENCRYPTION_INIT_FAILED :: ' + error.message);

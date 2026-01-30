@@ -7,7 +7,7 @@ const peer = new Peer(myId);
 
 /* STATE */
 const connectedPeers = {};
-const CHUNK_SIZE = 16384 * 4; // 64KB chunks
+const CHUNK_SIZE = 16384; // 16KB chunks for optimal P2P reliability
 const incomingFiles = {};
 const pendingSends = {};
 const pendingOffers = [];
@@ -31,7 +31,6 @@ const unencryptedPeers = new Set(); // Track which specific peers are in unencry
 
 // Encryption state tracking
 let encryptionReady = false; // Track if encryption initialization is complete
-let pendingConnections = []; // Queue connections that arrive during initialization
 
 // DOM
 const elId = document.getElementById('my-peer-id');
@@ -145,13 +144,9 @@ peer.on('open', async (id) => {
 });
 
 peer.on('connection', (conn) => {
-    // Queue connection if encryption is still initializing (not in unencrypted mode)
-    if (!encryptionReady && !unencryptedMode) {
-        log(`QUEUED_CONNECTION :: ${conn.peer} (waiting for encryption)`);
-        pendingConnections.push(conn);
-    } else {
-        handleP2PConnection(conn);
-    }
+    // Always call handleP2PConnection immediately to attach listeners
+    // This prevents dropping messages (key exchange, offers) while waiting for initialization
+    handleP2PConnection(conn);
 });
 
 function handleP2PConnection(conn) {
@@ -171,19 +166,31 @@ function handleP2PConnection(conn) {
                 peerId: myId
             });
             log(`NOTIFIED_UNENCRYPTED :: ${conn.peer}`);
-            return; // Skip encryption entirely
+            return;
         }
 
-        // Check if the remote peer is in unencrypted mode
-        if (unencryptedPeers.has(conn.peer)) {
-            log(`UNENCRYPTED_MODE :: Skipping key exchange with ${conn.peer}`);
-            return; // Skip encryption entirely
-        }
+        // Avoid double-initiating if we're already handshaking
+        if (keyExchangeStatus[conn.peer] === 'init' || keyExchangeStatus[conn.peer] === 'ready') return;
 
-        // Initiate key exchange immediately
-        // (This is now safe because handleP2PConnection is only called after encryptionReady is true)
-        initiateKeyExchange(conn);
+        // Initiate key exchange if ready, otherwise wait for initializeEncryption()
+        if (encryptionReady) {
+            initiateKeyExchange(conn);
+        } else {
+            log(`LINK_STAGED :: ${conn.peer} (waiting for local keys)`);
+        }
     });
+
+    // Handle case where connection is already open when listeners are attached
+    if (conn.open) {
+        log(`P2P_ALREADY_OPEN :: ${conn.peer}`);
+        if (encryptionReady || unencryptedMode) {
+            if (unencryptedMode) {
+                conn.send({ type: 'UNENCRYPTED_MODE_NOTIFICATION', peerId: myId });
+            } else if (keyExchangeStatus[conn.peer] !== 'init' && keyExchangeStatus[conn.peer] !== 'ready') {
+                initiateKeyExchange(conn);
+            }
+        }
+    }
 
     conn.on('data', (data) => {
         handleIncomingData(data, conn);
@@ -489,13 +496,14 @@ async function initializeEncryption() {
         // Mark encryption as ready
         encryptionReady = true;
 
-        // Process queued connections
-        if (pendingConnections.length > 0) {
-            log(`PROCESSING_QUEUE :: ${pendingConnections.length} pending connections waiting for encryption`);
-            for (const conn of pendingConnections) {
-                handleP2PConnection(conn);
+        // Trigger handshakes for all currently staged connections
+        for (let peerId in connectedPeers) {
+            const conn = connectedPeers[peerId];
+            if (conn.open && !unencryptedMode && !unencryptedPeers.has(peerId)) {
+                if (keyExchangeStatus[peerId] !== 'ready' && keyExchangeStatus[peerId] !== 'init') {
+                    initiateKeyExchange(conn);
+                }
             }
-            pendingConnections = []; // Clear queue
         }
     } catch (error) {
         console.error('Encryption initialization failed:', error);
@@ -509,6 +517,8 @@ async function initializeEncryption() {
  * @param {DataConnection} conn - PeerJS connection
  */
 async function initiateKeyExchange(conn) {
+    if (keyExchangeStatus[conn.peer] === 'init' || keyExchangeStatus[conn.peer] === 'ready') return;
+    keyExchangeStatus[conn.peer] = 'init';
     try {
         // Skip encryption entirely if in unencrypted mode
         if (unencryptedMode) {
@@ -793,6 +803,8 @@ window.cancelTransfer = (id) => {
 
 // 2. Recipient handles offer
 function handleFileOffer(meta, conn) {
+    log(`INCOMING_OFFER :: ${meta.fileName} [${(meta.fileSize / (1024 * 1024)).toFixed(2)} MB] from ${conn.peer}`);
+
     incomingFiles[meta.transferId] = { meta, chunks: [], receivedCount: 0 };
     pendingOffers.push({ meta, conn });
 
@@ -1085,11 +1097,8 @@ async function handleFileChunk(data, conn) {
 
     // Track download metrics
     if (!downloadStartTime) downloadStartTime = Date.now();
-    // Calculate chunk size based on transfer mode
-    let chunkSize = CHUNK_SIZE;
-    if (session.transferMode !== 'stream' && session.chunks && session.chunks[data.index]) { // Added session.chunks check
-        chunkSize = session.chunks[data.index].byteLength;
-    }
+    // Use actual chunk length for accurate metrics
+    const chunkSize = data.chunk ? data.chunk.byteLength : CHUNK_SIZE;
     downloadBytes += chunkSize;
     lastChunkTime = Date.now();
 

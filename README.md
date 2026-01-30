@@ -5,7 +5,7 @@ This is a standalone version of the ViewPorts PDF suite - pure HTML, CSS, and Ja
 ## 📁 Project Structure
 
 ```
-ViewPorts_Standalone/
+ProjectFolder/
 ├── css/               # All stylesheets
 ├── js/                # All JavaScript files
 ├── vendor/            # Third-party libraries
@@ -189,3 +189,4 @@ Copyright © 2026 ViewPorts - Advanced Document Systems
 ---
 
 **Ready to deploy!** Choose any hosting option above and share your ViewPorts suite with the world! 🚀
+

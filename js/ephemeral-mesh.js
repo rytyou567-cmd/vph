@@ -773,6 +773,10 @@ async function shareFile(file) {
         // Include peer ID in the card name for sender clarity
         createTransferUI(transferId, `${file.name} (to ${p.peer})`, statusMsg, true);
 
+        if (!p.open) {
+            log(`⚠️ WARNING :: Connection to ${p.peer} is not fully open. Message buffered.`);
+        }
+
         p.send({
             type: isEncrypted ? 'FILE_OFFER_ENCRYPTED' : 'FILE_OFFER',
             transferId,
@@ -803,70 +807,84 @@ window.cancelTransfer = (id) => {
 
 // 2. Recipient handles offer
 function handleFileOffer(meta, conn) {
-    log(`INCOMING_OFFER :: ${meta.fileName} [${(meta.fileSize / (1024 * 1024)).toFixed(2)} MB] from ${conn.peer}`);
+    try {
+        log(`INCOMING_OFFER :: ${meta.fileName} [${(meta.fileSize / (1024 * 1024)).toFixed(2)} MB] from ${conn.peer}`);
 
-    incomingFiles[meta.transferId] = { meta, chunks: [], receivedCount: 0 };
-    pendingOffers.push({ meta, conn });
+        incomingFiles[meta.transferId] = { meta, chunks: [], receivedCount: 0 };
+        pendingOffers.push({ meta, conn });
 
-    createTransferUI(meta.transferId, meta.fileName, 'PENDING_ACCEPT');
-    updateAcceptModal();
+        log(`UI_UPDATE :: Creating transfer card for ${meta.transferId}`);
+        createTransferUI(meta.transferId, meta.fileName, 'PENDING_ACCEPT');
+        updateAcceptModal();
+    } catch (e) {
+        console.error('Error handling file offer:', e);
+        log(`ERROR :: Handle Offer Failed: ${e.message}`);
+    }
 }
 
 function updateAcceptModal() {
-    if (pendingOffers.length === 0) {
-        closeModal();
-        return;
-    }
-
-    const { meta, conn } = pendingOffers[0];
-    const isEncrypted = meta.encrypted ? '🔐 ENCRYPTED' : '';
-    const sizeMB = (meta.fileSize / (1024 * 1024)).toFixed(2);
-    const isLarge = meta.fileSize > 50 * 1024 * 1024; // 50MB threshold
-
-    // Show size with warning for large files
-    const sizeWarning = isLarge ? `<br><span style="color:#f90;">⚠️ LARGE FILE - DIRECT DOWNLOAD RECOMMENDED</span>` : '';
-
-    if (pendingOffers.length > 1) {
-        elAcceptInfo.innerHTML = `[BATCH_UPLINK :: ${pendingOffers.length} FILES]<br><br>CURRENT: <span style="color:#0f0">${meta.fileName}</span> ${isEncrypted}<br>SIZE: ${sizeMB} MB${sizeWarning}<br>NODE: ${conn.peer}`;
-        elBtnAcceptAll.style.display = 'inline-block';
-    } else {
-        elAcceptInfo.innerHTML = `FILE: <span style="color:#0f0">${meta.fileName}</span> ${isEncrypted}<br>SIZE: ${sizeMB} MB${sizeWarning}<br>NODE: ${conn.peer}`;
-        elBtnAcceptAll.style.display = 'none';
-    }
-
-    elAcceptModal.style.display = 'block';
-    elModalOverlay.style.display = 'block';
-
-    // Show/hide Direct Download button
-    const elBtnDirectDownload = document.getElementById('btn-direct-download');
-    if (isLarge) {
-        elBtnDirectDownload.style.display = 'block';
-        elBtnDirectDownload.onclick = () => {
-            acceptOfferWithStreaming(pendingOffers.shift());
-            updateAcceptModal();
-        };
-    } else {
-        elBtnDirectDownload.style.display = 'none';
-    }
-
-    elBtnAccept.onclick = () => {
-        acceptOffer(pendingOffers.shift());
-        updateAcceptModal();
-    };
-
-    elBtnAcceptAll.onclick = () => {
-        while (pendingOffers.length > 0) {
-            acceptOffer(pendingOffers.shift());
+    try {
+        if (pendingOffers.length === 0) {
+            closeModal();
+            return;
         }
-        updateAcceptModal();
-    };
 
-    elBtnReject.onclick = () => {
-        const offer = pendingOffers.shift();
-        offer.conn.send({ type: 'FILE_REJECT', transferId: offer.meta.transferId });
-        updateAcceptModal();
-    };
+        const { meta, conn } = pendingOffers[0];
+        log(`MODAL_RENDER :: Showing acceptance for ${meta.fileName}`);
+
+        const isEncrypted = meta.encrypted ? '🔐 ENCRYPTED' : '';
+        const sizeMB = (meta.fileSize / (1024 * 1024)).toFixed(2);
+        const isLarge = meta.fileSize > 50 * 1024 * 1024; // 50MB threshold
+
+        // Warn for large files (RAM usage)
+        const sizeWarning = isLarge ? `<br><span style="color:#f90;">⚠️ LARGE FILE - DIRECT DOWNLOAD RECOMMENDED</span>` : '';
+
+        if (!elAcceptInfo) throw new Error('elAcceptInfo element missing');
+
+        if (pendingOffers.length > 1) {
+            elAcceptInfo.innerHTML = `[BATCH_UPLINK :: ${pendingOffers.length} FILES]<br><br>CURRENT: <span style="color:#0f0">${meta.fileName}</span> ${isEncrypted}<br>SIZE: ${sizeMB} MB${sizeWarning}<br>NODE: ${conn.peer}`;
+            if (elBtnAcceptAll) elBtnAcceptAll.style.display = 'inline-block';
+        } else {
+            elAcceptInfo.innerHTML = `FILE: <span style="color:#0f0">${meta.fileName}</span> ${isEncrypted}<br>SIZE: ${sizeMB} MB${sizeWarning}<br>NODE: ${conn.peer}`;
+            if (elBtnAcceptAll) elBtnAcceptAll.style.display = 'none';
+        }
+
+        if (elAcceptModal) elAcceptModal.style.display = 'block';
+        if (elModalOverlay) elModalOverlay.style.display = 'block';
+        // Show/hide Direct Download button
+        const elBtnDirectDownload = document.getElementById('btn-direct-download');
+        if (isLarge) {
+            elBtnDirectDownload.style.display = 'block';
+            elBtnDirectDownload.onclick = () => {
+                acceptOfferWithStreaming(pendingOffers.shift());
+                updateAcceptModal();
+            };
+        } else {
+            elBtnDirectDownload.style.display = 'none';
+        }
+    } catch (e) {
+        console.error('Error updating modal:', e);
+        log(`ERROR :: Modal Update Failed: ${e.message}`);
+    }
 }
+
+elBtnAccept.onclick = () => {
+    acceptOffer(pendingOffers.shift());
+    updateAcceptModal();
+};
+
+elBtnAcceptAll.onclick = () => {
+    while (pendingOffers.length > 0) {
+        acceptOffer(pendingOffers.shift());
+    }
+    updateAcceptModal();
+};
+
+elBtnReject.onclick = () => {
+    const offer = pendingOffers.shift();
+    offer.conn.send({ type: 'FILE_REJECT', transferId: offer.meta.transferId });
+    updateAcceptModal();
+};
 
 function acceptOffer(offer) {
     offer.conn.send({ type: 'FILE_ACCEPT', transferId: offer.meta.transferId });

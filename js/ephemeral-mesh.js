@@ -778,7 +778,8 @@ async function shareFile(file) {
     peers.forEach(p => {
         // Generate a unique ID for THIS peer-send operation
         const transferId = 'tx_' + Math.random().toString(36).substr(2, 6);
-        const isEncrypted = !unencryptedMode && keyExchangeStatus[p.peer] === 'ready' && sharedKeys[p.peer];
+        // Force boolean coercion with !! to ensure we don't return the CryptoKey object
+        const isEncrypted = !unencryptedMode && keyExchangeStatus[p.peer] === 'ready' && !!sharedKeys[p.peer];
 
         pendingSends[transferId] = {
             file,
@@ -795,7 +796,7 @@ async function shareFile(file) {
             log(`⚠️ WARNING :: Connection to ${p.peer} is not fully open. Message buffered.`);
         }
 
-        safeSend(p, {
+        const payload = {
             type: isEncrypted ? 'FILE_OFFER_ENCRYPTED' : 'FILE_OFFER',
             transferId,
             fileName: file.name,
@@ -803,7 +804,12 @@ async function shareFile(file) {
             fileType: file.type,
             sender: myId,
             encrypted: isEncrypted
-        });
+        };
+
+        // DEBUG: Check for non-serializable objects
+        console.log('SEND_PAYLOAD_CHECK ::', payload);
+
+        safeSend(p, payload);
     });
 }
 

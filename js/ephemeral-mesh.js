@@ -161,7 +161,7 @@ function handleP2PConnection(conn) {
 
         // If we're in unencrypted mode, notify the new peer immediately
         if (unencryptedMode) {
-            conn.send({
+            safeSend(conn, {
                 type: 'UNENCRYPTED_MODE_NOTIFICATION',
                 peerId: myId
             });
@@ -549,7 +549,7 @@ async function initiateKeyExchange(conn) {
         const binding = await CryptoUtils.createKeyBinding(myId, myPublicKeyData, timestamp);
 
         // Send our public key with cryptographic binding (MITM protection)
-        conn.send({
+        safeSend(conn, {
             type: 'KEY_EXCHANGE',
             publicKey: myPublicKeyData,
             fingerprint: myFingerprint,
@@ -655,7 +655,7 @@ async function handleKeyExchange(data, conn) {
             const timestamp = Date.now();
             const binding = await CryptoUtils.createKeyBinding(myId, myPublicKeyData, timestamp);
 
-            conn.send({
+            safeSend(conn, {
                 type: 'KEY_EXCHANGE',
                 publicKey: myPublicKeyData,
                 fingerprint: myFingerprint,
@@ -785,7 +785,7 @@ async function shareFile(file) {
             log(`⚠️ WARNING :: Connection to ${p.peer} is not fully open. Message buffered.`);
         }
 
-        p.send({
+        safeSend(p, {
             type: isEncrypted ? 'FILE_OFFER_ENCRYPTED' : 'FILE_OFFER',
             transferId,
             fileName: file.name,
@@ -1161,7 +1161,7 @@ async function handleFileChunk(data, conn) {
 
     // Send ACK back to sender every 5 chunks or on completion
     if (session.receivedCount % 5 === 0 || session.receivedCount === data.total) {
-        conn.send({
+        safeSend(conn, {
             type: 'FILE_CHUNK_ACK',
             transferId: data.transferId,
             receivedCount: session.receivedCount,

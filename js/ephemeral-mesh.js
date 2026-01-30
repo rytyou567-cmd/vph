@@ -95,6 +95,27 @@ function updateMetrics() {
 // Update metrics every 500ms
 setInterval(updateMetrics, 500);
 
+/**
+ * Update transfer status text and color
+ */
+function updateTransferStatus(transferId, statusText, color) {
+    const el = document.getElementById(`status-${transferId}`);
+    if (el) {
+        el.textContent = statusText;
+        el.style.color = color;
+    }
+}
+
+/**
+ * Update transfer progress bar
+ */
+function updateProgress(transferId, percent) {
+    const el = document.getElementById(`progress-${transferId}`);
+    if (el) {
+        el.style.width = `${percent}%`;
+    }
+}
+
 // --- PEERJS CORE ---
 peer.on('open', async (id) => {
     elId.innerText = id;
@@ -218,12 +239,7 @@ function handleP2PConnection(conn) {
 }
 
 function handleIncomingData(data, conn) {
-    // Trace log for ALL incoming data (temporarily for debugging)
-    if (data.type !== 'FILE_CHUNK' && data.type !== 'FILE_CHUNK_ENCRYPTED') {
-        console.log(`RX_MSG :: ${data.type} from ${conn.peer}`);
-    } else if (data.index % 100 === 0) {
-        console.log(`RX_CHUNK :: ${data.index}/${data.total} from ${conn.peer}`);
-    }
+
 
     switch (data.type) {
         case 'KEY_EXCHANGE':
@@ -259,7 +275,6 @@ function handleIncomingData(data, conn) {
             handleFileChunk(data, conn);
             break;
         case 'FILE_CHUNK_ACK':
-            log(`ACK_RECEIVED_RAW :: ${data.transferId} [${data.receivedCount}/${data.total}]`);
             handleFileChunkAck(data);
             break;
         case 'UNENCRYPTED_MODE_NOTIFICATION':
@@ -753,6 +768,8 @@ const elFileInput = document.getElementById('file-input-hidden');
 elFileInput.addEventListener('change', (e) => {
     if (e.target.files.length > 0) {
         Array.from(e.target.files).forEach(file => shareFile(file));
+        // Reset input to allow selecting the same file again
+        e.target.value = '';
     }
 });
 
@@ -796,7 +813,7 @@ async function shareFile(file) {
             log(`⚠️ WARNING :: Connection to ${p.peer} is not fully open. Message buffered.`);
         }
 
-        const payload = {
+        safeSend(p, {
             type: isEncrypted ? 'FILE_OFFER_ENCRYPTED' : 'FILE_OFFER',
             transferId,
             fileName: file.name,
@@ -804,12 +821,7 @@ async function shareFile(file) {
             fileType: file.type,
             sender: myId,
             encrypted: isEncrypted
-        };
-
-        // DEBUG: Check for non-serializable objects
-        console.log('SEND_PAYLOAD_CHECK ::', payload);
-
-        safeSend(p, payload);
+        });
     });
 }
 
@@ -986,15 +998,22 @@ async function startFileStream(id, conn) {
     const file = session.file;
 
     updateTransferStatus(id, 'STREAMING', '#0af');
+    updateTransferStatus(id, 'STREAMING', '#0af');
     log(`STREAM_START :: ${file.name} -> ${conn.peer}`);
+
+    // Allow control messages (ACCEPT) to flush before blasting data
+    await new Promise(r => setTimeout(r, 500));
 
     const CHUNK_SIZE = 16384; // 16KB for safe P2P transfer
     const totalChunks = Math.ceil(file.size / CHUNK_SIZE);
 
     for (let i = 0; i < totalChunks; i++) {
         if (!session.active) break; // Check for cancellation mid-stream
-        if (conn.readyState !== 'open') {
-            log(`STALL_DETECTED :: Connection lost with ${conn.peer}`);
+        if (!conn.open) {
+            const iceState = conn.peerConnection ? conn.peerConnection.iceConnectionState : 'unknown';
+            log(`STALL_DETECTED :: Connection lost with ${conn.peer} (State: ${conn.readyState}, ICE: ${iceState})`);
+            updateTransferStatus(id, 'FAILED (CONN LOST)', '#f00');
+            session.active = false;
             break;
         }
 
@@ -1023,7 +1042,7 @@ async function startFileStream(id, conn) {
                 break;
             }
         } else {
-            conn.send({
+            safeSend(conn, {
                 type: 'FILE_CHUNK',
                 transferId: id,
                 index: i,
@@ -1044,18 +1063,25 @@ async function startFileStream(id, conn) {
             await new Promise(r => setTimeout(r, 10));
         }
 
-        // Trace logging for sender
-        if (i === 0 || i % 100 === 0) {
-            console.log(`SENDER_TRACE :: Sent chunk ${i}/${totalChunks}`);
+        // Backpressure control: Pause if buffer is full to prevent connection drop
+        if (conn.dataChannel && conn.dataChannel.bufferedAmount > 2 * 1024 * 1024) { // 2MB limit
+            // log(`BUFFER_FULL :: Pausing for backpressure...`); // Reduce spam
+            while (conn.open && conn.dataChannel.bufferedAmount > 256 * 1024) { // Drain to 256KB for smoother resume
+                await new Promise(r => setTimeout(r, 50));
+            }
         }
     }
 
-    log(`SENDER_LOOP_COMPLETE :: Finished iterate for ${totalChunks} chunks`);
 
-    if (session.active) {
+
+    if (session.active && conn.open) {
+        log(`SENDER_LOOP_COMPLETE :: All ${totalChunks} chunks sent`);
         // Don't mark COMPLETE yet, wait for final confirmation (ACK) from the receiver
         updateTransferStatus(id, 'WAITING FOR RECEIVER...', '#f90');
         log(`STREAM_SENT :: ${file.name} - waiting for verification from ${conn.peer}`);
+    } else if (session.active && !conn.open) {
+        updateTransferStatus(id, 'FAILED (CONN LOST)', '#f00');
+        log(`STREAM_FAILED :: Connection closed after loop for ${conn.peer}`);
     }
 }
 
@@ -1072,13 +1098,14 @@ function handleFileChunkAck(data) {
             return;
         }
 
-        // Log progress occasionally to avoid spam
-        if (data.receivedCount === data.total || data.receivedCount % 5 === 0) {
-            log(`ACK_RECEIVED :: ${data.receivedCount}/${data.total} for ${data.transferId}`);
-        }
-
+        // Calculate progress in MB
+        const currentMB = (data.receivedCount * CHUNK_SIZE / 1024 / 1024).toFixed(2);
+        const totalMB = (data.total * CHUNK_SIZE / 1024 / 1024).toFixed(2);
         const percent = Math.floor((data.receivedCount / data.total) * 100);
+
+        // Update UI with MB progress instead of spamming logs
         updateProgress(data.transferId, percent);
+        updateTransferStatus(data.transferId, `${currentMB} / ${totalMB} MB (${percent}%)`, '#0af');
 
         if (data.receivedCount === data.total) {
             log(`ACK_COMPLETE :: All chunks verified by receiver for ${data.transferId}`);
@@ -1167,13 +1194,14 @@ async function handleFileChunk(data, conn) {
     downloadBytes += chunkSize;
     lastChunkTime = Date.now();
 
-    // Log periodic progress on receiver side
-    if (session.receivedCount % 20 === 0) {
-        console.log(`RCT_PROGRESS :: ${session.receivedCount}/${data.total}`);
-    }
-
+    // Calculate progress in MB (same as sender side)
+    const currentMB = (session.receivedCount * CHUNK_SIZE / 1024 / 1024).toFixed(2);
+    const totalMB = (data.total * CHUNK_SIZE / 1024 / 1024).toFixed(2);
     const percent = Math.floor((session.receivedCount / data.total) * 100);
+
+    // Update UI with MB progress
     updateProgress(data.transferId, percent);
+    updateTransferStatus(data.transferId, `${currentMB} / ${totalMB} MB (${percent}%)`, '#0af');
 
     // Send ACK back to sender every 5 chunks or on completion
     if (session.receivedCount % 5 === 0 || session.receivedCount === data.total) {

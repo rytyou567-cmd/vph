@@ -232,7 +232,10 @@ function handleIncomingData(data, conn) {
             break;
         case 'FILE_CHUNK':
         case 'FILE_CHUNK_ENCRYPTED':
-            handleFileChunk(data);
+            handleFileChunk(data, conn);
+            break;
+        case 'FILE_CHUNK_ACK':
+            handleFileChunkAck(data);
             break;
         case 'UNENCRYPTED_MODE_NOTIFICATION':
             // Remote peer notified us they're in unencrypted mode
@@ -975,20 +978,40 @@ async function startFileStream(id, conn) {
         }
 
         if (i % 5 === 0) {
-            updateProgress(id, Math.floor((i / totalChunks) * 100));
+            // Optimistic progress for sender UI (optional, could be removed or labeled differently)
+            // But let's show "Sent" progress separately? 
+            // For now, let's just let ACKs handle the main progress bar.
+            // updateProgress(id, Math.floor((i / totalChunks) * 100)); 
             await new Promise(r => setTimeout(r, 20));
         }
     }
 
     if (session.active) {
-        updateProgress(id, 100);
-        updateTransferStatus(id, 'COMPLETE', '#0f0');
-        log(`STREAM_COMPLETE :: ${file.name}`);
+        // Don't mark COMPLETE yet, wait for final ACK
+        updateTransferStatus(id, 'WAITING FOR RECEIVER...', '#f90');
+        log(`STREAM_SENT :: ${file.name} - waiting for remote confirmation`);
+    }
+}
+
+/**
+ * Handle chunk acknowledgement from receiver
+ */
+function handleFileChunkAck(data) {
+    const session = pendingSends[data.transferId];
+    if (!session) return;
+
+    const percent = Math.floor((data.receivedCount / data.total) * 100);
+    updateProgress(data.transferId, percent);
+
+    if (data.receivedCount === data.total) {
+        updateTransferStatus(data.transferId, 'COMPLETE', '#0f0');
+        session.active = false;
+        log(`REMOTE_COMPLETE :: ${data.receivedCount}/${data.total} chunks verified`);
     }
 }
 
 // 4. Recipient handles chunks
-async function handleFileChunk(data) {
+async function handleFileChunk(data, conn) {
     const session = incomingFiles[data.transferId];
     if (!session) return;
 
@@ -1065,6 +1088,16 @@ async function handleFileChunk(data) {
 
     const percent = Math.floor((session.receivedCount / data.total) * 100);
     updateProgress(data.transferId, percent);
+
+    // Send ACK back to sender every 5 chunks or on completion
+    if (session.receivedCount % 5 === 0 || session.receivedCount === data.total) {
+        conn.send({
+            type: 'FILE_CHUNK_ACK',
+            transferId: data.transferId,
+            receivedCount: session.receivedCount,
+            total: data.total
+        });
+    }
 
     if (session.receivedCount === data.total) {
         updateProgress(data.transferId, 100);

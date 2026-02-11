@@ -49,6 +49,7 @@ const elBtnAccept = document.getElementById('btn-accept-transfer');
 const elBtnAcceptAll = document.getElementById('btn-accept-all');
 const elBtnReject = document.getElementById('btn-reject-transfer');
 
+
 // Metrics DOM
 const elUploadSpeed = document.getElementById('upload-speed');
 const elDownloadSpeed = document.getElementById('download-speed');
@@ -309,7 +310,13 @@ function handleIncomingData(data, conn) {
 function updateUI() {
     elPeerCount.innerText = Object.keys(connectedPeers).length;
     elPeerList.innerHTML = '';
-
+    // Show/hide help text based on peer count
+    const peerHelpText = document.getElementById('peer-help-text');
+    const hasPeers = Object.keys(connectedPeers).length > 0;
+    
+    if (peerHelpText) {
+        peerHelpText.style.display = hasPeers ? 'none' : 'block';
+    }
     for (let id in connectedPeers) {
         const div = document.createElement('div');
         div.className = 'node-item';
@@ -1331,3 +1338,4 @@ document.getElementById('btn-copy-id').onclick = () => {
         setTimeout(() => btn.innerText = 'COPY', 2000);
     });
 };
+

@@ -314,6 +314,26 @@
                 <button id="btn-clear-all"
                     style="flex: 1; font-size: 9px; padding: 4px; border-color: #f90; color: #f90;">CLEAR_ALL</button>
             </div>
+            <!-- Help Text for First-Time Users -->
+            <div id="peer-help-text" style="
+                display: block;
+                padding: 12px;
+                margin-bottom: 15px;
+                background: rgba(0, 170, 255, 0.05);
+                border: 1px dashed var(--cyber-blue);
+                border-radius: 3px;
+                font-size: 12px;
+                line-height: 1.6;
+                color: var(--cyber-blue);
+            ">
+                <div style="margin-bottom: 8px; font-weight: bold;">📡 NO_ACTIVE_PEERS</div>
+                <div>
+                    To start file transfer:<br><br>
+                    1. Share YOUR_PEER_ID (top right near copy button) <br><br>or<br><br> Paste RECEIVER_ID
+                    below<br><br>
+                    2. Establish uplink connection
+                </div>
+            </div>
             <div id="peer-list" style="flex:1; overflow-y:auto;"></div>
 
             <div style="margin-top: 10px;">
@@ -420,4 +440,5 @@
 </body>
 
 </html>
+
 

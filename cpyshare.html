@@ -16,6 +16,7 @@
         href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;500;700&family=Inter:wght@400;600&display=swap"
         rel="stylesheet">
     <script src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.45.0/min/vs/loader.min.js"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;500;700&family=Inter:wght@400;600&display=swap');
 
@@ -318,6 +319,7 @@
             transition: .4s;
             border-radius: 24px;
             border: 1px solid var(--glass-border);
+            padding: 3px;
         }
 
         .slider:before {
@@ -341,6 +343,150 @@
             transform: translateX(20px);
             background-color: var(--accent-cyan);
             box-shadow: 0 0 10px var(--accent-cyan);
+        }
+
+        /* Live Sharing Specifics */
+        .live-stage {
+            display: none;
+            flex-direction: column;
+            flex-grow: 1;
+            gap: 1.5rem;
+            animation: fadeIn 0.4s ease;
+        }
+
+        .main-stage.live-mode .dashboard-mesh-view {
+            display: none;
+        }
+
+        .main-stage.live-mode .live-stage {
+            display: flex;
+        }
+
+        .typing-indicator-bar {
+            height: 24px;
+            font-size: 0.75rem;
+            color: var(--accent-cyan);
+            font-family: monospace;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            opacity: 0.8;
+        }
+
+        .beam-editor-container {
+            flex-grow: 1;
+            position: relative;
+            min-height: 500px;
+            display: flex;
+            overflow: hidden;
+        }
+
+        #live-beam-canvas {
+            width: 100%;
+            flex-grow: 1;
+            min-height: 500px;
+            background: transparent;
+            border: none;
+            padding: 0;
+            /* Monaco handles its own padding */
+            color: var(--text-main);
+            font-family: inherit;
+            font-size: 1.2rem;
+            line-height: 1.8;
+            outline: none;
+            resize: none;
+            transition: var(--transition);
+            overflow: hidden;
+            border-radius: 20px;
+        }
+
+        .editor-loading {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 10;
+            border-radius: 20px;
+            color: var(--accent-cyan);
+            font-family: monospace;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        #live-beam-canvas:focus {
+            border-color: var(--accent-cyan);
+            background: rgba(0, 0, 0, 0.5);
+            box-shadow: 0 0 30px rgba(0, 242, 255, 0.05);
+        }
+
+        .mode-switch-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 0.5rem 1.25rem;
+            background: var(--bg-card);
+            border: 1px solid var(--glass-border);
+            border-radius: 14px;
+        }
+
+        .peer-actions {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+        }
+
+        .disconnect-btn {
+            background: transparent;
+            border: none;
+            color: var(--text-dim);
+            cursor: pointer;
+            padding: 4px;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: var(--transition);
+            opacity: 0.4;
+        }
+
+        .peer-card:hover .disconnect-btn {
+            opacity: 1;
+        }
+
+        .disconnect-btn:hover {
+            color: var(--accent-purple);
+            background: rgba(188, 115, 255, 0.1);
+            transform: scale(1.1);
+        }
+
+        .mode-switch-label {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            font-weight: 800;
+            letter-spacing: 1px;
+            color: var(--text-dim);
+        }
+
+        .main-stage.live-mode .mode-switch-label.live {
+            color: var(--accent-cyan);
+        }
+
+        .main-stage:not(.live-mode) .mode-switch-label.hub {
+            color: var(--accent-purple);
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         .manual-paste-info {
@@ -585,7 +731,19 @@
             transition: var(--transition);
             position: relative;
             overflow: hidden;
-            margin: 15px;
+        }
+
+        .hub-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background: var(--accent-purple);
+            opacity: 0.5;
+            margin: 10px;
+            transition: all 0.5s;
         }
 
         .hub-card:hover {
@@ -1166,9 +1324,18 @@
                 </svg>
                 Capture Clipboard
             </button>
+
+            <div class="mode-switch-wrapper">
+                <span class="mode-switch-label hub">Mesh Hub</span>
+                <label class="toggle">
+                    <input type="checkbox" id="live-mode-toggle">
+                    <span class="slider"></span>
+                </label>
+                <span class="mode-switch-label live">Live Beam</span>
+            </div>
         </section>
 
-        <div class="content-mesh">
+        <div class="content-mesh dashboard-mesh-view">
             <aside class="node-panel glass" id="nodes-view">
                 <div class="panel-header">
                     <div class="header-main">
@@ -1213,6 +1380,17 @@
                     </div>
                 </div>
             </main>
+        </div>
+
+        <!-- Live Sharing Stage -->
+        <div class="live-stage">
+            <div class="typing-indicator-bar" id="typing-status">
+                <!-- Dynamic: NodeID is typing... -->
+            </div>
+            <div class="beam-editor-container glass">
+                <div id="editor-loader" class="editor-loading">Neural Link Syncing...</div>
+                <div id="live-beam-canvas"></div>
+            </div>
         </div>
 
     </div>
@@ -1288,6 +1466,10 @@
             const nodeCountEl = document.getElementById('node-count');
             const toastContainer = document.getElementById('toast-container');
             const inviteBtn = document.getElementById('invite-btn');
+            const liveModeToggle = document.getElementById('live-mode-toggle');
+            const liveBeamEl = document.getElementById('live-beam-canvas');
+            const typingStatusEl = document.getElementById('typing-status');
+            const editorLoader = document.getElementById('editor-loader');
 
             // Modals
             const modalOverlay = document.getElementById('modal-overlay');
@@ -1317,6 +1499,10 @@
             let localHub = [];
             let remoteHub = [];
             let pendingCapture = [];
+            let activeTypingUsers = new Set();
+            let typingTimeout = null;
+            let monacoEditor = null;
+            let isApplyingRemoteChange = false;
 
             // Encryption
             let myKeyPair = null;
@@ -1339,12 +1525,58 @@
                     return;
                 }
                 try {
+                    // Init Monaco first
+                    initMonaco();
                     myKeyPair = await CryptoUtils.generateECCKeyPair();
                     myPublicKeyData = await CryptoUtils.exportPublicKey(myKeyPair.publicKey);
                     initPeer();
                 } catch (err) {
                     console.error('Init Error:', err);
                 }
+            }
+
+            function initMonaco() {
+                require.config({ paths: { 'vs': 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.45.0/min/vs' } });
+                require(['vs/editor/editor.main'], function () {
+                    monacoEditor = monaco.editor.create(liveBeamEl, {
+                        value: '',
+                        language: 'markdown',
+                        theme: 'vs-dark',
+                        automaticLayout: true,
+                        fontSize: 14,
+                        fontFamily: "'Space Grotesk', monospace",
+                        lineHeight: 24,
+                        padding: { top: 40, bottom: 40 },
+                        minimap: { enabled: false },
+                        scrollbar: { vertical: 'hidden', horizontal: 'hidden' },
+                        roundedSelection: true,
+                        cursorBlinking: "smooth",
+                        cursorSmoothCaretAnimation: "on",
+                        contextmenu: false,
+                        scrollBeyondLastLine: false,
+                    });
+
+                    monacoEditor.onDidChangeModelContent((e) => {
+                        if (!isApplyingRemoteChange) {
+                            broadcastLiveSync(monacoEditor.getValue());
+                            notifyTyping();
+                        }
+                    });
+
+                    if (editorLoader) editorLoader.style.display = 'none';
+                }, function (err) {
+                    console.error('Monaco Load Error:', err);
+                    if (editorLoader) editorLoader.innerHTML = '<span style="color:var(--accent-purple)">Sync Failed. Refresh or check connection.</span>';
+                    showToast('Neural Link Failure: Code Editor failed to load', 'error');
+                });
+
+                // Safety timeout
+                setTimeout(() => {
+                    if (!monacoEditor && editorLoader) {
+                        editorLoader.innerHTML = '<span style="color:var(--accent-purple)">Sync Timeout. Retrying...</span>';
+                        console.warn('Monaco init timeout');
+                    }
+                }, 10000);
             }
 
             function initPeer() {
@@ -1369,12 +1601,82 @@
                 });
                 peer.on('connection', setupConnection);
                 peer.on('error', (err) => {
+                    console.error('Peer Error:', err);
                     if (err.type === 'peer-unavailable') {
                         showToast('Target node not found', 'error');
+                    } else if (err.type === 'disconnected' || err.type === 'network') {
+                        showToast('Mesh Link unstable. Reconnecting...', 'warning');
                     } else {
                         showToast(`Mesh Error: ${err.type}`, 'error');
                     }
                 });
+            }
+
+            window.disconnectPeer = (id) => {
+                const p = activePeers.get(id);
+                if (p?.conn) {
+                    p.conn.close();
+                    activePeers.delete(id);
+                    updatePeerUI();
+                    showToast(`Disconnected Node: ${id}`, 'info');
+                }
+            };
+
+            // Live Sharing Logic
+            if (liveModeToggle) {
+                liveModeToggle.onchange = (e) => {
+                    const isLive = e.target.checked;
+                    mainStage.classList.toggle('live-mode', isLive);
+                    showToast(isLive ? 'Live Beam Online' : 'Returned to Hub');
+
+                    // Force Monaco layout recalculation when revealed
+                    if (isLive && monacoEditor) {
+                        setTimeout(() => monacoEditor.layout(), 100);
+                    }
+                };
+            }
+
+
+            async function broadcastLiveSync(content) {
+                const targets = Array.from(activePeers.keys()).filter(id => activePeers.get(id).selected);
+                for (const pid of targets) {
+                    const p = activePeers.get(pid);
+                    if (p?.secure && p.sharedKey) {
+                        try {
+                            const { encryptedData, iv } = await CryptoUtils.encryptChunk(content, p.sharedKey);
+                            p.conn.send({ type: 'LIVE_SYNC', data: encryptedData, iv: iv });
+                        } catch (e) { console.error(e); }
+                    }
+                }
+            }
+
+            async function notifyTyping() {
+                const targets = Array.from(activePeers.keys()).filter(id => activePeers.get(id).selected);
+                targets.forEach(pid => {
+                    const p = activePeers.get(pid);
+                    if (p?.conn) p.conn.send({ type: 'TYPING_STATUS', peerId: peer.id });
+                });
+            }
+
+            function updateTypingUI() {
+                if (activeTypingUsers.size === 0) {
+                    typingStatusEl.innerHTML = '';
+                    return;
+                }
+                const users = Array.from(activeTypingUsers).join(', ');
+                typingStatusEl.innerHTML = `<span class="pulse-dot"></span> ${users} ${activeTypingUsers.size > 1 ? 'are' : 'is'} typing...`;
+            }
+
+            function handleRemoteTyping(peerId) {
+                activeTypingUsers.add(peerId);
+                updateTypingUI();
+
+                // Clear after 2 seconds of inactivity
+                if (typingTimeout) clearTimeout(typingTimeout);
+                typingTimeout = setTimeout(() => {
+                    activeTypingUsers.delete(peerId);
+                    updateTypingUI();
+                }, 2000);
             }
 
             function attemptAutoLink(targetId) {
@@ -1436,9 +1738,30 @@
                     }
                     if (data.type === 'HUB_SHARE') await handleIncomingShare(peerId, data);
                     if (data.type === 'HUB_DELETE') handleIncomingDelete(peerId, data);
+                    if (data.type === 'LIVE_SYNC') {
+                        const p = activePeers.get(peerId);
+                        if (p?.sharedKey && monacoEditor) {
+                            const text = await CryptoUtils.decryptChunk(data.data, p.sharedKey, data.iv);
+                            if (monacoEditor.getValue() !== text) {
+                                isApplyingRemoteChange = true;
+                                const position = monacoEditor.getPosition();
+                                monacoEditor.setValue(text);
+                                if (position) monacoEditor.setPosition(position);
+                                isApplyingRemoteChange = false;
+                            }
+                        }
+                    }
+                    if (data.type === 'TYPING_STATUS') handleRemoteTyping(data.peerId);
                 });
 
                 connection.on('close', () => {
+                    activePeers.delete(peerId);
+                    updatePeerUI();
+                    showToast(`Node ${peerId} left the mesh`, 'info');
+                });
+
+                connection.on('error', (err) => {
+                    console.error('Conn Error:', err);
                     activePeers.delete(peerId);
                     updatePeerUI();
                 });
@@ -1675,7 +1998,12 @@
                         <div class="peer-info">
                             <span class="pid">${id}</span>
                         </div>
-                        <div class="pulse-dot" style="background:${p.secure ? 'var(--accent-cyan)' : 'var(--text-dim)'}"></div>
+                        <div class="peer-actions">
+                            <button class="disconnect-btn" onclick="event.stopPropagation(); disconnectPeer('${id}')" title="Drop Node">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-user-minus"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="23" x2="17" y1="11" y2="11"/></svg>
+                            </button>
+                            <div class="pulse-dot" style="background:${p.secure ? 'var(--accent-cyan)' : 'var(--text-dim)'}"></div>
+                        </div>
                     </div>
                 `).join('');
             }
@@ -1896,5 +2224,3 @@
 </body>
 
 </html>
-
-

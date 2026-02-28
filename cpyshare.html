@@ -5,6 +5,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CPYSHARE | Secure P2P Mesh</title>
+    <meta name="description"
+        content="Secure, encrypted P2P clipboard and file mesh for the modern web. No servers, just your devices.">
+    <meta property="og:title" content="CPYSHARE | Secure P2P Mesh">
+    <meta property="og:description" content="Instant, encrypted peer-to-peer sharing directly in your browser.">
+    <meta name="theme-color" content="#050505">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link
@@ -1124,6 +1129,17 @@
                         <path d="M16 3.13a4 4 0 0 1 0 7.75" />
                     </svg>
                 </button>
+                <button id="invite-btn" class="icon-toggle-btn" title="Copy Invite Link"
+                    style="border-color:var(--accent-purple); color:var(--accent-purple)">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                        class="lucide lucide-user-plus">
+                        <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
+                        <circle cx="9" cy="7" r="4" />
+                        <line x1="19" x2="19" y1="8" y2="14" />
+                        <line x1="22" x2="16" y1="11" y2="11" />
+                    </svg>
+                </button>
                 <div class="node-id-chip glass" id="copy-my-id">
                     <label>Node ID</label>
                     <code id="my-peer-id">---</code>
@@ -1189,7 +1205,11 @@
                         <h2>Personal Hub</h2>
                     </div>
                     <div id="local-slots" class="hub-scroller">
-                        <div class="empty-state">Hub standby...</div>
+                        <div class="empty-state">
+                            <p>Hub Standby</p>
+                            <span style="font-size:0.7rem; opacity:0.6; display:block; margin-top:0.5rem">Click "Capture
+                                Clipboard" or type manually to store items here.</span>
+                        </div>
                     </div>
                 </div>
                 <div class="hub-column">
@@ -1197,7 +1217,11 @@
                         <h2>Mesh Inbound</h2>
                     </div>
                     <div id="remote-slots" class="hub-scroller">
-                        <div class="empty-state">Monitoring mesh...</div>
+                        <div class="empty-state">
+                            <p>Monitoring Mesh</p>
+                            <span style="font-size:0.7rem; opacity:0.6; display:block; margin-top:0.5rem">Items shared
+                                by other nodes will appear here instantly.</span>
+                        </div>
                     </div>
                 </div>
             </main>
@@ -1275,6 +1299,7 @@
             const peerListEl = document.getElementById('peer-list');
             const nodeCountEl = document.getElementById('node-count');
             const toastContainer = document.getElementById('toast-container');
+            const inviteBtn = document.getElementById('invite-btn');
 
             // Modals
             const modalOverlay = document.getElementById('modal-overlay');
@@ -1338,16 +1363,43 @@
                 const nodeID = generateShortId();
                 peer = new Peer(nodeID);
 
+                // Check for URL-based link request
+                const urlParams = new URLSearchParams(window.location.search);
+                const linkTarget = urlParams.get('link');
+
                 // Immediate update if Peer is somehow already open (rare)
-                if (peer.open) myIdEl.textContent = peer.id;
+                if (peer.open) {
+                    myIdEl.textContent = peer.id;
+                    if (linkTarget) attemptAutoLink(linkTarget);
+                }
 
                 peer.on('open', (id) => {
                     myIdEl.textContent = id;
                     console.log('Mesh ID:', id);
                     showToast('Mesh Link Online');
+                    if (linkTarget) attemptAutoLink(linkTarget);
                 });
                 peer.on('connection', setupConnection);
-                peer.on('error', (err) => showToast(`Mesh Error: ${err.type}`, 'error'));
+                peer.on('error', (err) => {
+                    if (err.type === 'peer-unavailable') {
+                        showToast('Target node not found', 'error');
+                    } else {
+                        showToast(`Mesh Error: ${err.type}`, 'error');
+                    }
+                });
+            }
+
+            function attemptAutoLink(targetId) {
+                const id = targetId.toLowerCase().trim();
+                const idRegex = /^[a-z]{6}$/;
+                if (!idRegex.test(id)) return;
+
+                showToast(`Auto-linking to ${id}...`);
+                setTimeout(() => {
+                    if (peer && !activePeers.has(id)) {
+                        setupConnection(peer.connect(id));
+                    }
+                }, 1500); // Small delay to ensure Peer is fully ready
             }
 
             // Navigation Logic
@@ -1422,23 +1474,41 @@
                 const tid = peerIdInput.value.trim().toLowerCase();
                 const idRegex = /^[a-z]{6}$/;
 
+                if (!tid) {
+                    showToast('Enter a Node ID first', 'error');
+                    return;
+                }
+
                 if (!idRegex.test(tid)) {
-                    showToast('Target ID must be 6 letters', 'error');
+                    showToast('Invalid ID: Must be 6 letters (a-z)', 'error');
                     return;
                 }
 
                 if (tid === peer.id) {
-                    showToast('Cannot link to self-node', 'error');
+                    showToast('Cannot link to your own node', 'error');
                     return;
                 }
 
                 if (peer && !activePeers.has(tid)) {
+                    showToast(`Linking to ${tid}...`);
                     setupConnection(peer.connect(tid));
                     peerIdInput.value = '';
                 } else if (activePeers.has(tid)) {
                     showToast('Node already linked', 'info');
                 }
             });
+
+            if (inviteBtn) {
+                inviteBtn.onclick = () => {
+                    const baseUrl = window.location.origin + window.location.pathname;
+                    const inviteLink = `${baseUrl}?link=${peer.id}`;
+                    navigator.clipboard.writeText(inviteLink).then(() => {
+                        showToast('Invite Link Copied! Send to any device.');
+                        inviteBtn.classList.add('active');
+                        setTimeout(() => inviteBtn.classList.remove('active'), 2000);
+                    });
+                };
+            }
 
             // --- CAPTURE & HUB ---
 

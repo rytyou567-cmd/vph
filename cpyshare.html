@@ -1,0 +1,1840 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CPYSHARE | Secure P2P Mesh</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;500;700&family=Inter:wght@400;600&display=swap"
+        rel="stylesheet">
+    <script src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;500;700&family=Inter:wght@400;600&display=swap');
+
+        :root {
+            --bg-dark: #050505;
+            --bg-card: rgba(15, 15, 20, 0.7);
+            --accent-cyan: #00f2ff;
+            --accent-purple: #bc13fe;
+            --accent-glow: rgba(0, 242, 255, 0.3);
+            --text-main: #f8f8f8;
+            --text-dim: #888888;
+            --glass-border: rgba(255, 255, 255, 0.08);
+            --glass-inner: rgba(255, 255, 255, 0.03);
+            --transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+            --neon-shadow: 0 0 15px var(--accent-glow);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden;
+            position: relative;
+            line-height: 1.6;
+        }
+
+        /* Background Mesh */
+        .mesh-bg {
+            position: fixed;
+            inset: 0;
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        .mesh-bg::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(circle at 50% 50%, transparent 0%, var(--bg-dark) 80%);
+        }
+
+        /* Navigation Elements */
+        .view-toggle {
+            display: flex;
+            padding: 0.4rem;
+            gap: 0.5rem;
+            border-radius: 16px;
+        }
+
+        .icon-btn {
+            width: 44px;
+            height: 44px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .icon-btn:hover {
+            background: var(--glass-inner);
+            color: var(--accent-cyan);
+        }
+
+        .nav-item {
+            width: 44px;
+            height: 44px;
+            border-radius: 12px;
+            background: transparent;
+            border: none;
+            color: var(--text-dim);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .nav-item:hover {
+            color: var(--accent-cyan);
+            background: var(--glass-inner);
+        }
+
+        .nav-item.active {
+            color: var(--accent-cyan);
+            background: rgba(0, 242, 255, 0.1);
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        /* Main Stage */
+        .main-stage {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            padding: 2.5rem 4rem;
+            max-width: 1600px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        .cyber-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 1rem;
+        }
+
+        .header-left h1 {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 2.5rem;
+            font-weight: 700;
+            letter-spacing: -2px;
+        }
+
+        .header-left h1 span {
+            color: var(--accent-cyan);
+            text-shadow: var(--neon-shadow);
+        }
+
+        .mesh-status {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-top: 0.5rem;
+            font-size: 0.85rem;
+            color: var(--text-dim);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .pulse-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: var(--accent-cyan);
+            box-shadow: var(--neon-shadow);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+                opacity: 1;
+            }
+
+            50% {
+                transform: scale(1.5);
+                opacity: 0.5;
+            }
+
+            100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        .node-id-chip {
+            padding: 0.75rem 1.25rem;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            cursor: pointer;
+            background: var(--bg-card);
+            border: 1px solid var(--glass-border);
+            transition: var(--transition);
+        }
+
+        .node-id-chip:hover {
+            background: var(--glass-inner);
+            border-color: var(--accent-cyan);
+        }
+
+        .node-id-chip label {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            color: var(--text-dim);
+            font-weight: 700;
+        }
+
+        .node-id-chip code {
+            font-family: monospace;
+            color: var(--accent-cyan);
+        }
+
+        /* Action Bar */
+        .action-bar {
+            display: flex;
+            gap: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .link-input-group {
+            flex-grow: 1;
+            display: flex;
+            padding: 0.5rem;
+            border-radius: 16px;
+            background: var(--bg-card);
+            border: 1px solid var(--glass-border);
+        }
+
+        .link-input-group input {
+            flex-grow: 1;
+            background: transparent;
+            border: none;
+            padding: 0 1.5rem;
+            color: var(--text-main);
+            font-family: inherit;
+            font-size: 1rem;
+            outline: none;
+        }
+
+        .glow-btn {
+            background: var(--accent-cyan);
+            color: #000;
+            padding: 0.75rem 1.5rem;
+            border-radius: 12px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            border: none;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .glow-btn:hover {
+            box-shadow: 0 0 10px rgba(0, 242, 255, 0.4);
+        }
+
+        .capture-btn {
+            background: transparent;
+            color: var(--text-main);
+            border: 1px solid var(--accent-purple);
+            padding: 0 2rem;
+            border-radius: 16px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .capture-btn:hover {
+            background: rgba(188, 19, 254, 0.1);
+            box-shadow: 0 0 30px rgba(188, 19, 254, 0.2);
+            transform: translateY(-2px);
+        }
+
+        /* Monitor Toggle */
+        .monitor-control {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 0 1.5rem;
+            border-radius: 16px;
+        }
+
+        .monitor-label {
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            font-weight: 700;
+            color: var(--text-dim);
+        }
+
+        .toggle {
+            position: relative;
+            display: inline-block;
+            width: 44px;
+            height: 24px;
+        }
+
+        .toggle input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            inset: 0;
+            background-color: var(--glass-inner);
+            transition: .4s;
+            border-radius: 24px;
+            border: 1px solid var(--glass-border);
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 16px;
+            width: 16px;
+            left: 4px;
+            bottom: 3px;
+            background-color: var(--text-dim);
+            transition: .4s;
+            border-radius: 50%;
+        }
+
+        input:checked+.slider {
+            background-color: rgba(0, 242, 255, 0.1);
+            border-color: var(--accent-cyan);
+        }
+
+        input:checked+.slider:before {
+            transform: translateX(20px);
+            background-color: var(--accent-cyan);
+            box-shadow: 0 0 10px var(--accent-cyan);
+        }
+
+        .manual-paste-info {
+            margin-bottom: 2rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .paste-input-group {
+            display: flex;
+            gap: 1rem;
+            align-items: flex-end;
+        }
+
+        #manual-paste-area {
+            flex-grow: 1;
+            min-height: 80px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            padding: 1rem;
+            color: #fff;
+            font-family: inherit;
+            resize: vertical;
+            transition: var(--transition);
+        }
+
+        #manual-paste-area:focus {
+            outline: none;
+            border-color: var(--accent-cyan);
+            background: rgba(255, 255, 255, 0.05);
+            box-shadow: 0 0 15px rgba(0, 242, 255, 0.1);
+        }
+
+        #submit-manual-paste {
+            flex-shrink: 0;
+            width: 50px;
+            height: 50px;
+            border-radius: 16px;
+        }
+
+        .content-mesh {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 2.5rem;
+            margin-top: 1rem;
+        }
+
+        .glass {
+            background: rgba(15, 15, 20, 0.6);
+            backdrop-filter: blur(25px) saturate(180%);
+            border: 1px solid var(--glass-border);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.7);
+            border-radius: 10px;
+            -webkit-backdrop-filter: blur(25px) saturate(180%);
+        }
+
+        /* Nodes Panel */
+        .node-panel {
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .icon-toggle-btn {
+            width: 44px;
+            height: 44px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            background: var(--bg-card);
+            color: var(--text-dim);
+            border: 1px solid var(--glass-border);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .icon-toggle-btn:hover {
+            color: var(--accent-cyan);
+            border-color: var(--accent-cyan);
+            box-shadow: 0 0 15px rgba(0, 242, 255, 0.2);
+        }
+
+        .icon-toggle-btn.active {
+            background: var(--accent-cyan);
+            color: var(--bg-dark);
+            box-shadow: 0 0 20px rgba(0, 242, 255, 0.4);
+        }
+
+        .content-mesh {
+            display: grid;
+            grid-template-columns: 320px 1fr;
+            gap: 2.5rem;
+            margin-top: 1rem;
+            transition: grid-template-columns 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .main-stage.hide-nodes .content-mesh {
+            grid-template-columns: 0px 1fr;
+            gap: 0;
+        }
+
+        .node-panel {
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        .main-stage.hide-nodes .node-panel {
+            opacity: 0;
+            transform: translateX(-50px);
+            pointer-events: none;
+        }
+
+        .panel-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.5rem;
+            border-bottom: 1px solid var(--glass-border);
+        }
+
+        .node-scroller {
+            flex-grow: 1;
+            overflow-y: auto;
+            padding: 1rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        /* Peer Node Card */
+        .peer-card {
+            background: var(--glass-inner);
+            border: 1px solid var(--glass-border);
+            padding: 1rem;
+            border-radius: 18px;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .peer-card:hover {
+            background: rgba(255, 255, 255, 0.05);
+            border-color: var(--accent-cyan);
+        }
+
+        .peer-card.selected {
+            border-color: var(--accent-cyan);
+            background: rgba(0, 242, 255, 0.05);
+            box-shadow: inset 0 0 15px rgba(0, 242, 255, 0.05);
+        }
+
+        .peer-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 10px;
+            background: rgba(0, 242, 255, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--accent-cyan);
+        }
+
+        .peer-info {
+            flex-grow: 1;
+            overflow: hidden;
+        }
+
+        .peer-info .pid {
+            display: block;
+            font-size: 0.85rem;
+            font-family: monospace;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .node-footer {
+            padding: 1rem;
+            border-top: 1px solid var(--glass-border);
+            display: flex;
+            gap: 1rem;
+        }
+
+        .text-btn {
+            background: transparent;
+            border: none;
+            color: var(--text-dim);
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .text-btn:hover {
+            color: var(--accent-cyan);
+        }
+
+        /* Hub Stage */
+        .hub-stage {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+        }
+
+        .hub-column {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .column-header h2 {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 1.25rem;
+            color: var(--text-dim);
+        }
+
+        .hub-scroller {
+            flex-grow: 1;
+            overflow-y: auto;
+            padding-right: 0.5rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1.25rem;
+        }
+
+        /* Hub Entry Card */
+        .hub-card {
+            background: var(--bg-card);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            padding: 1.5rem;
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hub-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background: var(--accent-purple);
+            opacity: 0.5;
+            margin: 10px;
+            transition: all 0.5s;
+        }
+
+        .hub-card:hover {
+            border-color: rgba(255, 255, 255, 0.2);
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.6);
+        }
+
+        .hub-card .card-head {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 1rem;
+        }
+
+        .hub-card .key {
+            font-size: 0.7rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            color: var(--accent-cyan);
+            letter-spacing: 1px;
+        }
+
+        .hub-card .val {
+            font-size: 1.1rem;
+            line-height: 1.5;
+            word-break: break-all;
+        }
+
+        .card-actions {
+            display: flex;
+            gap: 0.75rem;
+            margin-top: 1.5rem;
+            opacity: 0;
+            transform: translateY(10px);
+            transition: var(--transition);
+        }
+
+        .hub-card:hover .card-actions {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .mini-btn {
+            padding: 0.4rem 0.8rem;
+            font-size: 0.7rem;
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--text-dim);
+            border-radius: 8px;
+            text-transform: uppercase;
+            font-weight: 700;
+        }
+
+        .mini-btn:hover {
+            background: var(--accent-cyan);
+            color: #000;
+        }
+
+        /* Modals */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(15px);
+            z-index: 1000;
+            display: none;
+            opacity: 0;
+            transition: opacity 0.4s ease;
+        }
+
+        .cyber-modal {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0.85);
+            width: 90%;
+            max-width: 600px;
+            z-index: 1001;
+            display: none;
+            flex-direction: column;
+            opacity: 0;
+            transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .modal-overlay.active,
+        .cyber-modal.active {
+            display: flex;
+            opacity: 1;
+        }
+
+        .modal-head-actions {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+            margin-right: 1.5rem;
+        }
+
+        .spatial-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            overflow-y: auto;
+            max-height: 400px;
+            padding-right: 0.5rem;
+        }
+
+        .selection-item {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            padding: 1.25rem;
+            display: flex;
+            align-items: flex-start;
+            gap: 1.25rem;
+            transition: var(--transition);
+        }
+
+        .selection-item:hover {
+            background: rgba(0, 242, 255, 0.05);
+            border-color: rgba(0, 242, 255, 0.2);
+            transform: translateX(4px);
+        }
+
+        .selection-item input[type="checkbox"] {
+            width: 22px;
+            height: 22px;
+            margin-top: 0.25rem;
+            accent-color: var(--accent-cyan);
+            cursor: pointer;
+        }
+
+        .selection-item .card-content {
+            flex-grow: 1;
+        }
+
+        .selection-item .key {
+            display: block;
+            font-size: 0.65rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            color: var(--accent-cyan);
+            margin-bottom: 0.5rem;
+            letter-spacing: 0.5px;
+        }
+
+        .selection-item .val {
+            font-size: 0.95rem;
+            line-height: 1.6;
+            color: #fff;
+            word-break: break-all;
+        }
+
+        .cyber-modal.active {
+            transform: translate(-50%, -50%) scale(1);
+        }
+
+        .modal-head {
+            padding: 2rem;
+            border-bottom: 1px solid var(--glass-border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-body {
+            padding: 2rem;
+        }
+
+        .spatial-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .selection-item {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+            background: var(--glass-inner);
+            padding: 1rem;
+            border-radius: 12px;
+            border: 1px solid var(--glass-border);
+        }
+
+        .cyber-field {
+            margin-bottom: 1.5rem;
+        }
+
+        .cyber-field label {
+            display: block;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            color: var(--text-dim);
+            margin-bottom: 0.75rem;
+            font-weight: 700;
+        }
+
+        .cyber-field input,
+        .cyber-field textarea {
+            width: 100%;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid var(--glass-border);
+            border-radius: 12px;
+            padding: 1rem;
+            color: #fff;
+            font-family: inherit;
+            outline: none;
+        }
+
+        .cyber-field textarea {
+            min-height: 150px;
+            resize: vertical;
+        }
+
+        .modal-foot {
+            padding: 1.5rem 2rem;
+            border-top: 1px solid var(--glass-border);
+            display: flex;
+            justify-content: flex-end;
+            gap: 1rem;
+        }
+
+        .cyber-btn-primary {
+            background: var(--accent-cyan);
+            color: #000;
+            padding: 0.8rem 2rem;
+            border-radius: 12px;
+            font-weight: 700;
+            border: none;
+            cursor: pointer;
+        }
+
+        .cyber-btn-secondary {
+            background: transparent;
+            border: 1px solid var(--glass-border);
+            color: #fff;
+            padding: 0.8rem 2rem;
+            border-radius: 12px;
+            cursor: pointer;
+        }
+
+        /* Toasts */
+        #toast-container {
+            position: fixed;
+            bottom: 2rem;
+            right: 3rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .toast {
+            padding: 1.25rem 2rem;
+            background: var(--bg-card);
+            border: 1px solid var(--accent-cyan);
+            border-radius: 16px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+            animation: slideUp 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+        }
+
+        @keyframes slideUp {
+            from {
+                transform: translateY(50px);
+                opacity: 0;
+            }
+
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .manual-paste-info {
+            margin-bottom: 2rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .manual-paste-info p {
+            font-size: 0.85rem;
+            color: var(--text-dim);
+        }
+
+        #manual-paste-area {
+            width: 100%;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid var(--glass-border);
+            border-radius: 12px;
+            padding: 1rem;
+            color: #fff;
+            font-family: inherit;
+            outline: none;
+            min-height: 80px;
+        }
+
+        /* Scroller Styling */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--glass-border);
+            border-radius: 10px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--text-dim);
+        }
+
+        /* Responsive Refinements */
+        .view-hidden {
+            display: none !important;
+        }
+
+        @media (max-width: 1024px) {
+            .content-mesh {
+                grid-template-columns: 280px 1fr;
+                gap: 1.5rem;
+            }
+        }
+
+        @media (max-width: 900px) {
+            .main-stage {
+                padding: 1.5rem 1rem env(safe-area-inset-bottom);
+                height: auto;
+            }
+
+            .cyber-header {
+                flex-direction: column;
+                align-items: center;
+                text-align: center;
+                gap: 1rem;
+                margin-bottom: 2rem;
+                padding-top: 1rem;
+            }
+
+            .header-right {
+                width: 100%;
+                flex-direction: row;
+                /* Keep them in a row if possible or stacked neatly */
+                justify-content: center;
+                align-items: center;
+                gap: 0.75rem;
+            }
+
+            .node-id-chip {
+                flex: 1;
+                min-width: 140px;
+                max-width: 200px;
+                padding: 0.6rem 0.8rem;
+                justify-content: center;
+                order: 1;
+                overflow: hidden;
+            }
+
+            .node-id-chip code {
+                font-size: 0.9rem;
+                letter-spacing: 1px;
+            }
+
+            .node-id-chip label {
+                display: none;
+                /* Hide label on mobile to save space */
+            }
+
+            .icon-toggle-btn {
+                order: 2;
+                width: 48px;
+                height: 48px;
+            }
+
+            .action-bar {
+                flex-direction: column;
+                gap: 1.25rem;
+                padding: 1.25rem;
+                background: rgba(255, 255, 255, 0.02);
+                border: 1px solid var(--glass-border);
+                border-radius: 20px;
+                margin-bottom: 2rem;
+            }
+
+            .link-input-group {
+                width: 100%;
+                flex-direction: column;
+                gap: 1rem;
+                padding: 1rem;
+                background: rgba(15, 15, 20, 0.4);
+            }
+
+            .link-input-group input {
+                width: 100%;
+                padding: 1rem;
+                text-align: center;
+                border-bottom: 1px solid var(--glass-border);
+                border-radius: 0;
+            }
+
+            .content-mesh {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+
+            .main-stage.hide-nodes .content-mesh {
+                grid-template-columns: 1fr;
+            }
+
+            .node-panel {
+                max-height: none;
+                order: 2;
+            }
+
+            .hub-stage {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+                order: 1;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .header-left h1 {
+                font-size: 2rem;
+            }
+
+            .glow-btn,
+            .capture-btn {
+                width: 100%;
+                justify-content: center;
+                padding: 1.25rem;
+                font-size: 1rem;
+            }
+
+            .hub-card {
+                padding: 1.25rem;
+            }
+
+            .card-actions {
+                opacity: 1;
+                transform: translateY(0);
+                margin-top: 1rem;
+                flex-wrap: wrap;
+                gap: 0.5rem;
+            }
+
+            .mini-btn {
+                flex-grow: 1;
+                justify-content: center;
+                display: flex;
+                padding: 0.6rem;
+                /* Slightly larger targets */
+            }
+
+            /* Modal Mobile Refinement */
+            .cyber-modal {
+                width: 95% !important;
+                max-height: 90vh !important;
+                margin: 0;
+                border-radius: 20px;
+            }
+
+            .modal-head,
+            .modal-body,
+            .modal-foot {
+                padding: 1.25rem !important;
+            }
+
+            .selection-item {
+                padding: 1rem !important;
+                gap: 1rem !important;
+            }
+
+            .selection-item .val {
+                font-size: 0.85rem !important;
+            }
+        }
+
+        .empty-state {
+            text-align: center;
+            color: var(--text-dim);
+            padding: 2rem;
+            font-style: italic;
+        }
+
+        .close-modal {
+            background: transparent;
+            border: none;
+            color: var(--text-dim);
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+    </style>
+
+</head>
+
+<body class="cyber-lounge">
+    <!-- Background Mesh Pattern -->
+    <div class="mesh-bg">
+        <svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+                <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+                    <path d="M 40 0 L 0 0 0 40" fill="none" stroke="rgba(0, 242, 255, 0.03)" stroke-width="1" />
+                </pattern>
+            </defs>
+            <rect width="100%" height="100%" fill="url(#grid)" />
+        </svg>
+    </div>
+
+
+    <div class="main-stage">
+        <header class="cyber-header">
+            <div class="header-left">
+                <h1>CPY<span>SHARE</span></h1>
+                <div class="mesh-status" id="connection-status">
+                    <span class="pulse-dot"></span>
+                    <span class="status-text">Network Ready</span>
+                </div>
+            </div>
+            <div class="header-right">
+                <button id="toggle-nodes-view" class="icon-toggle-btn glow-btn-cyan" title="Toggle Nodes Panel">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                        class="toggle-icon lucide lucide-users">
+                        <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
+                        <circle cx="9" cy="7" r="4" />
+                        <path d="M22 21v-2a4 4 0 0 0-3-3.87" />
+                        <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+                    </svg>
+                </button>
+                <div class="node-id-chip glass" id="copy-my-id">
+                    <label>Node ID</label>
+                    <code id="my-peer-id">---</code>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                        class="lucide lucide-copy">
+                        <rect width="14" height="14" x="8" y="8" rx="2" ry="2" />
+                        <path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2" />
+                    </svg>
+                </div>
+            </div>
+        </header>
+
+        <section class="action-bar">
+            <div class="link-input-group glass">
+                <input type="text" id="peer-id-input" placeholder="Enter target node access code...">
+                <button id="connect-btn" class="glow-btn">
+                    <span>Link Node</span>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                        class="lucide lucide-link-2">
+                        <path d="M9 17H7A5 5 0 0 1 7 7h2" />
+                        <path d="M15 7h2a5 5 0 0 1 0 10h-2" />
+                        <line x1="8" x2="16" y1="12" y2="12" />
+                    </svg>
+                </button>
+            </div>
+            <button id="capture-clip" class="capture-btn glow-btn-purple">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                    class="lucide lucide-clipboard-plus">
+                    <rect width="8" height="4" x="8" y="2" rx="1" ry="1" />
+                    <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2" />
+                    <path d="M9 14h6" />
+                    <path d="M12 11v6" />
+                </svg>
+                Capture Clipboard
+            </button>
+        </section>
+
+        <div class="content-mesh">
+            <aside class="node-panel glass" id="nodes-view">
+                <div class="panel-header">
+                    <div class="header-main">
+                        <h3>Active Nodes</h3>
+                        <div class="node-counts">
+                            <span id="node-count">0</span> Peer(s)
+                        </div>
+                    </div>
+                </div>
+                <div id="peer-list" class="node-scroller">
+                    <div class="empty-state">No nodes connected</div>
+                </div>
+                <div class="node-footer">
+                    <button id="btn-select-all" class="text-btn">All</button>
+                    <button id="btn-clear-all" class="text-btn">None</button>
+                </div>
+            </aside>
+
+            <main class="hub-stage" id="dashboard-view">
+                <div class="hub-column">
+                    <div class="column-header">
+                        <h2>Personal Hub</h2>
+                    </div>
+                    <div id="local-slots" class="hub-scroller">
+                        <div class="empty-state">Hub standby...</div>
+                    </div>
+                </div>
+                <div class="hub-column">
+                    <div class="column-header">
+                        <h2>Mesh Inbound</h2>
+                    </div>
+                    <div id="remote-slots" class="hub-scroller">
+                        <div class="empty-state">Monitoring mesh...</div>
+                    </div>
+                </div>
+            </main>
+        </div>
+
+    </div>
+
+    <!-- Modals -->
+    <div id="modal-overlay" class="modal-overlay"></div>
+
+    <div id="capture-modal" class="cyber-modal glass">
+        <div class="modal-head">
+            <h3>Dictionary Buffer</h3>
+            <div class="modal-head-actions">
+                <button id="clear-buffer-btn" class="text-btn" style="color:var(--accent-purple)">Clear All</button>
+                <button class="close-modal" data-modal="capture-modal">&times;</button>
+            </div>
+        </div>
+        <div class="modal-body">
+            <div class="manual-paste-info">
+                <p class="helper-text" style="font-size:0.7rem;color:var(--text-dim);margin-bottom:0.8rem">💡 Web apps
+                    can only capture history while the Mesh Monitor is active.</p>
+                <div class="paste-input-group">
+                    <textarea id="manual-paste-area" placeholder="Paste text here to bulk-parse..."></textarea>
+                    <button id="submit-manual-paste" class="icon-btn glow-btn-cyan" title="Add to Buffer">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                            class="lucide lucide-check">
+                            <polyline points="20 6 9 17 4 12" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+            <div id="captured-items-list" class="spatial-list"></div>
+        </div>
+        <div class="modal-foot">
+            <button id="add-to-hub" class="cyber-btn-secondary">Store</button>
+            <button id="share-selected" class="cyber-btn-primary">Broadcast</button>
+        </div>
+    </div>
+
+    <div id="edit-modal" class="cyber-modal glass">
+        <div class="modal-head">
+            <h3>Refine Entry</h3>
+            <button class="close-modal" data-modal="edit-modal">&times;</button>
+        </div>
+        <div class="modal-body">
+            <div class="cyber-field">
+                <label>Key Descriptor</label>
+                <input type="text" id="edit-key-input" placeholder="e.g. Reference Code">
+            </div>
+            <div class="cyber-field">
+                <label>Payload Content</label>
+                <textarea id="edit-value-input" placeholder="Paste or type content here..."></textarea>
+            </div>
+        </div>
+        <div class="modal-foot">
+            <button id="save-edit" class="cyber-btn-primary">Commit Changes</button>
+        </div>
+    </div>
+
+    <!-- Notifications -->
+    <div id="toast-container"></div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            // Basic Elements
+            const myIdEl = document.getElementById('my-peer-id');
+            const copyIdBox = document.getElementById('copy-my-id');
+            const peerIdInput = document.getElementById('peer-id-input');
+            const connectBtn = document.getElementById('connect-btn');
+            const captureBtn = document.getElementById('capture-clip');
+            const localSlotsEl = document.getElementById('local-slots');
+            const remoteSlotsEl = document.getElementById('remote-slots');
+            const peerListEl = document.getElementById('peer-list');
+            const nodeCountEl = document.getElementById('node-count');
+            const toastContainer = document.getElementById('toast-container');
+
+            // Modals
+            const modalOverlay = document.getElementById('modal-overlay');
+            const captureModal = document.getElementById('capture-modal');
+            const capturedItemsList = document.getElementById('captured-items-list');
+            const addToHubBtn = document.getElementById('add-to-hub');
+            const shareSelectedBtn = document.getElementById('share-selected');
+            const clearBufferBtn = document.getElementById('clear-buffer-btn');
+            const manualPasteArea = document.getElementById('manual-paste-area');
+            const submitManualBtn = document.getElementById('submit-manual-paste');
+
+            const editModal = document.getElementById('edit-modal');
+            const editKeyInput = document.getElementById('edit-key-input');
+            const editValueInput = document.getElementById('edit-value-input');
+            const saveEditBtn = document.getElementById('save-edit');
+
+            const selectAllBtn = document.getElementById('btn-select-all');
+            const clearAllBtn = document.getElementById('btn-clear-all');
+
+            // Navigation (Consolidated)
+            const navItems = document.querySelectorAll('[data-view]');
+            const dashboardView = document.getElementById('dashboard-view');
+            const nodesView = document.getElementById('nodes-view');
+
+            let peer = null;
+            let activePeers = new Map(); // id -> { conn, sharedKey, selected, secure }
+            let localHub = [];
+            let remoteHub = [];
+            let pendingCapture = [];
+
+            // Encryption
+            let myKeyPair = null;
+            let myPublicKeyData = null;
+
+            // --- INITIALIZATION ---
+
+            function generateShortId() {
+                const chars = 'abcdefghijklmnopqrstuvwxyz';
+                let result = '';
+                for (let i = 0; i < 6; i++) {
+                    result += chars.charAt(Math.floor(Math.random() * chars.length));
+                }
+                return result;
+            }
+
+            async function init() {
+                if (!CryptoUtils.isSupported()) {
+                    showToast('Secure context required', 'error');
+                    return;
+                }
+                try {
+                    myKeyPair = await CryptoUtils.generateECCKeyPair();
+                    myPublicKeyData = await CryptoUtils.exportPublicKey(myKeyPair.publicKey);
+                    initPeer();
+                } catch (err) {
+                    console.error('Init Error:', err);
+                }
+            }
+
+            function initPeer() {
+                const nodeID = generateShortId();
+                peer = new Peer(nodeID);
+
+                // Immediate update if Peer is somehow already open (rare)
+                if (peer.open) myIdEl.textContent = peer.id;
+
+                peer.on('open', (id) => {
+                    myIdEl.textContent = id;
+                    console.log('Mesh ID:', id);
+                    showToast('Mesh Link Online');
+                });
+                peer.on('connection', setupConnection);
+                peer.on('error', (err) => showToast(`Mesh Error: ${err.type}`, 'error'));
+            }
+
+            // Navigation Logic
+            function switchView(viewId) {
+                navItems.forEach(btn => btn.classList.toggle('active', btn.dataset.view === viewId));
+
+                dashboardView.classList.toggle('view-hidden', viewId !== 'dashboard');
+                nodesView.classList.toggle('view-hidden', viewId !== 'nodes');
+
+                showToast(`Viewing ${viewId === 'dashboard' ? 'Mesh Hub' : 'Active Nodes'}`);
+            }
+
+            navItems.forEach(item => {
+                item.addEventListener('click', () => switchView(item.dataset.view));
+            });
+
+            // Nodes Panel Toggle
+            const mainStage = document.querySelector('.main-stage');
+            const toggleNodesBtn = document.getElementById('toggle-nodes-view');
+
+            if (toggleNodesBtn) {
+                toggleNodesBtn.classList.add('active'); // Start expanded
+                toggleNodesBtn.onclick = () => {
+                    const isHidden = mainStage.classList.toggle('hide-nodes');
+                    toggleNodesBtn.classList.toggle('active', !isHidden);
+                };
+            }
+
+            // --- CONNECTION ---
+
+            async function setupConnection(connection) {
+                const peerId = connection.peer;
+                connection.on('open', async () => {
+                    activePeers.set(peerId, { conn: connection, sharedKey: null, selected: true, secure: false });
+                    updatePeerUI();
+                    const timestamp = Date.now();
+                    const binding = await CryptoUtils.createKeyBinding(peer.id, myPublicKeyData, timestamp);
+                    connection.send({ type: 'KEY_EXCHANGE', publicKey: myPublicKeyData, peerId: peer.id, timestamp, binding });
+                });
+
+                connection.on('data', async (data) => {
+                    if (data.type === 'KEY_EXCHANGE') await handleKeyExchange(peerId, data);
+                    if (data.type === 'KEY_READY') {
+                        const p = activePeers.get(peerId);
+                        if (p) { p.secure = true; updatePeerUI(); showToast(`Secured Node`); }
+                    }
+                    if (data.type === 'HUB_SHARE') await handleIncomingShare(peerId, data);
+                    if (data.type === 'HUB_DELETE') handleIncomingDelete(peerId, data);
+                });
+
+                connection.on('close', () => {
+                    activePeers.delete(peerId);
+                    updatePeerUI();
+                });
+            }
+
+            async function handleKeyExchange(peerId, data) {
+                const p = activePeers.get(peerId);
+                if (!p) return;
+                const valid = await CryptoUtils.verifyKeyBinding(data.peerId, data.publicKey, data.timestamp, data.binding);
+                if (!valid) { p.conn.close(); return; }
+                const peerPublicKey = await CryptoUtils.importPublicKey(data.publicKey);
+                p.sharedKey = await CryptoUtils.deriveEncryptionKey(myKeyPair.privateKey, peerPublicKey);
+                if (!p.secure) {
+                    p.conn.send({ type: 'KEY_READY' });
+                    p.secure = true;
+                    updatePeerUI();
+                }
+            }
+
+            connectBtn.addEventListener('click', () => {
+                const tid = peerIdInput.value.trim().toLowerCase();
+                const idRegex = /^[a-z]{6}$/;
+
+                if (!idRegex.test(tid)) {
+                    showToast('Target ID must be 6 letters', 'error');
+                    return;
+                }
+
+                if (tid === peer.id) {
+                    showToast('Cannot link to self-node', 'error');
+                    return;
+                }
+
+                if (peer && !activePeers.has(tid)) {
+                    setupConnection(peer.connect(tid));
+                    peerIdInput.value = '';
+                } else if (activePeers.has(tid)) {
+                    showToast('Node already linked', 'info');
+                }
+            });
+
+            // --- CAPTURE & HUB ---
+
+            captureBtn.addEventListener('click', async () => {
+                window.focus();
+                setTimeout(async () => {
+                    try {
+                        const text = await navigator.clipboard.readText();
+                        if (text && text.trim().length > 0) {
+                            parseAndAddItems(text);
+                            showToast('Clip Captured');
+                        }
+                        renderCaptureModal();
+                        openModal(captureModal);
+                    } catch (err) {
+                        showToast('Manual Entry Buffer Ready', 'info');
+                        renderCaptureModal();
+                        openModal(captureModal);
+                    }
+                }, 100);
+            });
+
+            function parseAndAddItems(text) {
+                const lines = text.split('\n').filter(l => l.trim().length > 0);
+                lines.forEach(line => {
+                    let key, value;
+                    const parts = line.split(/[:=]/);
+                    if (parts.length >= 2) {
+                        key = parts[0].trim();
+                        value = parts.slice(1).join(':').trim();
+                    } else {
+                        key = `Buffer ${pendingCapture.length + 1}`;
+                        value = line.trim();
+                    }
+
+                    // Deduplicate by value
+                    if (!pendingCapture.find(i => i.value === value)) {
+                        pendingCapture.push({ key, value, selected: true });
+                    }
+                });
+            }
+
+            if (submitManualBtn) {
+                submitManualBtn.onclick = () => {
+                    const text = manualPasteArea.value.trim();
+                    if (text) {
+                        parseAndAddItems(text);
+                        renderCaptureModal();
+                        manualPasteArea.value = '';
+                        showToast('Manual Input Parsed');
+                    } else {
+                        showToast('Paste content first', 'error');
+                    }
+                };
+            }
+
+            clearBufferBtn.onclick = () => {
+                pendingCapture = [];
+                renderCaptureModal();
+                showToast('History Cleared');
+            };
+
+            function renderCaptureModal() {
+                if (!pendingCapture.length) {
+                    capturedItemsList.innerHTML = '<div class="empty-state">Buffer is empty. Copy content and click Capture!</div>';
+                    return;
+                }
+                capturedItemsList.innerHTML = pendingCapture.map((item, idx) => `
+                    <div class="selection-item">
+                        <input type="checkbox" ${item.selected ? 'checked' : ''} onchange="toggleCaptureItem(${idx})">
+                        <div class="card-content">
+                            <span class="key">${escapeHtml(item.key)}</span>
+                            <div class="val">${escapeHtml(item.value)}</div>
+                        </div>
+                    </div>
+                `).reverse().join('');
+            }
+
+            window.toggleCaptureItem = (idx) => {
+                pendingCapture[idx].selected = !pendingCapture[idx].selected;
+            };
+
+            addToHubBtn.onclick = () => {
+                const selected = pendingCapture.filter(i => i.selected);
+                selected.forEach(item => {
+                    localHub.unshift({
+                        id: Date.now() + Math.random(),
+                        key: item.key,
+                        value: item.value,
+                        time: new Date().toLocaleTimeString(),
+                        broadcastedTo: [] // Peer IDs
+                    });
+                });
+                renderHubs();
+                closeAllModals();
+                showToast(`Added ${selected.length} items to Hub`);
+            };
+
+            shareSelectedBtn.onclick = async () => {
+                const selected = pendingCapture.filter(i => i.selected);
+                const targets = Array.from(activePeers.keys()).filter(id => activePeers.get(id).selected);
+                if (!targets.length) return showToast('No target nodes selected', 'error');
+                if (!selected.length) return showToast('Nothing selected to beam', 'error');
+
+                for (const item of selected) {
+                    const hubItem = {
+                        id: Date.now() + Math.random(),
+                        key: item.key,
+                        value: item.value,
+                        time: new Date().toLocaleTimeString(),
+                        broadcastedTo: [...targets]
+                    };
+                    localHub.unshift(hubItem);
+                    await broadcastItem(hubItem, targets);
+                }
+                renderHubs();
+                closeAllModals();
+                showToast(`Beaming ${selected.length} items across mesh`);
+            };
+
+            async function broadcastItem(item, peerIds) {
+                for (const pid of peerIds) {
+                    const p = activePeers.get(pid);
+                    if (p?.secure && p.sharedKey) {
+                        try {
+                            const payload = JSON.stringify({ id: item.id, key: item.key, value: item.value });
+                            const { encryptedData, iv } = await CryptoUtils.encryptChunk(payload, p.sharedKey);
+                            p.conn.send({ type: 'HUB_SHARE', data: encryptedData, iv: iv });
+                        } catch (e) { console.error(e); }
+                    }
+                }
+            }
+
+            async function handleIncomingShare(peerId, data) {
+                const p = activePeers.get(peerId);
+                if (!p?.sharedKey) return;
+                try {
+                    const raw = await CryptoUtils.decryptChunk(data.data, p.sharedKey, data.iv);
+                    const content = JSON.parse(raw);
+                    // Deduplicate incoming shares by original item id
+                    if (!remoteHub.find(i => i.id === content.id)) {
+                        remoteHub.unshift({
+                            id: content.id, // Original ID from sender
+                            key: content.key,
+                            value: content.value,
+                            time: new Date().toLocaleTimeString(),
+                            from: peerId
+                        });
+                        renderHubs();
+                        showToast('Incoming Mesh Payload Received');
+                    }
+                } catch (e) { console.error(e); }
+            }
+
+            function handleIncomingDelete(peerId, data) {
+                const originalId = data.itemId;
+                const exists = remoteHub.some(i => i.id === originalId);
+                if (exists) {
+                    remoteHub = remoteHub.filter(i => i.id !== originalId);
+                    renderHubs();
+                    showToast(`Remote retracted an item`, 'info');
+                }
+            }
+
+            // --- UI RENDERING ---
+
+            function updatePeerUI() {
+                nodeCountEl.textContent = activePeers.size;
+                if (!activePeers.size) {
+                    peerListEl.innerHTML = '<div class="empty-state">Waiting for mesh connections...</div>';
+                    return;
+                }
+                peerListEl.innerHTML = Array.from(activePeers.entries()).map(([id, p]) => `
+                    <div class="peer-card ${p.selected ? 'selected' : ''}" onclick="togglePeerSelection('${id}')">
+                        <div class="peer-avatar">${p.secure ? '🔒' : '⏳'}</div>
+                        <div class="peer-info">
+                            <span class="pid">${id}</span>
+                        </div>
+                        <div class="pulse-dot" style="background:${p.secure ? 'var(--accent-cyan)' : 'var(--text-dim)'}"></div>
+                    </div>
+                `).join('');
+            }
+
+            window.togglePeerSelection = (id) => {
+                const p = activePeers.get(id);
+                if (p) { p.selected = !p.selected; updatePeerUI(); }
+            };
+
+            function renderHubs() {
+                localSlotsEl.innerHTML = localHub.length ? localHub.map(i => {
+                    const isBroadcasted = i.broadcastedTo && i.broadcastedTo.length > 0;
+                    return `
+                    <div class="hub-card">
+                        <div class="card-head"><span class="key">${escapeHtml(i.key)}</span><span class="time">${i.time}</span></div>
+                        <div class="val">${escapeHtml(i.value)}</div>
+                        <div class="card-actions">
+                            <button class="mini-btn" onclick="editItem(${i.id})">Edit</button>
+                            <button class="mini-btn" onclick="deleteItem(${i.id})">Remove</button>
+                            <button class="mini-btn" style="color:${isBroadcasted ? 'var(--accent-purple)' : 'var(--accent-cyan)'}" 
+                                    onclick="${isBroadcasted ? `cancelBroadcast(${i.id})` : `shareItem(${i.id})`}">
+                                ${isBroadcasted ? 'Retract' : 'Broadcast'}
+                            </button>
+                        </div>
+                    </div>
+                `;
+                }).join('') : '<div class="empty-state">Hub is empty...</div>';
+
+                remoteSlotsEl.innerHTML = remoteHub.length ? remoteHub.map(i => `
+                    <div class="hub-card" style="border-left:4px solid var(--accent-cyan)">
+                        <div class="card-head"><span class="key">${escapeHtml(i.key)} (from ${i.from.substring(0, 6)})</span><span class="time">${i.time}</span></div>
+                        <div class="val">${escapeHtml(i.value)}</div>
+                        <div class="card-actions">
+                            <button class="mini-btn" onclick="copyToClipboard(\`${i.value.replace(/`/g, '\\`').replace(/\$/g, '\\$')}\`)">Copy</button>
+                        </div>
+                    </div>
+                `).join('') : '<div class="empty-state">Awaiting mesh inbound...</div>';
+            }
+
+            // --- ACTIONS ---
+
+            window.editItem = (id) => {
+                const i = localHub.find(x => x.id === id);
+                if (i) {
+                    editKeyInput.value = i.key;
+                    editValueInput.value = i.value;
+                    saveEditBtn.onclick = () => {
+                        i.key = editKeyInput.value.trim();
+                        i.value = editValueInput.value.trim();
+                        renderHubs(); closeAllModals(); showToast('Entry Updated');
+                    };
+                    openModal(editModal);
+                }
+            };
+
+            window.deleteItem = (id) => {
+                const i = localHub.find(x => x.id === id);
+                if (i && i.broadcastedTo.length > 0) {
+                    cancelBroadcast(id);
+                }
+                localHub = localHub.filter(x => x.id !== id);
+                renderHubs();
+                showToast('Entry Removed from Hub');
+            };
+
+            window.shareItem = async (id) => {
+                const i = localHub.find(x => x.id === id);
+                const targets = Array.from(activePeers.keys()).filter(pid => activePeers.get(pid).selected);
+                if (i && targets.length) {
+                    i.broadcastedTo = [...targets];
+                    await broadcastItem(i, targets);
+                    renderHubs();
+                    showToast('Beaming Payload...');
+                }
+                else if (!targets.length) showToast('No target nodes selected', 'error');
+            };
+
+            window.cancelBroadcast = (id) => {
+                const i = localHub.find(x => x.id === id);
+                if (i && i.broadcastedTo.length > 0) {
+                    i.broadcastedTo.forEach(pid => {
+                        const p = activePeers.get(pid);
+                        if (p?.conn) {
+                            p.conn.send({ type: 'HUB_DELETE', itemId: i.id });
+                        }
+                    });
+                    i.broadcastedTo = [];
+                    renderHubs();
+                    showToast('Retracting from Mesh');
+                }
+            };
+
+            function openModal(m) { modalOverlay.classList.add('active'); m.classList.add('active'); }
+            function closeAllModals() { modalOverlay.classList.remove('active'); document.querySelectorAll('.cyber-modal').forEach(m => m.classList.remove('active')); }
+            document.querySelectorAll('.close-modal, .modal-overlay').forEach(el => el.onclick = closeAllModals);
+
+            selectAllBtn.onclick = () => { activePeers.forEach(p => p.selected = true); updatePeerUI(); };
+            clearAllBtn.onclick = () => { activePeers.forEach(p => p.selected = false); updatePeerUI(); };
+            copyIdBox.onclick = () => { navigator.clipboard.writeText(myIdEl.textContent).then(() => showToast('Access Code Copied')); };
+            window.copyToClipboard = (t) => { navigator.clipboard.writeText(t).then(() => showToast('Copied to System Clipboard')); };
+
+            function showToast(msg, type = 'info') {
+                const t = document.createElement('div');
+                t.className = `toast ${type}`;
+                t.textContent = msg;
+                toastContainer.appendChild(t);
+                setTimeout(() => { t.style.opacity = '0'; setTimeout(() => t.remove(), 400); }, 3000);
+            }
+
+            function escapeHtml(t) { const d = document.createElement('div'); d.textContent = t; return d.innerHTML; }
+
+            init();
+        });
+
+    </script>
+    <script>
+        const CryptoUtils = {
+            isSupported: () => !!(window.crypto && window.crypto.subtle),
+
+            /**
+             * Generate an ECDH key pair for key exchange
+             */
+            generateECCKeyPair: async () => {
+                return await window.crypto.subtle.generateKey(
+                    { name: "ECDH", namedCurve: "P-256" },
+                    true,
+                    ["deriveKey"]
+                );
+            },
+
+            /**
+             * Export public key as ArrayBuffer
+             */
+            exportPublicKey: async (key) => {
+                return await window.crypto.subtle.exportKey("spki", key);
+            },
+
+            /**
+             * Import peer's public key from ArrayBuffer
+             */
+            importPublicKey: async (keyData) => {
+                return await window.crypto.subtle.importKey(
+                    "spki",
+                    keyData,
+                    { name: "ECDH", namedCurve: "P-256" },
+                    true,
+                    []
+                );
+            },
+
+            /**
+             * Derive a shared AES-GCM key from local private key and peer public key
+             */
+            deriveEncryptionKey: async (privateKey, peerPublicKey) => {
+                const sharedSecret = await window.crypto.subtle.deriveKey(
+                    { name: "ECDH", public: peerPublicKey },
+                    privateKey,
+                    { name: "AES-GCM", length: 256 },
+                    true,
+                    ["encrypt", "decrypt"]
+                );
+                return sharedSecret;
+            },
+
+            /**
+             * Encrypt a data chunk using AES-GCM
+             */
+            encryptChunk: async (data, key) => {
+                const iv = window.crypto.getRandomValues(new Uint8Array(12));
+                const encodedData = typeof data === 'string' ? new TextEncoder().encode(data) : data;
+                const encryptedData = await window.crypto.subtle.encrypt(
+                    { name: "AES-GCM", iv: iv },
+                    key,
+                    encodedData
+                );
+                return { encryptedData, iv };
+            },
+
+            /**
+             * Decrypt a data chunk using AES-GCM
+             */
+            decryptChunk: async (encryptedData, key, iv) => {
+                const decryptedData = await window.crypto.subtle.decrypt(
+                    { name: "AES-GCM", iv: iv },
+                    key,
+                    encryptedData
+                );
+                return new TextDecoder().decode(decryptedData);
+            },
+
+            /**
+             * Create a cryptographic binding for PeerID and PublicKey to prevent MITM
+             */
+            createKeyBinding: async (peerId, publicKeyData, timestamp) => {
+                const data = new TextEncoder().encode(peerId + timestamp);
+                const hash = await window.crypto.subtle.digest("SHA-256", data);
+                return Array.from(new Uint8Array(hash)).map(b => b.toString(16).padStart(2, '0')).join('');
+            },
+
+            /**
+             * Verify key binding
+             */
+            verifyKeyBinding: async (peerId, publicKeyData, timestamp, binding) => {
+                const expected = await CryptoUtils.createKeyBinding(peerId, publicKeyData, timestamp);
+                return expected === binding;
+            },
+
+            /**
+             * Generate a fingerprint (SHA-256) of the public key
+             */
+            generateFingerprint: async (publicKeyData) => {
+                const hash = await window.crypto.subtle.digest("SHA-256", publicKeyData);
+                return Array.from(new Uint8Array(hash)).map(b => b.toString(16).padStart(2, '0')).join('').substring(0, 16);
+            }
+        };
+
+    </script>
+</body>
+
+</html>

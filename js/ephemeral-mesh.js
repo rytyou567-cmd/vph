@@ -1324,15 +1324,23 @@ function updateProgress(id, percent) {
     if (bar) bar.style.width = percent + '%';
 }
 
+
 document.getElementById('btn-connect').onclick = () => {
     const tid = document.getElementById('connect-to-peer-id').value;
-    const tids = document.getElementById('connect-to-peer-id').value;
     if (tid && tid !== myId) handleP2PConnection(peer.connect(tid));
     document.getElementById('connect-to-peer-id').value = '';
 };
-tids.addEventListener('keypress', (e) => {
-        if (e.key === 'Enter') btn-connect.click();
-    });
+
+const connectToPeer = () => {
+    const tid = document.getElementById('connect-to-peer-id').value;
+    if (tid && tid !== myId) handleP2PConnection(peer.connect(tid));
+    document.getElementById('connect-to-peer-id').value = '';
+};
+document.getElementById('connect-to-peer-id').addEventListener('keydown', (event) => {
+    if (event.key === 'Enter') {
+        connectToPeer();
+    }
+});
 
 document.getElementById('btn-copy-id').onclick = () => {
     const id = document.getElementById('my-peer-id').innerText;
@@ -1342,5 +1350,6 @@ document.getElementById('btn-copy-id').onclick = () => {
         setTimeout(() => btn.innerText = 'COPY', 2000);
     });
 };
+
 
 
